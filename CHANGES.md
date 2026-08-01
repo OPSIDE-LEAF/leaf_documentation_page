@@ -136,10 +136,71 @@ Estructura fusionada de dos propuestas de topics, con separación explícita de 
 
 - **Features del homepage reorientados a negocio** (objetivos de project.md): Time-to-market más corto · Experiencia nativa sin sacrificios · Ensambla, no empieces de cero · Crece al ritmo de tu negocio.
 - **Convención de terminología**: conceptos siempre en inglés dentro de la prosa en español — Host, Author, Capability, Port, Gateway, Module, Action, Feature. Aplicado en las 29 páginas, sidebar y homepage. Se preservó "capacidad" solo cuando refiere a la capacidad de la cola de eventos (`eventCapacity`).
+- **Referencias a GitHub corregidas**: navbar y homepage en/ apuntan a `github.com/OPSIDE-LEAF`; catálogo con columna de repositorios; API y Login reference enlazan su repo.
+- **Énfasis en tipado rebajado** en homepage y "¿Qué es Leaf?" (se mantiene como principio técnico en Arquitectura/Conceptos/API).
+- **Roadmap**: sección Distribución (GitHub Packages hoy → servidor Maven propio con lectura anónima); Workflow reencuadrado como feature planeada de LEAF 3 (tercer tipo de capability), con warning mientras sea experimental.
+- **Sección Proyecto reestructurada al formato del reporte** (solo contenido de project.md): Resumen/Abstract/Índice · Introducción y justificación · Cap. I Contextualización (problema, propuesta SÍ/NO, EDT, objetivos, hipótesis, viabilidad + hoja de ruta financiera) · Cap. II Marco teórico (estado del arte completo, teoría, tecnologías) · Cap. III Diseño y desarrollo (RF/RNF, cronograma, metodología, evaluación) · Cap. IV Resultados (pendiente — Fase 4) · Referencias APA + Anexos A y B únicamente.
+
+## 6. Versión única del sitio
+
+- **`docs/.vitepress/leaf-version.ts`** — única fuente de la versión del tren Leaf; se edita manualmente (`export const LEAF_VERSION = '2.0.1'`). Sin CI ni variables de entorno.
+- Se propaga automáticamente a: badge del navbar (pill con gradiente lima→verde de la marca, vía `define` de Vite), 24 menciones en 11 páginas markdown (prosa, tablas y bloques de código Gradle) mediante el placeholder `%LEAF_VERSION%` reemplazado por markdown-it, índice de búsqueda local y botón "Copy markdown" (parche en `markdownRawPlugin`).
+- Para páginas nuevas: escribir `%LEAF_VERSION%` donde vaya la versión del tren.
+- `leaf-login:1.0.0` queda fija a propósito (versión independiente del módulo, no del tren).
+
+## 7. Soporte de imágenes
+
+### Dónde van
+
+```
+docs/public/images/
+├── guide/      → capturas y diagramas de la Guía
+├── api/        → diagramas de la Referencia API
+└── project/    → EDT, cronograma, FODA, diagramas del reporte académico
+```
+
+Todo lo de `docs/public/` se sirve desde la raíz del sitio tal cual (sin procesamiento): optimizar peso antes de agregar (PNG/WebP para capturas, SVG para diagramas).
+
+### Cómo se referencian
+
+Markdown estándar (ruta absoluta, sin `public/`):
+
+```md
+![Diagrama de artefactos](/images/guide/artefactos.png)
+```
+
+Con pie de imagen — cursiva en la línea inmediata siguiente (sin línea en blanco):
+
+```md
+![EDT del proyecto](/images/project/edt.png)
+*Figura 1. Estructura de Desglose del Trabajo.*
+```
+
+Variante light/dark — dos archivos, uno por tema:
+
+```md
+<img src="/images/guide/flujo-light.png" class="light-only" alt="Flujo de Feature">
+<img src="/images/guide/flujo-dark.png" class="dark-only" alt="Flujo de Feature">
+```
+
+Sin marco (por defecto toda imagen lleva borde redondeado y marco sutil):
+
+```md
+<img src="/images/guide/badge.png" class="no-frame" alt="Badge">
+```
+
+### Estilo automático (style.css, sección "IMÁGENES EN CONTENIDO")
+
+Borde redondeado 10px + marco con `--vp-c-divider`, centradas y responsivas, pie de imagen en gris pequeño, utilidades `light-only` / `dark-only` / `no-frame`.
+
+### Lugares que ya esperan imagen
+
+- `images/project/edt.png` → sección EDT del Capítulo I (hoy tiene aviso de "diagrama en el documento original")
+- `images/project/cronograma.png` → Capítulo III, versión gráfica opcional además de la tabla
 
 ## Pendientes sugeridos
 
 - [ ] Traducción del locale `en/` (a cargo de moises)
 - [ ] Actualizar `en/index.md` y `en.ts` cuando exista la traducción
-- [ ] Reemplazar el link de GitHub del navbar (`https://github.com/leaf-framework`) por la organización real `OPSIDE-LEAF`
 - [ ] Documentar leaf-visuals cuando salga de desarrollo inicial
+- [ ] Subir `edt.png` y `cronograma.png` a `images/project/` cuando estén listos

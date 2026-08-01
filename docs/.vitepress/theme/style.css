@@ -223,6 +223,50 @@ html:not(.dark-transition) {
 }
 
 /* ============================================
+   IMÁGENES EN CONTENIDO (.vp-doc)
+   Uso: guardar en docs/public/images/<seccion>/ y referenciar
+   con ruta absoluta: ![Alt](/images/guide/diagrama.png)
+   ============================================ */
+
+/* Estilo base: bordes redondeados y marco sutil con la paleta */
+.vp-doc img {
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+  display: block;
+  margin: 16px auto;
+  max-width: 100%;
+}
+
+/* Sin marco (logos, iconos, badges):
+   <img src="/images/x.png" class="no-frame" alt="..."> */
+.vp-doc img.no-frame {
+  border: none;
+  border-radius: 0;
+  margin: initial;
+  display: inline-block;
+}
+
+/* Variantes por tema — mostrar una imagen distinta en light/dark:
+   <img src="/images/guide/diagrama-light.png" class="light-only">
+   <img src="/images/guide/diagrama-dark.png" class="dark-only"> */
+.dark .light-only {
+  display: none !important;
+}
+html:not(.dark) .dark-only {
+  display: none !important;
+}
+
+/* Pie de imagen: *texto en cursiva* inmediatamente después de la imagen */
+.vp-doc img + em {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+/* ============================================
    ICONOS MATERIAL DESIGN 3 EN FEATURES
    ============================================ */
 .VPFeature .icon {
