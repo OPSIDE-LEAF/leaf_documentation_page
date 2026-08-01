@@ -3,6 +3,9 @@ layout: home
 
 hero:
   name: "Leaf"
+  image:
+    src: /logo-mark.png
+    alt: Leaf
   text: "Modern & lightweight framework"
   tagline: Build fast, scalable, and elegant applications with an exceptional developer experience.
   actions:

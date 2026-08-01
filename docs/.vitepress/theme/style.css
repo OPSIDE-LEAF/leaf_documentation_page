@@ -1,6 +1,8 @@
 /**
- * Tema personalizado para Leaf Framework
- * Basado en el tema por defecto de VitePress con colores verdes
+ * Tema personalizado para Leaf
+ * Paleta de marca:
+ *   Verde:   #095637 → #A0CB38 (gradiente hoja verde)
+ *   Naranja: #E33838 → #ED7D31 (gradiente hoja naranja, acento)
  */
 
 /* ============================================
@@ -15,46 +17,59 @@
 }
 
 /* ============================================
-   COLORES - MODO CLARO
-   TODO: CAMBIAR COLOR LEAF
+   PALETA LEAF (tokens de marca)
    ============================================ */
 :root {
-  --vp-c-brand-1: #10b981; /* Primary - verde esmeralda */
-  --vp-c-brand-2: #059669; /* Hover/Active */
-  --vp-c-brand-3: #047857; /* Más oscuro */
-  --vp-c-brand-soft: rgba(16, 185, 129, 0.14);
+  --leaf-green-dark: #095637;
+  --leaf-green-mid: #4c9038;
+  --leaf-lime: #a0cb38;
+  --leaf-lime-light: #c3e26a;
+  --leaf-orange-dark: #e33838;
+  --leaf-orange: #ed7d31;
+}
+
+/* ============================================
+   COLORES - MODO CLARO
+   ============================================ */
+:root {
+  --vp-c-brand-1: #0b6b45; /* Links / primario */
+  --vp-c-brand-2: #095637; /* Hover/Active (verde marca) */
+  --vp-c-brand-3: #095637; /* Botón sólido */
+  --vp-c-brand-soft: rgba(160, 203, 56, 0.16); /* Tinte lima */
 
   /* Backgrounds */
   --vp-c-bg: #ffffff;
-  --vp-c-bg-alt: #f6f6f7;
+  --vp-c-bg-alt: #f6f8f4;
   --vp-c-bg-elv: #ffffff;
-  --vp-c-bg-soft: #f6f6f7;
+  --vp-c-bg-soft: #f6f8f4;
 
   /* Home hero */
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(
     120deg,
-    #10b981 30%,
-    #06d6a0
+    var(--leaf-green-dark) 20%,
+    var(--leaf-lime)
   );
 
+  /* Glow detrás del logo: eco de las dos hojas (naranja + verde) */
   --vp-home-hero-image-background-image: linear-gradient(
     -45deg,
-    #10b981 50%,
-    #06d6a0 50%
+    var(--leaf-orange-dark) 20%,
+    var(--leaf-orange) 45%,
+    var(--leaf-lime) 55%,
+    var(--leaf-green-dark) 85%
   );
-  --vp-home-hero-image-filter: blur(44px);
+  --vp-home-hero-image-filter: blur(56px);
 }
 
 /* ============================================
    COLORES - MODO OSCURO
-   TODO: CAMBIAR COLOR LEAF
    ============================================ */
 .dark {
-  --vp-c-brand-1: #34d399; /* Primary en dark */
-  --vp-c-brand-2: #6ee7b7; /* Hover/Active en dark */
-  --vp-c-brand-3: #a7f3d0; /* Más claro en dark */
-  --vp-c-brand-soft: rgba(52, 211, 153, 0.14);
+  --vp-c-brand-1: #a0cb38; /* Lima como primario en dark */
+  --vp-c-brand-2: #c3e26a;
+  --vp-c-brand-3: #8ab52b;
+  --vp-c-brand-soft: rgba(160, 203, 56, 0.16);
 
   /* Backgrounds - Modo Oscuro */
   --vp-c-bg: #1b1b1f;
@@ -65,15 +80,18 @@
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(
     120deg,
-    #34d399 30%,
-    #6ee7b7
+    var(--leaf-lime) 30%,
+    var(--leaf-lime-light)
   );
 
   --vp-home-hero-image-background-image: linear-gradient(
     -45deg,
-    #34d399 50%,
-    #6ee7b7 50%
+    var(--leaf-orange-dark) 20%,
+    var(--leaf-orange) 45%,
+    var(--leaf-lime) 55%,
+    var(--leaf-green-mid) 85%
   );
+  --vp-home-hero-image-filter: blur(56px);
 }
 
 /* ============================================
@@ -82,23 +100,38 @@
 :root {
   --vp-button-brand-border: transparent;
   --vp-button-brand-text: #fff;
-  --vp-button-brand-bg: var(--vp-c-brand-1);
+  --vp-button-brand-bg: var(--leaf-green-dark);
   --vp-button-brand-hover-border: transparent;
   --vp-button-brand-hover-text: #fff;
-  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-hover-bg: #0b6b45;
   --vp-button-brand-active-border: transparent;
   --vp-button-brand-active-text: #fff;
-  --vp-button-brand-active-bg: var(--vp-c-brand-3);
+  --vp-button-brand-active-bg: #073f29;
+}
+
+.dark {
+  --vp-button-brand-text: #1b1b1f;
+  --vp-button-brand-bg: var(--leaf-lime);
+  --vp-button-brand-hover-text: #1b1b1f;
+  --vp-button-brand-hover-bg: var(--leaf-lime-light);
+  --vp-button-brand-active-text: #1b1b1f;
+  --vp-button-brand-active-bg: #8ab52b;
 }
 
 /* ============================================
-   COMPONENTE CUSTOM BLOCK (tips, warnings, etc.)
+   CUSTOM BLOCKS (tip, warning, danger)
    ============================================ */
 :root {
   --vp-custom-block-tip-border: transparent;
   --vp-custom-block-tip-text: var(--vp-c-text-1);
   --vp-custom-block-tip-bg: var(--vp-c-brand-soft);
   --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
+
+  /* Warning/danger con el naranja de marca */
+  --vp-custom-block-warning-border: transparent;
+  --vp-custom-block-warning-bg: rgba(237, 125, 49, 0.14);
+  --vp-custom-block-danger-border: transparent;
+  --vp-custom-block-danger-bg: rgba(227, 56, 56, 0.14);
 }
 
 /* ============================================
@@ -110,8 +143,13 @@ html:not(.dark-transition) {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Mejora visual del sidebar activo */
+/* Sidebar activo */
 .VPSidebarItem.is-active > .item > .link > .text {
   color: var(--vp-c-brand-1) !important;
   font-weight: 600;
+}
+
+/* Marca del navbar un poco más presente */
+.VPNavBarTitle .logo {
+  height: 28px;
 }

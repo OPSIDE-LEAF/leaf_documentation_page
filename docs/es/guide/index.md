@@ -1,61 +1,62 @@
-# Getting Started
+# ¿Qué es Leaf?
 
-Bienvenido a la documentación de **Leaf**. Esta guía te ayudará a comenzar con el framework en pocos minutos.
+**Leaf** es un ecosistema para desarrollo móvil multiplataforma construido sobre **Kotlin Multiplatform** y **Compose Multiplatform**. Permite estructurar aplicaciones como conjuntos de módulos independientes, tipados y desacoplados, que se comparten entre Android e iOS conservando el rendimiento nativo.
 
-## ¿Qué es Leaf?
+Su núcleo provee capacidades **locales, directas y tipadas**: los autores de módulos exponen valores `Action<Input, Output>` o `Feature<Input, State, Event, Output>`, y los hosts los ejecutan directamente mediante `Leaf.run`, `Leaf.open` o el adaptador Compose `Leaf.rememberLeaf`.
 
-Leaf es un framework moderno y ligero diseñado para construir aplicaciones web rápidas y escalables. Ofrece una experiencia de desarrollo excepcional con soporte nativo de TypeScript.
+```kotlin
+// El autor define la capacidad
+val login: Feature<LoginInput, LoginState, LoginEvent, LoginResult>
 
-## Requisitos previos
-
-Antes de comenzar, asegúrate de tener instalado:
-
-- **Node.js** versión 18 o superior
-- **npm** o **pnpm** como gestor de paquetes
-
-## Crear un proyecto
-
-La forma más rápida de iniciar un proyecto Leaf es usando la CLI:
-
-::: code-group
-
-```bash [npm]
-npm create leaf@latest mi-proyecto
-cd mi-proyecto
-npm install
-npm run dev
+// El host la ejecuta en una sentencia
+val leaf = Leaf.rememberLeaf(module.login, LoginInput())
 ```
 
-```bash [pnpm]
-pnpm create leaf@latest mi-proyecto
-cd mi-proyecto
-pnpm install
-pnpm run dev
-```
-
+::: tip La ruta principal es local, directa y tipada
+No requiere registro de módulos, mapas de payload, codecs ni generación de código. Los tipos incompatibles fallan **al compilar**, no en runtime.
 :::
 
-## Estructura del proyecto
+## El problema que resuelve
 
-Una vez creado, tu proyecto tendrá la siguiente estructura:
+El desarrollo móvil vive una contradicción estructural:
 
-```
-mi-proyecto/
-├── src/
-│   ├── routes/
-│   │   └── index.ts
-│   ├── middleware/
-│   ├── models/
-│   └── app.ts
-├── public/
-├── package.json
-└── leaf.config.ts
-```
+| Ruta | Ventaja | Costo |
+|---|---|---|
+| **Nativo tradicional** | Máxima calidad de UX | Duplica equipos, presupuestos y tiempos (Swift/iOS + Kotlin/Android) |
+| **Frameworks híbridos** (Flutter, React Native) | Reduce costos y tiempos | Capas de abstracción intermedias que comprometen rendimiento e integración orgánica con cada plataforma |
 
-## Siguiente paso
+Leaf opera en la intersección que ninguna de las dos alternativas cubre: **código compartido que produce aplicaciones indistinguibles de las desarrolladas con los SDKs nativos**. Kotlin Multiplatform no introduce capas de abstracción en runtime — el código compartido se compila a bytecode JVM para Android y a framework nativo para iOS.
 
-Consulta la guía de [Instalación](/es/guide/installation) para más detalles sobre la configuración del entorno.
+## Propuesta de valor
 
-::: tip
-Leaf detecta automáticamente tu entorno y aplica las optimizaciones adecuadas para desarrollo y producción.
-:::
+En lugar de construir cada aplicación desde cero, los proyectos se ensamblan a partir de **módulos pre-construidos, reutilizables y compilables de forma aislada**, distribuidos como artefactos versionados vía GitHub Packages.
+
+Cada módulo:
+
+- Encapsula sus dependencias por constructor y expone capacidades tipadas.
+- Se compila, prueba y publica de forma independiente (semantic versioning propio).
+- Modela sus dependencias externas como puertos (interfaces) que el host implementa.
+- Valida su superficie pública con ABI validation y un *clean consumer*.
+
+## ¿Para quién es?
+
+- **Equipos y agencias** que necesitan entregar Android + iOS sin duplicar bases de código.
+- **Startups** que buscan reducir time-to-market sin comprometer la experiencia nativa.
+- **Autores de módulos** que quieren distribuir capacidades reutilizables con contratos estables.
+- **Desarrolladores KMP** que buscan una arquitectura modular de referencia.
+
+## Comparativa rápida
+
+| | Nativo x2 | Flutter / RN | **Leaf (KMP)** |
+|---|---|---|---|
+| Rendimiento nativo | ✅ | ⚠️ Capa intermedia | ✅ Compilación nativa |
+| Código compartido | ❌ | ✅ | ✅ Lógica + UI (Compose MP) |
+| Errores de integración | Runtime | Runtime | **Compile-time** (tipado) |
+| Módulos reutilizables versionados | Manual | Manual | ✅ Nativo del ecosistema |
+| Duplicación de equipos | ✅ Requerida | ❌ | ❌ |
+
+## Siguientes pasos
+
+- [Arquitectura y principios](/es/guide/arquitectura) — cómo está construido el ecosistema.
+- [Instalación](/es/guide/installation) — configura credenciales y dependencias.
+- [Tu primera Action](/es/guide/quickstart-action) — Hello World en 5 minutos.

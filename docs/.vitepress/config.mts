@@ -48,7 +48,7 @@ export default defineConfig({
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    logo: '/logo.svg',
+    logo: '/logo-mark.png',
     siteTitle: 'Leaf',
 
     socialLinks: [
