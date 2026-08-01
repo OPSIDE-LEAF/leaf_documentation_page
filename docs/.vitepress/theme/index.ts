@@ -14,6 +14,8 @@ export default {
     return h(DefaultTheme.Layout, null, {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
       'doc-before': () => h(CopyMarkdown),
+      'nav-bar-title-after': () =>
+        h('span', { class: 'leaf-version-badge' }, `v${__LEAF_VERSION__}`),
     })
   },
   enhanceApp({ app }) {

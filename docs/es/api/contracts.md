@@ -1,6 +1,6 @@
 # leaf-contracts
 
-`com.opside-leaf:leaf-contracts:2.0.1` · paquete `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-contracts)
+`com.opside-leaf:leaf-contracts:%LEAF_VERSION%` · paquete `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-contracts)
 
 Declara los contratos tipados del ecosistema. No ejecuta sesiones ni conoce UI.
 

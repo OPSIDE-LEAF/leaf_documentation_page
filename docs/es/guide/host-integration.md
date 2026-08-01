@@ -9,8 +9,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation("com.opside-leaf:leaf-login:1.0.0")
-            implementation("com.opside-leaf:leaf-core:2.0.1")
-            implementation("com.opside-leaf:leaf-compose:2.0.1") // si tu host es Compose
+            implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")
+            implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // si tu host es Compose
         }
     }
 }
@@ -83,7 +83,7 @@ when (val outcome = Leaf.run(payments.pay, request)) {
 - [ ] Hay una única sesión Core por Feature; no hay reducer o cola duplicados en el host.
 - [ ] El host distingue resultados de negocio de fallos técnicos.
 - [ ] No hay secretos en logs, telemetría ni persistencia del host.
-- [ ] Las dependencias son exclusivamente el tren estable `2.0.1` cuando este es el objetivo de publicación.
+- [ ] Las dependencias son exclusivamente el tren estable `%LEAF_VERSION%` cuando este es el objetivo de publicación.
 
 ## Reglas del host
 

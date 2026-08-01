@@ -1,8 +1,8 @@
 # Roadmap
 
-## Tren estable actual: 2.0.1
+## Tren estable actual: %LEAF_VERSION%
 
-Las coordenadas estables son `leaf-contracts:2.0.1`, `leaf-core:2.0.1` y `leaf-compose:2.0.1`, con `leaf-login:1.0.0` como módulo de referencia.
+Las coordenadas estables son `leaf-contracts:%LEAF_VERSION%`, `leaf-core:%LEAF_VERSION%` y `leaf-compose:%LEAF_VERSION%`, con `leaf-login:1.0.0` como módulo de referencia.
 
 ## Distribución
 
@@ -23,10 +23,10 @@ Hoy los artefactos se distribuyen por **GitHub Packages**, que exige un PAT con 
 
 `Workflow` será el tercer tipo de capability del ecosistema, pensado para interacciones que hoy no cubren `Action` (operación finita) ni `Feature` (interacción con estado): flujos multi-paso con efectos administrados por el runtime. Tendrá `WorkflowSession` y un adaptador Compose propio — **no es una evolución transparente de `Feature`**, sino un contrato distinto.
 
-::: warning Estado: experimental, fuera del tren 2.0.1
+::: warning Estado: experimental, fuera del tren %LEAF_VERSION%
 Mientras se desarrolla, `Workflow` vive detrás de `@ExperimentalLeafWorkflowApi` (staging `0.0.0-leaf3-experiment.1`) y no forma parte del tren estable:
 
 - No combines contratos `Workflow` (`rememberLeafWorkflowHolder`, etc.) con los módulos y hosts 2.x de esta documentación.
 - Evalúalo solo en rama, módulo y consumer **aislados**, con opt-in explícito y validación propia.
-- No cambies las coordenadas estables 2.0.1 ni presentes evidencia experimental como publicación estable.
+- No cambies las coordenadas estables %LEAF_VERSION% ni presentes evidencia experimental como publicación estable.
 :::

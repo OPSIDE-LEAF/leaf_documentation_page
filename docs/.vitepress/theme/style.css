@@ -143,6 +143,36 @@ html:not(.dark-transition) {
   width: auto;
 }
 
+/* Badge de versión junto al logo — pill con la paleta Leaf */
+.leaf-version-badge {
+  margin-left: 8px;
+  align-self: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  color: var(--leaf-green-dark);
+  background: linear-gradient(
+    120deg,
+    rgba(160, 203, 56, 0.22),
+    rgba(9, 86, 55, 0.14)
+  );
+  border: 1px solid rgba(9, 86, 55, 0.18);
+}
+
+.dark .leaf-version-badge {
+  color: var(--leaf-lime);
+  background: linear-gradient(
+    120deg,
+    rgba(160, 203, 56, 0.16),
+    rgba(9, 86, 55, 0.3)
+  );
+  border-color: rgba(160, 203, 56, 0.28);
+}
+
 /* ============================================
    HEADINGS — Ícono de hoja alternado (Android/iOS)
    ============================================ */

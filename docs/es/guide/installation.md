@@ -70,9 +70,9 @@ dependencyResolutionManagement {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api("com.opside-leaf:leaf-contracts:2.0.1")
-            implementation("com.opside-leaf:leaf-core:2.0.1")    // Solo si necesitas Leaf.run/open
-            implementation("com.opside-leaf:leaf-compose:2.0.1") // Solo si tienes UI Compose
+            api("com.opside-leaf:leaf-contracts:%LEAF_VERSION%")
+            implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")    // Solo si necesitas Leaf.run/open
+            implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // Solo si tienes UI Compose
         }
     }
 }
@@ -80,9 +80,9 @@ kotlin {
 
 | Coordenada | Contenido | Cuándo la necesitas |
 |---|---|---|
-| `com.opside-leaf:leaf-contracts:2.0.1` | `Module`, `ModuleInfo`, `Action`, `Feature`, DSLs | Siempre (como `api` si expones tipos Leaf) |
-| `com.opside-leaf:leaf-core:2.0.1` | `Leaf.run`, `Leaf.open`, `FeatureSession` | Hosts que ejecutan capabilities |
-| `com.opside-leaf:leaf-compose:2.0.1` | `Leaf.rememberLeaf` | Hosts con UI Compose |
+| `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` | `Module`, `ModuleInfo`, `Action`, `Feature`, DSLs | Siempre (como `api` si expones tipos Leaf) |
+| `com.opside-leaf:leaf-core:%LEAF_VERSION%` | `Leaf.run`, `Leaf.open`, `FeatureSession` | Hosts que ejecutan capabilities |
+| `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | `Leaf.rememberLeaf` | Hosts con UI Compose |
 | `com.opside-leaf:leaf-login:1.0.0` | Módulo de referencia (Feature de login + UI) | Opcional |
 
 ::: tip leaf-contracts como dependencia `api`

@@ -1,6 +1,6 @@
 # Referencia API
 
-Referencia de la superficie pública estable del tren `2.0.1`, organizada por artefacto.
+Referencia de la superficie pública estable del tren `%LEAF_VERSION%`, organizada por artefacto.
 
 | Artefacto | Paquete | Contenido |
 |---|---|---|

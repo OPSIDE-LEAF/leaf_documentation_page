@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { esLocale, esSearchConfig, enLocale, enSearchConfig } from './languages'
 import { markdownRawPlugin } from './plugins/markdownRaw'
+import { LEAF_VERSION } from './leaf-version'
 import { fileURLToPath, URL } from 'node:url'
 
 const docsDir = fileURLToPath(new URL('../', import.meta.url))
@@ -9,6 +10,22 @@ const docsDir = fileURLToPath(new URL('../', import.meta.url))
 export default defineConfig({
   vite: {
     plugins: [markdownRawPlugin(docsDir)],
+    define: {
+      __LEAF_VERSION__: JSON.stringify(LEAF_VERSION),
+    },
+  },
+
+  markdown: {
+    // Reemplaza %LEAF_VERSION% en todos los .md (prosa, tablas y bloques de
+    // código) con la versión declarada en leaf-version.ts. Al operar dentro
+    // del renderer de markdown-it también aplica al índice de búsqueda local.
+    config(md) {
+      md.core.ruler.after('normalize', 'leaf-version', (state) => {
+        if (state.src.includes('%LEAF_VERSION%')) {
+          state.src = state.src.replaceAll('%LEAF_VERSION%', LEAF_VERSION)
+        }
+      })
+    },
   },
   title: 'Leaf',
   description: 'Documentación oficial del framework Leaf',

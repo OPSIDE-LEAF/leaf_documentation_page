@@ -6,9 +6,9 @@ Organización en GitHub: [github.com/OPSIDE-LEAF](https://github.com/OPSIDE-LEAF
 
 | Artefacto | Coordenada | Versión | Estado | Repositorio |
 |---|---|---|---|---|
-| leaf-contracts | `com.opside-leaf:leaf-contracts` | `2.0.1` | ✅ Estable | [OPSIDE-LEAF/leaf-contracts](https://github.com/OPSIDE-LEAF/leaf-contracts) |
-| leaf-core | `com.opside-leaf:leaf-core` | `2.0.1` | ✅ Estable | [OPSIDE-LEAF/leaf-core](https://github.com/OPSIDE-LEAF/leaf-core) |
-| leaf-compose | `com.opside-leaf:leaf-compose` | `2.0.1` | ✅ Estable | [OPSIDE-LEAF/leaf-compose](https://github.com/OPSIDE-LEAF/leaf-compose) |
+| leaf-contracts | `com.opside-leaf:leaf-contracts` | `%LEAF_VERSION%` | ✅ Estable | [OPSIDE-LEAF/leaf-contracts](https://github.com/OPSIDE-LEAF/leaf-contracts) |
+| leaf-core | `com.opside-leaf:leaf-core` | `%LEAF_VERSION%` | ✅ Estable | [OPSIDE-LEAF/leaf-core](https://github.com/OPSIDE-LEAF/leaf-core) |
+| leaf-compose | `com.opside-leaf:leaf-compose` | `%LEAF_VERSION%` | ✅ Estable | [OPSIDE-LEAF/leaf-compose](https://github.com/OPSIDE-LEAF/leaf-compose) |
 | leaf-visuals | — | — | 🚧 En desarrollo inicial (sistema de diseño) | [OPSIDE-LEAF/leaf-visuals](https://github.com/OPSIDE-LEAF/leaf-visuals) |
 
 Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulator Arm64 y metadata KMP.
@@ -43,7 +43,7 @@ Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulat
 | leaf-catalog | `com.ops.catalog` | Pendiente de migración a 2.x |
 
 ::: warning Incompatibles con LEAF 2
-Los módulos legacy fueron creados con la arquitectura anterior (registro dinámico). No los combines con el tren 2.0.1. Ver [Migración desde legacy](/es/guide/legacy-migration).
+Los módulos legacy fueron creados con la arquitectura anterior (registro dinámico). No los combines con el tren %LEAF_VERSION%. Ver [Migración desde legacy](/es/guide/legacy-migration).
 :::
 
 ## Repositorios de artefactos

@@ -40,7 +40,7 @@ compose = "1.10.3"
 android-compileSdk = "36"
 android-minSdk = "24"
 kotlinx-coroutines = "1.10.2"
-leaf = "2.0.1"
+leaf = "%LEAF_VERSION%"
 leaf-<modulo> = "0.1.0"  # ← Versión inicial del módulo
 
 [libraries]

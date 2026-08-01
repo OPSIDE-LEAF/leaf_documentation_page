@@ -23,7 +23,7 @@ En 2.x quedan prohibidos en la ruta local: `Map<String, Any?>`, payloads genéri
 | leaf-catalog | `com.ops.catalog` | Arquitectura anterior |
 
 ::: warning No mezclar trenes
-No combines módulos legacy con artefactos del tren estable `2.0.1` en el mismo host. Migra el módulo primero.
+No combines módulos legacy con artefactos del tren estable `%LEAF_VERSION%` en el mismo host. Migra el módulo primero.
 :::
 
 ## Estrategia de migración
