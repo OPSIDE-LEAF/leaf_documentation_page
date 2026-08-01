@@ -13,7 +13,7 @@
 
 ## 1. Configurar credenciales
 
-Los artefactos se distribuyen vía GitHub Packages, que requiere autenticación incluso para lectura. Leaf usa un patrón **dual** de credenciales:
+Los artefactos se distribuyen vía GitHub Packages, que requiere autenticación incluso para lectura (limitación del registry Maven de GitHub, aun con repos públicos). Es la etapa actual: el [roadmap](/es/guide/roadmap#distribucion) contempla migrar a un servidor Maven propio con lectura anónima. Mientras tanto, Leaf usa un patrón **dual** de credenciales:
 
 1. **Desarrollo local** — `local.properties` (no se commitea)
 2. **CI/CD** — variables de entorno `GPR_USER` y `GPR_GIT_KEY`

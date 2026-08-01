@@ -4,6 +4,10 @@
 
 Las coordenadas estables son `leaf-contracts:2.0.1`, `leaf-core:2.0.1` y `leaf-compose:2.0.1`, con `leaf-login:1.0.0` como módulo de referencia.
 
+## Distribución
+
+Hoy los artefactos se distribuyen por **GitHub Packages**, que exige un PAT con `read:packages` incluso para paquetes públicos (limitación del registry Maven de GitHub, sin acceso anónimo). El plan es migrar a un **servidor Maven propio** con lectura anónima: los Hosts consumirán sin credenciales y el token quedará solo del lado de publicación. Mientras tanto aplica el [patrón dual de credenciales](/es/guide/installation).
+
 ## En curso
 
 - **leaf-visuals** — sistema de diseño visual compartido (desarrollo inicial).
@@ -12,16 +16,17 @@ Las coordenadas estables son `leaf-contracts:2.0.1`, `leaf-core:2.0.1` y `leaf-c
 
 ## LEAF 3 (futuro)
 
+- **Workflow** — nueva capability para orquestar flujos multi-paso, con `WorkflowSession`, efectos runtime-owned y su propio adaptador Compose. Será una feature de LEAF 3; ver detalle abajo.
 - **Migración de namespace** — los paquetes históricos `com.ops.leaf_core.api` y `com.ops.leaf_core.ui.compose` se mantienen durante todo LEAF 2 por compatibilidad binaria; su migración queda reservada para LEAF 3.
 
-## Workflow: experimento aislado
+### Workflow
 
-::: danger No es parte del tren estable
-`Workflow` es un experimento distinto, protegido por `@ExperimentalLeafWorkflowApi` (staging `0.0.0-leaf3-experiment.1`), con `WorkflowSession`, efectos runtime-owned y un adaptador Compose diferente. **No es una evolución transparente de `Feature`.**
+`Workflow` será el tercer tipo de capability del ecosistema, pensado para interacciones que hoy no cubren `Action` (operación finita) ni `Feature` (interacción con estado): flujos multi-paso con efectos administrados por el runtime. Tendrá `WorkflowSession` y un adaptador Compose propio — **no es una evolución transparente de `Feature`**, sino un contrato distinto.
+
+::: warning Estado: experimental, fuera del tren 2.0.1
+Mientras se desarrolla, `Workflow` vive detrás de `@ExperimentalLeafWorkflowApi` (staging `0.0.0-leaf3-experiment.1`) y no forma parte del tren estable:
+
+- No combines contratos `Workflow` (`rememberLeafWorkflowHolder`, etc.) con los módulos y hosts 2.x de esta documentación.
+- Evalúalo solo en rama, módulo y consumer **aislados**, con opt-in explícito y validación propia.
+- No cambies las coordenadas estables 2.0.1 ni presentes evidencia experimental como publicación estable.
 :::
-
-Al momento de esta verificación no existe código de `Workflow` en el workspace; la advertencia se conserva por si el experimento se reintroduce:
-
-- No combines contratos `Workflow` (`rememberLeafWorkflowHolder`, `LoginWorkflow`, etc.) con los módulos y hosts de esta documentación.
-- Si se evalúa, hazlo en rama, módulo y consumer **aislados**, con opt-in explícito y validación propia.
-- No cambies las coordenadas estables 2.0.1 ni presentes evidencia experimental local como publicación estable.

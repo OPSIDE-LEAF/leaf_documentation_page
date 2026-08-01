@@ -1,43 +1,32 @@
-# El proyecto Leaf
+# Resumen
 
-Leaf nace como proyecto de titulación de Ingeniería en Desarrollo de Software (CETI Plantel Tonalá, ciclo 2026). Esta sección resume su planteamiento académico; las demás secciones del sitio documentan el resultado técnico.
+El presente documento expone el diseño, desarrollo y validación de Leaf, un ecosistema para desarrollo móvil multiplataforma sustentado en una arquitectura modular reutilizable construida sobre Kotlin Multiplatform. El proyecto surge como respuesta a la duplicidad estructural que caracteriza al desarrollo nativo tradicional, donde mantener bases de código independientes para Android e iOS incrementa los costos, los tiempos de entrega y la complejidad de mantenimiento, particularmente para PyMEs y startups de la Zona Metropolitana de Guadalajara.
 
-## Justificación
+La propuesta se articula en torno a un Core Orquestador que coordina la integración de módulos funcionales independientes, compilables de forma aislada y distribuibles como repositorios reutilizables. El documento incluye el planteamiento del problema, la justificación, los objetivos general y específicos, la hipótesis de trabajo, el estado del arte, la teoría fundamental, las tecnologías aplicadas, el estudio de viabilidad, los requerimientos funcionales y no funcionales, la metodología seleccionada y el cronograma de actividades. El resultado esperado es un prototipo funcional que demuestre la viabilidad técnica y comercial del framework bajo un modelo open core con componente SaaS.
 
-El desarrollo de aplicaciones móviles nativas es históricamente costoso y redundante: mantener bases de código independientes para Android e iOS duplica esfuerzos en desarrollo, pruebas y mantenimiento. Las alternativas híbridas (Flutter, React Native) mitigan la duplicidad mediante capas de abstracción intermedias que comprometen el rendimiento nativo y la integración orgánica con los lineamientos de diseño de cada sistema operativo.
+## Abstract
 
-La problemática se agudiza en las PyMEs y startups de la **Zona Metropolitana de Guadalajara**: el análisis de mercado sobre datos de Clutch.co y GoodFirms muestra que las agencias locales (73 documentadas) operan con tarifas de **25–99 USD/hora** y costos mínimos de arranque de **5,000–25,000 USD**, dejando sistemáticamente desatendido al segmento con presupuestos limitados.
+This document presents the design, development, and validation of Leaf, a cross-platform mobile development ecosystem based on a reusable modular architecture built on Kotlin Multiplatform. The project addresses the structural duplication inherent to traditional native development, where maintaining independent codebases for Android and iOS increases costs, delivery times, and maintenance complexity, particularly for SMEs and startups in the Guadalajara Metropolitan Area.
 
-## Planteamiento del problema
+The proposal is structured around a Core Orchestrator that coordinates the integration of independent functional modules, compilable in isolation and distributable as reusable repositories. The document includes problem statement, justification, general and specific objectives, working hypothesis, state of the art, fundamental theory, applied technologies, feasibility study, functional and non-functional requirements, methodology, and project timeline. The expected outcome is a functional prototype demonstrating the technical and commercial viability of the framework under an open core model with a SaaS component.
 
-Las dos rutas dominantes ofrecen ventajas que no coexisten: el desarrollo nativo entrega máxima calidad de UX al precio de duplicar equipos; los híbridos reducen costos al precio de comprometer rendimiento. Las causas: (1) la naturaleza estructuralmente duplicada del desarrollo nativo, (2) la insuficiencia de los híbridos para entregar experiencias verdaderamente nativas, (3) la ausencia de ecosistemas adaptados al perfil presupuestal de las PyMEs regionales, (4) la falta de herramientas para reutilizar lógica y componentes entre proyectos de manera sistemática.
+## Índice
 
-## Objetivo general
+- [Introducción y justificación](/es/project/introduccion)
+- [Capítulo I — Contextualización de la problemática](/es/project/capitulo-1): planteamiento del problema, propuesta de solución, EDT, objetivos, hipótesis, estudio de viabilidad y hoja de ruta financiera
+- [Capítulo II — Marco teórico](/es/project/capitulo-2): estado del arte, teoría fundamental, tecnologías aplicadas
+- [Capítulo III — Diseño y desarrollo](/es/project/capitulo-3): requerimientos, metodología, cronograma
+- [Capítulo IV — Resultados](/es/project/capitulo-4): análisis de resultados, puesta en marcha, conclusiones
+- [Referencias y anexos](/es/project/referencias)
 
-Diseñar, desarrollar, validar y documentar un ecosistema de desarrollo móvil multiplataforma basado en una arquitectura modular reutilizable construida sobre Kotlin Multiplatform, que reduzca los tiempos de desarrollo, mejore la mantenibilidad y facilite la adaptación a distintos requerimientos de negocio sin sacrificar la experiencia de usuario nativa.
+---
 
-## Objetivos específicos
+**Centro de Enseñanza Técnica Industrial** · División de Informática y Computación · Plantel Tonalá
 
-1. Diseñar y desarrollar el Core que defina los contratos de comunicación y lineamientos arquitectónicos del ecosistema.
-2. Implementar Kotlin Multiplatform y Compose Multiplatform como base tecnológica, con compilación dual Android/iOS y binarios nativos validados.
-3. Construir un conjunto inicial de módulos funcionales independientes (Login, Catálogo, Email, Autenticación y Pagos), compilables de forma aislada y distribuibles vía GitHub Packages.
-4. Establecer un sistema de gestión de dependencias y compilación aislado con versionado y publicación independiente por módulo.
-5. Construir una aplicación demostrativa (App Host) en Android e iOS que ensamble los módulos.
-6. Validar la arquitectura con métricas de tiempo de desarrollo, tamaño de binarios, tiempos de compilación y reutilización de código.
-7. Documentar el ecosistema completo.
+**Título**: Leaf — Ecosistema para Desarrollo Móvil Multiplataforma basado en Arquitectura Modular Reutilizable · **Tipo de proyecto**: Aplicación móvil
 
-## Hipótesis
+**Estudiantes**: Mario Armando Razo Valenzuela · Moises Noe Pulido Gutierrez
 
-> El desarrollo e implementación de una arquitectura móvil modular y reutilizable basada en Kotlin Multiplatform optimizará los ciclos de desarrollo de aplicaciones móviles, reduciendo significativamente los tiempos de entrega y la duplicación de código en comparación con el desarrollo nativo tradicional, sin sacrificar la experiencia de usuario.
+**Asesor metodológico**: Ing. Rigoberto Ibarra Hernández · **Asesor técnico propuesto**: Ing. Jorge Alberto Chamorro Martínez
 
-Supuestos: existe un vacío de mercado en la ZMG (mercado); el modelo open core genera confianza y valor educativo (adopción); la madurez de producción de KMP —validada por McDonald's, Netflix, Philips, Wolt— es transferible a casos locales (técnico); la arquitectura modular permitirá reutilizar **al menos 40%** del código entre proyectos del mismo dominio (reutilización).
-
-## Alcance
-
-**Sí incluye**: Core en KMP, módulos iniciales (Login, Catálogo, Autenticación, Email, Pagos con Stripe y Mercado Pago), App Host demostrativa Android/iOS, validación con métricas y documentación arquitectónica.
-
-**No incluye**: publicación en tiendas, módulos de alta complejidad (mapeo en tiempo real, edición de video), comercialización en esta fase, ni integraciones fuera del alcance de los módulos iniciales.
-
-::: info Evolución de la arquitectura
-El planteamiento original describía un "Core Orquestador" con registro de módulos en runtime. Durante el desarrollo, la arquitectura evolucionó a la **ruta local tipada** de Leaf 2.x — invocación directa con tipos verificados en compilación, sin registry — que endurece los mismos objetivos (desacoplamiento, integración plug-and-play) con mayores garantías. Ver [Arquitectura](/es/guide/arquitectura).
-:::
+Junio 2026

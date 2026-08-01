@@ -1,0 +1,57 @@
+# Capítulo II — Marco teórico
+
+## 2.1 Estado del arte
+
+A continuación se presentan diez antecedentes relevantes que enmarcan el desarrollo del proyecto Leaf en el panorama académico e industrial actual del desarrollo móvil multiplataforma:
+
+**1. Kotlin Multiplatform Mobile (KMM) — JetBrains, 2023 [1].** Esta publicación marca el hito oficial en el que Kotlin Multiplatform alcanzó estabilidad de producción (v1.0), validando que la tecnología propuesta por Leaf pasó de experimental a confiable para uso comercial real. El lanzamiento en noviembre de 2023 consolida la viabilidad de compartir lógica de negocio entre Android e iOS, eliminando la duplicación de código en la capa de dominio y casos de uso, que representaban entre el 40% y 60% del esfuerzo de desarrollo en aplicaciones nativas tradicionales.
+
+**2. Compose Multiplatform — JetBrains, 2024 [2].** Compose Multiplatform 1.6 extendió las capacidades de UI declarativa a iOS, garantizando que la propuesta de Leaf de compartir código de presentación entre plataformas nativas es técnicamente viable sin sacrificar fidelidad a los lineamientos de diseño propios de cada sistema operativo. Este avance es crítico porque permitió llevar la reutilización más allá de la lógica de negocio hacia la capa de interfaz, multiplicando el potencial de economía de código en el desarrollo.
+
+**3. Hexagonal Architecture (Ports & Adapters) in Mobile Development — Alistair Cockburn [11].** La arquitectura hexagonal propuesta por Alistair Cockburn es el modelo adoptado en el Core Orquestador de Leaf, donde la lógica de negocio se organiza en un núcleo independiente expuesto mediante ports (contratos) y conectado al exterior a través de adaptadores; en este esquema, el Core gestiona la orquestación de módulos sin depender de plataformas como Android o iOS, mientras que los módulos e integraciones actúan como adaptadores intercambiables, permitiendo alta reutilización, escalabilidad y bajo acoplamiento.
+
+**4. Modularization of Android Applications — Google Developers, 2022 [4].** La guía oficial de Google sobre modularización Android (2022) proporciona patrones arquitectónicos validados industrialmente para compilar módulos de forma aislada y distribuirlos como AAR (Android Archive), que es exactamente la estrategia que Leaf implementa para la reutilización de módulos funcionales. Esta documentación oficial establece los estándares de facto para descomponer aplicaciones grandes en componentes independientes, versionables y reutilizables.
+
+**5. Adopción de Flutter en PyMEs latinoamericanas [5].** Este trabajo latinoamericano demuestra que Flutter está siendo la opción dominante para PyMEs en la región, evidenciando que existe un mercado comprobado de desarrollo móvil accesible a empresas de menor escala. Simultáneamente, indica que Kotlin Multiplatform permanece como alternativa subutilizada en ese segmento, sugiriendo que hay un nicho de mercado desatendido donde KMP podría competir con ventajas técnicas superiores pero con presencia insuficiente en la región.
+
+**6. Arquitecturas modulares en Kotlin Multiplatform [6].** Este análisis académico de 2024 sobre enfoques de desarrollo con Kotlin Multiplatform proporciona evidencia empírica sobre el impacto de las decisiones arquitectónicas en KMP, validando que el modelo modular propuesto por Leaf tiene precedente en investigaciones recientes del ecosistema. La publicación sistematiza patrones de ingeniería de software aplicados a KMP, reduciendo la incertidumbre técnica de adoptar arquitectura modular en la plataforma.
+
+**7. Estudio comparativo de rendimiento: KMP vs React Native vs Flutter [7].** Este estudio comparativo de 2025 posiciona Kotlin Multiplatform con ventajas significativas en rendimiento, reutilización de código y tiempo de compilación frente a Flutter y React Native. La investigación valida cuantitativamente la premisa técnica de Leaf: que KMP genera aplicaciones indistinguibles del desarrollo nativo, con tiempos de desarrollo reducidos gracias a la arquitectura modular.
+
+**8. Caso de uso real: Duolingo en producción con KMP [8].** El caso de producción de Duolingo usando Kotlin Multiplatform demuestra que empresas de escala global y exigencia técnica máxima confían en KMP para aplicaciones móviles críticas con millones de usuarios. Esta adopción por parte de un actor enterprise elimina cualquier duda sobre la estabilidad, rendimiento y confiabilidad de la tecnología base de Leaf.
+
+**9. Frameworks open core en software móvil [9].** Esta investigación sobre modelos de negocio open core en software de código abierto proporciona marco teórico validado para la estrategia de Leaf de liberar el Core bajo licencia abierta mientras monetiza módulos avanzados. El modelo demostrará que es viable equilibrar la confianza comunitaria (código abierto) con la sostenibilidad comercial (servicios y módulos premium), permitiendo que Leaf crezca como ecosistema sin comprometer la transparencia.
+
+**10. Mercado de desarrollo móvil en Jalisco y Guadalajara [10a, 10b, 10c].** El análisis del mercado de desarrollo móvil en la Zona Metropolitana de Guadalajara revela que las 73 agencias locales documentadas operan con tarifas entre 25 y 99 USD por hora y costos mínimos de arranque entre 5,000 y 25,000 USD, dejando documentadamente desatendido el segmento de PyMEs y startups con presupuestos limitados. Esta evidencia primaria del mercado local, triangulada con análisis de tendencias en Latinoamérica (referencia 5), delimita con precisión el espacio blanco donde Leaf encuentra su oportunidad única.
+
+**Conclusión del estado del arte.** Los antecedentes revisados muestran que el camino hacia arquitecturas modulares multiplataforma con calidad nativa está técnicamente abierto y validado en producción por empresas globales. Sin embargo, ninguno de los trabajos revisados aborda la combinación específica de: (1) arquitectura modular + Kotlin Multiplatform + modelo open core + enfoque al segmento PyME local. Es precisamente en esa intersección donde Leaf encuentra su espacio único: aprovecha la madurez tecnológica demostrada por los antecedentes (referencias 1, 2, 7, 8), adopta los principios arquitectónicos consolidados por la literatura académica (referencias 3, 4, 6), integra un modelo de negocio open core validado (referencia 9), y lo aplica a un nicho de mercado documentadamente desatendido en la Zona Metropolitana de Guadalajara (referencias 10a, 10b, 10c) donde la concentración en Flutter en PyMEs latinoamericanas (referencia 5) indica que Kotlin Multiplatform permanece como alternativa subexplotada.
+
+## 2.2 Teoría fundamental
+
+El proyecto Leaf se sustenta en cuatro cuerpos teóricos principales que guían su diseño y desarrollo:
+
+1. **Arquitectura hexagonal.** La arquitectura hexagonal propuesta por Alistair Cockburn es el modelo adoptado en el Core Orquestador de Leaf, donde la lógica de negocio se organiza en un núcleo independiente expuesto mediante ports (contratos) y conectado al exterior a través de adaptadores; en este esquema, el Core gestiona la orquestación de módulos sin depender de plataformas como Android o iOS, mientras que los módulos e integraciones actúan como adaptadores intercambiables, permitiendo alta reutilización, escalabilidad y bajo acoplamiento. *[11]*
+2. **Diseño modular y separación de responsabilidades.** Principio clásico de ingeniería de software que sostiene que un sistema debe descomponerse en módulos cohesivos y débilmente acoplados, donde cada módulo tiene una responsabilidad clara y comunica con los demás a través de interfaces bien definidas. En Leaf, este principio se materializa en módulos compilables de forma aislada que se ensamblan en tiempo de build mediante el Core Orquestador. *[12]*
+3. **Ingeniería de Software Orientada a Componentes (Component-Based Software Engineering).** Paradigma que promueve la construcción de sistemas a partir de componentes reutilizables con contratos explícitos de comunicación. Cada módulo de Leaf es un componente con una API pública estable, versionado independientemente y publicable como artefacto en repositorios privados. *[13]*
+4. **Kotlin Multiplatform como habilitador tecnológico.** Tecnología desarrollada por JetBrains que permite escribir lógica de negocio una sola vez en Kotlin y compilarla nativamente para múltiples plataformas (Android, iOS, JVM, JS, Native). A diferencia de los frameworks híbridos, KMP no introduce capas de abstracción en tiempo de ejecución: el código compartido se transforma en bytecode JVM para Android y en framework nativo para iOS, conservando el rendimiento equivalente al desarrollo puramente nativo. *[1] [2]*
+
+**Modelos de negocio open core.** Adicionalmente, el proyecto se apoya en literatura sobre modelos open core, donde un núcleo de software se libera bajo licencia abierta mientras que módulos avanzados o servicios complementarios se ofrecen comercialmente. Este modelo combina la confianza y adopción que genera el código abierto con la sostenibilidad económica del licenciamiento comercial. *[9]*
+
+## 2.3 Tecnologías aplicadas
+
+| Tecnología | Descripción | Uso en el proyecto | Versión | Sitio oficial |
+|---|---|---|---|---|
+| **Kotlin Multiplatform** | Tecnología de JetBrains para compartir código entre plataformas | Lógica de negocio compartida entre Android e iOS | 2.x (estable) | [kotlinlang.org](https://kotlinlang.org/docs/multiplatform.html) |
+| **Compose Multiplatform** | Framework de UI declarativa multiplataforma basado en Jetpack Compose | Construcción de interfaces compartidas | 1.6+ | [jetbrains.com](https://www.jetbrains.com/lp/compose-multiplatform/) |
+| **Gradle KMP** | Sistema de compilación con soporte para targets multiplataforma | Configuración de builds Android e iOS | 8.x | [gradle.org](https://gradle.org/) |
+| **Android SDK** | SDK nativo de Android | Compilación del target Android | API 34+ | [developer.android.com](https://developer.android.com/) |
+| **Xcode / Swift toolchain** | Toolchain nativo de iOS | Compilación del target iOS | 15.x+ | [developer.apple.com](https://developer.apple.com/xcode/) |
+| **GitHub Packages** | Registro privado de paquetes | Distribución de módulos como artefactos versionados | — | [github.com](https://github.com/features/packages) |
+| **Ktor Client** | Cliente HTTP multiplataforma | Comunicación con APIs externas | 2.x | [ktor.io](https://ktor.io/) |
+| **kotlinx.coroutines** | Concurrencia estructurada en Kotlin | Manejo asíncrono multiplataforma | 1.8.x | [github.com/Kotlin](https://github.com/Kotlin/kotlinx.coroutines) |
+| **kotlinx.serialization** | Serialización JSON multiplataforma | Modelos de datos y comunicación con APIs | 1.6.x | [github.com/Kotlin](https://github.com/Kotlin/kotlinx.serialization) |
+| **JUnit / Kotlin Test** | Frameworks de pruebas | Testing unitario y de integración por módulo | — | [kotlinlang.org](https://kotlinlang.org/api/latest/kotlin.test/) |
+| **Stripe SDK** | SDK de procesamiento de pagos | Módulo de Pagos (mercado internacional) | Última estable | [stripe.com](https://stripe.com/docs) |
+| **Mercado Pago SDK** | SDK de pagos para Latinoamérica | Módulo de Pagos (mercado local) | Última estable | [mercadopago.com.mx](https://www.mercadopago.com.mx/developers) |
+| **Git / GitHub** | Control de versiones y repositorio remoto | Gestión del código fuente | — | [github.com](https://github.com/) |
+| **Figma** | Herramienta de diseño UI/UX | Diseño de interfaces y diagramas | — | [figma.com](https://www.figma.com/) |

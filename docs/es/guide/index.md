@@ -1,8 +1,8 @@
 # ¿Qué es Leaf?
 
-**Leaf** es un ecosistema para desarrollo móvil multiplataforma construido sobre **Kotlin Multiplatform** y **Compose Multiplatform**. Permite estructurar aplicaciones como conjuntos de módulos independientes, tipados y desacoplados, que se comparten entre Android e iOS conservando el rendimiento nativo.
+**Leaf** es un ecosistema para desarrollo móvil multiplataforma construido sobre **Kotlin Multiplatform** y **Compose Multiplatform**. Permite estructurar aplicaciones como conjuntos de módulos independientes, reutilizables y desacoplados, que se comparten entre Android e iOS conservando el rendimiento nativo.
 
-Su núcleo provee capabilities **locales, directas y tipadas**: los Authors de módulos exponen valores `Action<Input, Output>` o `Feature<Input, State, Event, Output>`, y los hosts los ejecutan directamente mediante `Leaf.run`, `Leaf.open` o el adaptador Compose `Leaf.rememberLeaf`.
+Su núcleo provee capabilities **locales y directas**: los Authors de módulos exponen valores `Action<Input, Output>` o `Feature<Input, State, Event, Output>`, y los hosts los ejecutan en una sentencia mediante `Leaf.run`, `Leaf.open` o el adaptador Compose `Leaf.rememberLeaf`.
 
 ```kotlin
 // El Author define la capability
@@ -12,8 +12,8 @@ val login: Feature<LoginInput, LoginState, LoginEvent, LoginResult>
 val leaf = Leaf.rememberLeaf(module.login, LoginInput())
 ```
 
-::: tip La ruta principal es local, directa y tipada
-No requiere registro de módulos, mapas de payload, codecs ni generación de código. Los tipos incompatibles fallan **al compilar**, no en runtime.
+::: tip La ruta principal es local y directa
+No requiere registro de módulos, mapas de payload, codecs ni generación de código. Integrar un módulo es instanciarlo y llamarlo — y si algo no encaja, lo ves al compilar.
 :::
 
 ## El problema que resuelve
@@ -33,7 +33,7 @@ En lugar de construir cada aplicación desde cero, los proyectos se ensamblan a 
 
 Cada módulo:
 
-- Encapsula sus dependencias por constructor y expone capabilities tipadas.
+- Encapsula sus dependencias por constructor y expone capabilities listas para usar (`Action` o `Feature`).
 - Se compila, prueba y publica de forma independiente (semantic versioning propio).
 - Modela sus dependencias externas como ports (interfaces) que el host implementa.
 - Valida su superficie pública con ABI validation y un *clean consumer*.
@@ -51,7 +51,7 @@ Cada módulo:
 |---|---|---|---|
 | Rendimiento nativo | ✅ | ⚠️ Capa intermedia | ✅ Compilación nativa |
 | Código compartido | ❌ | ✅ | ✅ Lógica + UI (Compose MP) |
-| Errores de integración | Runtime | Runtime | **Compile-time** (tipado) |
+| Mantenimiento | Dos bases de código | Una base + puentes nativos | **Una base compartida** |
 | Módulos reutilizables versionados | Manual | Manual | ✅ Nativo del ecosistema |
 | Duplicación de equipos | ✅ Requerida | ❌ | ❌ |
 

@@ -7,7 +7,7 @@ hero:
     light: /logo-full-light.png
     dark: /logo-full-dark.png
     alt: Leaf
-  tagline: Ecosistema modular para desarrollo móvil multiplataforma. Kotlin Multiplatform + Compose, con capabilities locales, directas y tipadas.
+  tagline: Ecosistema modular para desarrollo móvil multiplataforma. Módulos reutilizables que se ensamblan en apps Android e iOS con rendimiento nativo, desde una sola base de código.
   actions:
     - theme: brand
       text: Comenzar

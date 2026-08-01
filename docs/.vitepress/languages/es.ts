@@ -70,10 +70,13 @@ const projectSidebar: DefaultTheme.SidebarItem[] = [
   {
     text: 'El proyecto',
     items: [
-      { text: 'Contexto y justificación', link: '/es/project/' },
-      { text: 'Estado del arte', link: '/es/project/estado-del-arte' },
-      { text: 'Viabilidad y modelo de negocio', link: '/es/project/viabilidad' },
-      { text: 'Metodología y validación', link: '/es/project/metodologia' },
+      { text: 'Resumen y abstract', link: '/es/project/' },
+      { text: 'Introducción y justificación', link: '/es/project/introduccion' },
+      { text: 'Cap. I — Contextualización', link: '/es/project/capitulo-1' },
+      { text: 'Cap. II — Marco teórico', link: '/es/project/capitulo-2' },
+      { text: 'Cap. III — Diseño y desarrollo', link: '/es/project/capitulo-3' },
+      { text: 'Cap. IV — Resultados', link: '/es/project/capitulo-4' },
+      { text: 'Referencias y anexos', link: '/es/project/referencias' },
     ],
   },
 ]
