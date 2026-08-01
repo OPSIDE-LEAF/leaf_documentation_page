@@ -51,15 +51,9 @@
     var(--leaf-lime)
   );
 
-  /* Glow detrás del logo: eco de las dos hojas (naranja + verde) */
-  --vp-home-hero-image-background-image: linear-gradient(
-    -45deg,
-    var(--leaf-orange-dark) 20%,
-    var(--leaf-orange) 45%,
-    var(--leaf-lime) 55%,
-    var(--leaf-green-dark) 85%
-  );
-  --vp-home-hero-image-filter: blur(56px);
+  /* Sin glow detrás del logo */
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
 }
 
 /* ============================================
@@ -84,14 +78,8 @@
     var(--leaf-lime-light)
   );
 
-  --vp-home-hero-image-background-image: linear-gradient(
-    -45deg,
-    var(--leaf-orange-dark) 20%,
-    var(--leaf-orange) 45%,
-    var(--leaf-lime) 55%,
-    var(--leaf-green-mid) 85%
-  );
-  --vp-home-hero-image-filter: blur(56px);
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
 }
 
 /* ============================================
@@ -152,4 +140,73 @@ html:not(.dark-transition) {
 /* Marca del navbar un poco más presente */
 .VPNavBarTitle .logo {
   height: 28px;
+  width: auto;
+}
+
+/* ============================================
+   HEADINGS — Ícono de hoja alternado (Android/iOS)
+   ============================================ */
+
+/* Ocultar el # por defecto */
+.vp-doc h1 .header-anchor::before,
+.vp-doc h2 .header-anchor::before,
+.vp-doc h3 .header-anchor::before,
+.vp-doc h4 .header-anchor::before,
+.vp-doc h5 .header-anchor::before,
+.vp-doc h6 .header-anchor::before {
+  content: '' !important;
+}
+
+.vp-doc h1 .header-anchor,
+.vp-doc h2 .header-anchor,
+.vp-doc h3 .header-anchor,
+.vp-doc h4 .header-anchor,
+.vp-doc h5 .header-anchor,
+.vp-doc h6 .header-anchor {
+  background-image: url('/hoja_android.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 0.9em;
+  height: 0.9em;
+  display: inline-block;
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Alternar: headings pares usan hoja iOS */
+.vp-doc h2:nth-of-type(even) .header-anchor,
+.vp-doc h3:nth-of-type(even) .header-anchor,
+.vp-doc h4:nth-of-type(even) .header-anchor {
+  background-image: url('/hoja_swift.png');
+}
+
+/* Mostrar al hacer hover en el heading */
+.vp-doc h1:hover .header-anchor,
+.vp-doc h2:hover .header-anchor,
+.vp-doc h3:hover .header-anchor,
+.vp-doc h4:hover .header-anchor,
+.vp-doc h5:hover .header-anchor,
+.vp-doc h6:hover .header-anchor {
+  opacity: 1;
+}
+
+/* ============================================
+   ICONOS MATERIAL DESIGN 3 EN FEATURES
+   ============================================ */
+.VPFeature .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: var(--vp-c-brand-soft);
+}
+
+.VPFeature .icon svg {
+  width: 26px;
+  height: 26px;
+  fill: var(--vp-c-brand-1);
 }

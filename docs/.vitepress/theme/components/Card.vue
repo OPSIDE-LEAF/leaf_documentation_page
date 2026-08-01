@@ -13,9 +13,7 @@ defineProps<{
     :href="link"
     :class="{ 'card--linked': link }"
   >
-    <div class="card__icon" v-if="icon">
-      {{ icon }}
-    </div>
+    <div class="card__icon" v-if="icon" v-html="icon"></div>
     <div class="card__content">
       <h3 class="card__title">{{ title }}</h3>
       <p class="card__description">{{ description }}</p>
@@ -28,7 +26,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   padding: 24px;
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid var(--vp-c-divider);
   background-color: var(--vp-c-bg-soft);
   transition: all 0.25s ease;
@@ -44,8 +42,21 @@ defineProps<{
 }
 
 .card__icon {
-  font-size: 28px;
-  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: var(--vp-c-brand-soft);
+  margin-bottom: 16px;
+}
+
+.card__icon :deep(svg) {
+  width: 24px;
+  height: 24px;
+  color: var(--vp-c-brand-1);
+  fill: currentColor;
 }
 
 .card__title {
