@@ -2,8 +2,8 @@
 
 ## Principios de diseño
 
-1. **Ruta local tipada** — Los hosts invocan capacidades directamente con referencias Kotlin tipadas. Los errores de tipo aparecen al compilar.
-2. **Diseño modular** — Los módulos encapsulan dependencias por constructor y exponen capacidades tipadas (`Action` o `Feature`).
+1. **Ruta local tipada** — Los hosts invocan capabilities directamente con referencias Kotlin tipadas. Los errores de tipo aparecen al compilar.
+2. **Diseño modular** — Los módulos encapsulan dependencias por constructor y exponen capabilities tipadas (`Action` o `Feature`).
 3. **Cancelación estructurada** — Core administra concurrencia, lifecycle y cleanup. Los consumidores no administran coroutines ni Flows.
 4. **Kotlin Multiplatform** — Lógica compartida compilada nativamente para cada plataforma, sin capas de abstracción en runtime.
 5. **Sin dinámica en Core** — Quedan prohibidos `Map<String, Any?>`, payloads genéricos, codecs, casts no comprobados, registry, instalación e invocación manual en la ruta local.
@@ -49,11 +49,11 @@ El ecosistema separa responsabilidades en tres artefactos publicados de forma in
 
 ## El paradigma Module → Capability → Host
 
-- Un **Module** es un objeto local que implementa `Module`, encapsula sus dependencias (inyectadas por constructor) y publica capacidades como propiedades `val` tipadas.
-- Una **capacidad** es una `Action<Input, Output>` (operación finita) o una `Feature<Input, State, Event, Output>` (interacción con estado).
-- Un **Host** construye el módulo explícitamente y ejecuta sus capacidades con `Leaf.run` / `Leaf.open` / `Leaf.rememberLeaf`. El host conserva la navegación y decide con los resultados de dominio.
+- Un **Module** es un objeto local que implementa `Module`, encapsula sus dependencias (inyectadas por constructor) y publica capabilities como propiedades `val` tipadas.
+- Una **capability** es una `Action<Input, Output>` (operación finita) o una `Feature<Input, State, Event, Output>` (interacción con estado).
+- Un **Host** construye el módulo explícitamente y ejecuta sus capabilities con `Leaf.run` / `Leaf.open` / `Leaf.rememberLeaf`. El host conserva la navegación y decide con los resultados de dominio.
 
-Las dependencias externas (APIs, servicios de identidad, pasarelas de pago) se modelan como **puertos**: interfaces declaradas dentro del módulo cuya implementación pertenece al host — arquitectura hexagonal (Ports & Adapters).
+Las dependencias externas (APIs, servicios de identidad, pasarelas de pago) se modelan como **ports**: interfaces declaradas dentro del módulo cuya implementación pertenece al host — arquitectura hexagonal (Ports & Adapters).
 
 ## Stack tecnológico
 

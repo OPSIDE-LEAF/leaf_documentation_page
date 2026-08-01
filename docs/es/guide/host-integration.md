@@ -1,6 +1,6 @@
 # Host: integrar módulos publicados
 
-Esta página cubre el flujo completo de un host que integra un módulo del [catálogo](/es/guide/catalogo): instalar, implementar los puertos, ejecutar y navegar.
+Esta página cubre el flujo completo de un host que integra un módulo del [catálogo](/es/guide/catalogo): instalar, implementar los ports, ejecutar y navegar.
 
 ## 1. Instala la dependencia
 
@@ -20,10 +20,10 @@ Ver [Instalación](/es/guide/installation) para repositorios y credenciales.
 
 ## 2. Implementa los gateways del módulo
 
-Cada módulo declara sus dependencias externas como **puertos** (interfaces). Como host, tú aportas la implementación real:
+Cada módulo declara sus dependencias externas como **ports** (interfaces). Como host, tú aportas la implementación real:
 
 ```kotlin
-// El módulo declara el puerto:
+// El módulo declara el port:
 interface AuthGateway {
     suspend fun authenticate(email: String, password: String): AuthResponse
 }

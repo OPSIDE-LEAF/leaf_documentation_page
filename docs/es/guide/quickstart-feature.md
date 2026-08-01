@@ -2,7 +2,7 @@
 
 Una `Feature<Input, State, Event, Output>` modela una interacción: como host observas **estado**, envías **eventos** y recibes exactamente un **resultado terminal**. Core es dueño de la sesión; tú solo observas y envías.
 
-## 1. El módulo (lo publica su autor)
+## 1. El módulo (lo publica su Author)
 
 ```kotlin
 import com.ops.leaf_core.api.Module

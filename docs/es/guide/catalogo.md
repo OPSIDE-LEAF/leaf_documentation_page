@@ -1,13 +1,15 @@
 # Catálogo de módulos
 
+Organización en GitHub: [github.com/OPSIDE-LEAF](https://github.com/OPSIDE-LEAF)
+
 ## Core del ecosistema
 
-| Artefacto | Coordenada | Versión | Estado |
-|---|---|---|---|
-| leaf-contracts | `com.opside-leaf:leaf-contracts` | `2.0.1` | ✅ Estable |
-| leaf-core | `com.opside-leaf:leaf-core` | `2.0.1` | ✅ Estable |
-| leaf-compose | `com.opside-leaf:leaf-compose` | `2.0.1` | ✅ Estable |
-| leaf-visuals | — | — | 🚧 En desarrollo inicial (sistema de diseño) |
+| Artefacto | Coordenada | Versión | Estado | Repositorio |
+|---|---|---|---|---|
+| leaf-contracts | `com.opside-leaf:leaf-contracts` | `2.0.1` | ✅ Estable | [OPSIDE-LEAF/leaf-contracts](https://github.com/OPSIDE-LEAF/leaf-contracts) |
+| leaf-core | `com.opside-leaf:leaf-core` | `2.0.1` | ✅ Estable | [OPSIDE-LEAF/leaf-core](https://github.com/OPSIDE-LEAF/leaf-core) |
+| leaf-compose | `com.opside-leaf:leaf-compose` | `2.0.1` | ✅ Estable | [OPSIDE-LEAF/leaf-compose](https://github.com/OPSIDE-LEAF/leaf-compose) |
+| leaf-visuals | — | — | 🚧 En desarrollo inicial (sistema de diseño) | [OPSIDE-LEAF/leaf-visuals](https://github.com/OPSIDE-LEAF/leaf-visuals) |
 
 Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulator Arm64 y metadata KMP.
 
@@ -15,9 +17,9 @@ Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulat
 
 ### leaf-login — ✅ Módulo de referencia
 
-- **Coordenada**: `com.opside-leaf:leaf-login:1.0.0` · **Paquete**: `com.opside.leaf.login`
+- **Coordenada**: `com.opside-leaf:leaf-login:1.0.0` · **Paquete**: `com.opside.leaf.login` · **Repo**: [OPSIDE-LEAF/leaf-login](https://github.com/OPSIDE-LEAF/leaf-login)
 - `LoginModule` expone `val login: Feature<LoginInput, LoginState, LoginEvent, LoginResult>`
-- Incluye dominio (`LoginModels`), puerto (`AuthGateway`), UI (`LoginRoute` + `LoginScreen`) y clean consumer
+- Incluye dominio (`LoginModels`), port (`AuthGateway`), UI (`LoginRoute` + `LoginScreen`) y clean consumer
 - Es la implementación de referencia para la arquitectura 2.x → [walkthrough completo](/es/guide/login-reference)
 
 ### leaf-mp-payments — 🚧 Stub inicial

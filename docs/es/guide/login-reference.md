@@ -1,6 +1,6 @@
 # Login: el módulo de referencia
 
-`leaf-login` (`com.opside-leaf:leaf-login:1.0.0`, paquete `com.opside.leaf.login`) es la implementación de referencia validada de la arquitectura 2.x. Este walkthrough recorre su mecánica completa.
+`leaf-login` (`com.opside-leaf:leaf-login:1.0.0`, paquete `com.opside.leaf.login`, [repo](https://github.com/OPSIDE-LEAF/leaf-login)) es la implementación de referencia validada de la arquitectura 2.x. Este walkthrough recorre su mecánica completa.
 
 ## El recorrido de la Feature
 

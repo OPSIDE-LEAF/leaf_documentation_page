@@ -2,10 +2,10 @@
 
 **Leaf** es un ecosistema para desarrollo móvil multiplataforma construido sobre **Kotlin Multiplatform** y **Compose Multiplatform**. Permite estructurar aplicaciones como conjuntos de módulos independientes, tipados y desacoplados, que se comparten entre Android e iOS conservando el rendimiento nativo.
 
-Su núcleo provee capacidades **locales, directas y tipadas**: los autores de módulos exponen valores `Action<Input, Output>` o `Feature<Input, State, Event, Output>`, y los hosts los ejecutan directamente mediante `Leaf.run`, `Leaf.open` o el adaptador Compose `Leaf.rememberLeaf`.
+Su núcleo provee capabilities **locales, directas y tipadas**: los Authors de módulos exponen valores `Action<Input, Output>` o `Feature<Input, State, Event, Output>`, y los hosts los ejecutan directamente mediante `Leaf.run`, `Leaf.open` o el adaptador Compose `Leaf.rememberLeaf`.
 
 ```kotlin
-// El autor define la capacidad
+// El Author define la capability
 val login: Feature<LoginInput, LoginState, LoginEvent, LoginResult>
 
 // El host la ejecuta en una sentencia
@@ -33,16 +33,16 @@ En lugar de construir cada aplicación desde cero, los proyectos se ensamblan a 
 
 Cada módulo:
 
-- Encapsula sus dependencias por constructor y expone capacidades tipadas.
+- Encapsula sus dependencias por constructor y expone capabilities tipadas.
 - Se compila, prueba y publica de forma independiente (semantic versioning propio).
-- Modela sus dependencias externas como puertos (interfaces) que el host implementa.
+- Modela sus dependencias externas como ports (interfaces) que el host implementa.
 - Valida su superficie pública con ABI validation y un *clean consumer*.
 
 ## ¿Para quién es?
 
 - **Equipos y agencias** que necesitan entregar Android + iOS sin duplicar bases de código.
 - **Startups** que buscan reducir time-to-market sin comprometer la experiencia nativa.
-- **Autores de módulos** que quieren distribuir capacidades reutilizables con contratos estables.
+- **Authors de módulos** que quieren distribuir capabilities reutilizables con contratos estables.
 - **Desarrolladores KMP** que buscan una arquitectura modular de referencia.
 
 ## Comparativa rápida

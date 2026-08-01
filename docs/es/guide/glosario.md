@@ -2,16 +2,16 @@
 
 | Término | Definición |
 |---|---|
-| **Module** | Objeto local que implementa la interface `Module`, encapsula sus dependencias por constructor y expone capacidades tipadas. No es un contenedor DI ni requiere registro. |
+| **Module** | Objeto local que implementa la interface `Module`, encapsula sus dependencias por constructor y expone capabilities tipadas. No es un contenedor DI ni requiere registro. |
 | **ModuleInfo** | Identidad estable de un módulo: `ModuleInfo(id, version)`. Se usa en telemetría y errores. `id` y `version` no pueden estar en blanco. |
-| **Capacidad** | Propiedad `val` tipada dentro de un módulo: una `Action` o una `Feature`. |
+| **Capability** | Propiedad `val` tipada dentro de un módulo: una `Action` o una `Feature`. |
 | **Action** | `Action<Input, Output>` — operación finita, tipada y cancelable: recibe un input, se ejecuta y devuelve un output. Sin estado observable. |
 | **Feature** | `Feature<Input, State, Event, Output>` — interacción con estado observable, eventos del usuario y un resultado terminal único. |
 | **Transición** | Respuesta de una Feature a un evento: `stay(state)` publica nuevo estado sin terminar; `finish(output)` produce el resultado terminal exactamente una vez. |
-| **Host** | Aplicación (Android/iOS) o componente que construye módulos, ejecuta sus capacidades y conserva la navegación. |
+| **Host** | Aplicación (Android/iOS) o componente que construye módulos, ejecuta sus capabilities y conserva la navegación. |
 | **FeatureSession** | Sesión propiedad de Core creada por `Leaf.open`: expone `state`, `result` y `metrics` como `StateFlow`, más `send`, `cancel` y `close`. |
-| **Gateway (puerto)** | Interface declarada dentro del módulo que modela una dependencia externa (API, identidad, pagos). La implementación pertenece al host. |
-| **Ruta local tipada** | Modelo de invocación de Leaf 2.x: el host llama capacidades con referencias Kotlin tipadas; los errores de tipo fallan al compilar. |
+| **Gateway (port)** | Interface declarada dentro del módulo que modela una dependencia externa (API, identidad, pagos). La implementación pertenece al host. |
+| **Ruta local tipada** | Modelo de invocación de Leaf 2.x: el host llama capabilities con referencias Kotlin tipadas; los errores de tipo fallan al compilar. |
 | **Backpressure** | Manejo de presión de eventos: la cola de una Feature es acotada (default 16, máx. 1,024) y `send` falla rápido con `REJECTED_OVERFLOW` en lugar de suspender. |
 | **Terminalidad única** | Garantía de que una sesión produce exactamente un resultado terminal (`Finished`, `Cancelled` o `Failed`); los eventos tardíos se rechazan. |
 | **Error de dominio** | Resultado de negocio esperado, modelado en el tipo de salida (ej. `LoginResult`, `AuthResponse.InvalidCredentials`). Nunca es una excepción. |

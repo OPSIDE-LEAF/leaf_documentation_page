@@ -30,10 +30,10 @@ No combines módulos legacy con artefactos del tren estable `2.0.1` en el mismo 
 
 `leaf_login` es la referencia del modelo destino. Para migrar un módulo legacy:
 
-1. **Crea el repositorio 2.x** siguiendo el [setup del autor](/es/guide/module-setup) (repos independiente, Gradle, ABI).
+1. **Crea el repositorio 2.x** siguiendo el [setup del Author](/es/guide/module-setup) (repos independiente, Gradle, ABI).
 2. **Modela el dominio con tipos**: reemplaza payloads genéricos por `Input`, `State`, `Event` y `Result` (`sealed interface` para eventos y resultados).
-3. **Convierte los servicios en puertos**: cada dependencia externa se vuelve una interface (gateway) cuya implementación entrega el host.
-4. **Reescribe la capacidad**: la lógica de manejo se convierte en una `Action` (operación finita) o una `Feature` con transiciones `stay`/`finish`.
+3. **Convierte los servicios en ports**: cada dependencia externa se vuelve una interface (gateway) cuya implementación entrega el host.
+4. **Reescribe la capability**: la lógica de manejo se convierte en una `Action` (operación finita) o una `Feature` con transiciones `stay`/`finish`.
 5. **Mueve los errores de negocio al tipo de salida**: lo que antes era excepción o código de error se vuelve variante del `Result`.
 6. **Elimina el registro**: borra cualquier instalación/lookup; el host construye el módulo por constructor.
 7. **Agrega UI Route/Screen** si el módulo tiene interfaz.

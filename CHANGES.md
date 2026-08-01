@@ -132,6 +132,11 @@ Estructura fusionada de dos propuestas de topics, con separación explícita de 
 - 29 HTML generados: 21 guide + 4 api + 4 project.
 - Nota: el build desde el sandbox Linux de Claude requiere reinstalar node_modules (el binario nativo de rollup en el repo es de macOS); en Mac no afecta.
 
+## 5. Ajustes posteriores
+
+- **Features del homepage reorientados a negocio** (objetivos de project.md): Time-to-market más corto · Experiencia nativa sin sacrificios · Ensambla, no empieces de cero · Crece al ritmo de tu negocio.
+- **Convención de terminología**: conceptos siempre en inglés dentro de la prosa en español — Host, Author, Capability, Port, Gateway, Module, Action, Feature. Aplicado en las 29 páginas, sidebar y homepage. Se preservó "capacidad" solo cuando refiere a la capacidad de la cola de eventos (`eventCapacity`).
+
 ## Pendientes sugeridos
 
 - [ ] Traducción del locale `en/` (a cargo de moises)

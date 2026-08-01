@@ -1,6 +1,6 @@
 # leaf-core
 
-`com.opside-leaf:leaf-core:2.0.1` · paquete `com.ops.leaf_core.api`
+`com.opside-leaf:leaf-core:2.0.1` · paquete `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-core)
 
 Runtime del ecosistema: ejecuta Actions y posee las sesiones de Features (serialización de eventos, cancelación, resultado, presión, errores técnicos). No conoce reglas de dominio ni renderiza UI.
 

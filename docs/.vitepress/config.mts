@@ -53,7 +53,7 @@ export default defineConfig({
     siteTitle: 'Leaf',
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/leaf-framework' },
+      { icon: 'github', link: 'https://github.com/OPSIDE-LEAF' },
     ],
 
     search: {

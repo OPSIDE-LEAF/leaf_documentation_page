@@ -6,7 +6,7 @@ Diez antecedentes enmarcan a Leaf en el panorama académico e industrial del des
 |---|---|---|
 | 1 | **Kotlin Multiplatform Mobile — JetBrains, 2023** | KMP alcanzó estabilidad de producción (nov. 2023): compartir lógica entre Android/iOS pasó de experimental a confiable. La capa de dominio representaba 40–60% del esfuerzo duplicado. |
 | 2 | **Compose Multiplatform — JetBrains, 2024** | Compose 1.6 extendió la UI declarativa a iOS: la reutilización va más allá de la lógica hacia la capa de presentación. |
-| 3 | **Arquitectura Hexagonal (Ports & Adapters) — A. Cockburn** | Modelo adoptado por el Core: núcleo independiente expuesto mediante puertos (contratos) y adaptadores intercambiables, sin depender de Android/iOS. |
+| 3 | **Arquitectura Hexagonal (Ports & Adapters) — A. Cockburn** | Modelo adoptado por el Core: núcleo independiente expuesto mediante ports (contratos) y adaptadores intercambiables, sin depender de Android/iOS. |
 | 4 | **Modularización de apps Android — Google, 2022** | Patrones validados industrialmente para compilar módulos aislados y distribuirlos (AAR) — la estrategia de distribución de Leaf. |
 | 5 | **Adopción de Flutter en PyMEs latinoamericanas** | Confirma mercado de desarrollo móvil accesible para PyMEs en la región, con KMP como alternativa subutilizada: nicho desatendido. |
 | 6 | **Arquitecturas modulares en KMP (2024)** | Evidencia empírica del impacto de decisiones arquitectónicas en KMP; precedente académico del modelo modular. |
@@ -25,7 +25,7 @@ Leaf opera en esa intersección: aprovecha la madurez tecnológica (1, 2, 7, 8),
 
 ## Teoría fundamental
 
-1. **Arquitectura hexagonal** — lógica de negocio en un núcleo independiente, puertos como contratos, adaptadores intercambiables. En Leaf: gateways de módulo implementados por el host.
+1. **Arquitectura hexagonal** — lógica de negocio en un núcleo independiente, ports como contratos, adaptadores intercambiables. En Leaf: gateways de módulo implementados por el host.
 2. **Diseño modular y separación de responsabilidades** — módulos cohesivos y débilmente acoplados que se comunican por interfaces definidas. En Leaf: módulos compilables de forma aislada.
 3. **Ingeniería de software orientada a componentes (CBSE)** — componentes reutilizables con contratos explícitos, API pública estable, versionado independiente y publicación como artefactos.
 4. **Kotlin Multiplatform como habilitador** — el código compartido se compila a bytecode JVM (Android) y framework nativo (iOS) sin capas de abstracción en runtime.

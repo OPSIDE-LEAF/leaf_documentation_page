@@ -1,6 +1,6 @@
 # Crear un módulo: setup del repositorio
 
-Un módulo Leaf es un **repositorio independiente** que expone capacidades tipadas consumibles por cualquier host Android/iOS. Esta guía cubre la infraestructura; la [implementación del código](/es/guide/module-implementation) viene después.
+Un módulo Leaf es un **repositorio independiente** que expone capabilities tipadas consumibles por cualquier host Android/iOS. Esta guía cubre la infraestructura; la [implementación del código](/es/guide/module-implementation) viene después.
 
 ::: tip Referencia
 `leaf_login` es el módulo de referencia completo y validado. Ante cualquier duda de estructura o configuración, consulta su código.
@@ -21,7 +21,7 @@ Un módulo Leaf es un **repositorio independiente** que expone capacidades tipad
 src/commonMain/kotlin/com/opside/leaf/<modulo>/
 ├── <Modulo>Module.kt              → Module con Feature o Action
 ├── domain/<Modulo>Models.kt       → Input, State, Event, Result
-└── gateway/                       → Puertos (interfaces)
+└── gateway/                       → Ports (interfaces)
 src/commonTest/kotlin/com/opside/leaf/<modulo>/
 └── <Modulo>ModuleTest.kt          → Tests unitarios
 ```

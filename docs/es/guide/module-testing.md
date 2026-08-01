@@ -1,4 +1,4 @@
-# Autor: testing del módulo
+# Author: testing del módulo
 
 Los tests viven en `commonTest` usando Kotlin Test + `kotlinx-coroutines-test`. Prueba el módulo en el nivel adecuado **antes** de integrarlo.
 

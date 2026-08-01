@@ -1,12 +1,12 @@
 # Action vs Feature
 
-Toda capacidad de un módulo es una `Action` o una `Feature`. La elección depende de la **interacción**, no de la capa de UI que la consuma.
+Toda capability de un módulo es una `Action` o una `Feature`. La elección depende de la **interacción**, no de la capa de UI que la consuma.
 
 ## Criterios de elección
 
 | Pregunta | Elección |
 |---|---|
-| ¿Solo necesito ejecutar una capacidad y obtener una respuesta? | `Action` |
+| ¿Solo necesito ejecutar una capability y obtener una respuesta? | `Action` |
 | ¿La persona puede editar, corregir y continuar mientras ve estado? | `Feature` |
 | ¿La operación debe navegar/terminar con un resultado de dominio? | `finish(output)` en una `Feature` |
 

@@ -31,7 +31,7 @@ sealed interface CheckoutResult {
 }
 ```
 
-## 2. Puertos (gateways)
+## 2. Ports (gateways)
 
 `gateway/<Service>Gateway.kt`
 

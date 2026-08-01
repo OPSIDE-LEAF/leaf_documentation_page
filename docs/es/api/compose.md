@@ -1,6 +1,6 @@
 # leaf-compose
 
-`com.opside-leaf:leaf-compose:2.0.1` · paquete `com.ops.leaf_core.ui.compose`
+`com.opside-leaf:leaf-compose:2.0.1` · paquete `com.ops.leaf_core.ui.compose` · [repo](https://github.com/OPSIDE-LEAF/leaf-compose)
 
 Adaptador Compose: observa la única sesión de Core y expone un holder observable. No crea otra sesión, cola ni reducer.
 

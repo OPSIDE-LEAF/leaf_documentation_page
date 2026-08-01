@@ -26,7 +26,7 @@ class LoginModule(
         version = "1.0.0",
     )
 
-    val login = feature<LoginInput, LoginState, LoginEvent, LoginResult>( // 3. Capacidad tipada
+    val login = feature<LoginInput, LoginState, LoginEvent, LoginResult>( // 3. Capability tipada
         moduleInfo = info,
         initialState = { input -> LoginState(email = input.initialEmail) },
     ) { state, event -> /* ... */ }
@@ -34,12 +34,12 @@ class LoginModule(
 ```
 
 1. **Constructor injection** — Las dependencias del dominio se conservan como propiedades privadas. No hay contenedor DI global de Leaf.
-2. **Identidad** — Todas las capacidades del módulo se crean con la misma `ModuleInfo`.
-3. **Capacidades como `val`** — `Action` o `Feature` tipadas, construidas con las DSLs `action` / `feature`.
+2. **Identidad** — Todas las capabilities del módulo se crean con la misma `ModuleInfo`.
+3. **Capabilities como `val`** — `Action` o `Feature` tipadas, construidas con las DSLs `action` / `feature`.
 
-## Gateways: dependencias como puertos
+## Gateways: dependencias como ports
 
-Las dependencias externas (APIs, servicios de identidad, pasarelas) se modelan como **interfaces (puertos)** dentro del módulo. La implementación pertenece al host:
+Las dependencias externas (APIs, servicios de identidad, pasarelas) se modelan como **interfaces (ports)** dentro del módulo. La implementación pertenece al host:
 
 ```kotlin
 // Declarado en el módulo (commonMain)
@@ -79,7 +79,7 @@ Esto mantiene el módulo compilable de forma aislada, testeable con fakes y agn�
 |---|---|
 | Paquete (módulos nuevos) | `com.opside.leaf.<modulo>` |
 | Contrato | Todo módulo implementa `Module` |
-| Capacidades | Propiedades `val` tipadas (`Action` / `Feature`) |
+| Capabilities | Propiedades `val` tipadas (`Action` / `Feature`) |
 | Dependencias | Inyectadas por constructor |
 | Errores de dominio | En el tipo de salida (`sealed interface`) |
 | Código compartido | Todo en `commonMain`; `androidMain`/`iosMain` solo si es necesario |

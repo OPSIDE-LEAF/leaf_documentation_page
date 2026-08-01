@@ -32,7 +32,7 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
-    text: 'Guía del Autor — crear módulos',
+    text: 'Guía del Author — crear módulos',
     collapsed: false,
     items: [
       { text: 'Setup del repositorio', link: '/es/guide/module-setup' },

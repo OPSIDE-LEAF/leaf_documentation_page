@@ -1,4 +1,4 @@
-# Autor: validación y publicación
+# Author: validación y publicación
 
 Antes de publicar, el módulo pasa tres validaciones: tests, ABI y clean consumer.
 
@@ -91,11 +91,11 @@ El CI/CD (GitHub Actions) ejecuta tests, valida ABI y publica a GitHub Packages 
 Si el tag no coincide con `leaf-<modulo>` en `libs.versions.toml`, la publicación no debe proceder. El versionado es semántico e independiente por módulo.
 :::
 
-## Checklist del autor
+## Checklist del Author
 
 ```
 - [ ] Modelos de dominio (Input, State, Event, Result) definidos
-- [ ] Puertos/gateways como interfaces; sin implementaciones de infraestructura en el módulo
+- [ ] Ports/gateways como interfaces; sin implementaciones de infraestructura en el módulo
 - [ ] Module con ModuleInfo estable no vacío
 - [ ] Tests unitarios en commonTest pasando
 - [ ] checkKotlinAbi en verde (o updateKotlinAbi consciente)

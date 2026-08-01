@@ -1,8 +1,8 @@
 # Host: ejecutar una Action
 
-Como **host** consumes módulos ya construidos: los instancias con sus dependencias y ejecutas sus capacidades. Una `Action<Input, Output>` es la capacidad más simple: recibe un input, se ejecuta y devuelve un output.
+Como **host** consumes módulos ya construidos: los instancias con sus dependencias y ejecutas sus capabilities. Una `Action<Input, Output>` es la capability más simple: recibe un input, se ejecuta y devuelve un output.
 
-## 1. El módulo (lo publica su autor)
+## 1. El módulo (lo publica su Author)
 
 ```kotlin
 import com.ops.leaf_core.api.Module
@@ -21,7 +21,7 @@ class GreetingModule(private val prefix: String) : Module {
 }
 ```
 
-Lo que te importa como host: la dependencia (`prefix`) se inyecta **por constructor** (no hay contenedor DI ni registro) y la capacidad es una `val` tipada — tu IDE te dice exactamente qué recibe y qué devuelve.
+Lo que te importa como host: la dependencia (`prefix`) se inyecta **por constructor** (no hay contenedor DI ni registro) y la capability es una `val` tipada — tu IDE te dice exactamente qué recibe y qué devuelve.
 
 ## 2. Constrúyelo y ejecútalo
 
@@ -69,5 +69,5 @@ suspend fun <Input, Output> Leaf.Companion.run(
 
 ## Siguientes pasos
 
-- Si la capacidad muestra estado y recibe intenciones del usuario, es una **Feature**: [abrir una Feature](/es/guide/quickstart-feature).
-- ¿Quieres **crear** tus propios módulos? Ve a la [Guía del Autor](/es/guide/module-setup).
+- Si la capability muestra estado y recibe intenciones del usuario, es una **Feature**: [abrir una Feature](/es/guide/quickstart-feature).
+- ¿Quieres **crear** tus propios módulos? Ve a la [Guía del Author](/es/guide/module-setup).

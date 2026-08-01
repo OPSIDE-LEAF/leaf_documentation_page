@@ -1,6 +1,6 @@
 # leaf-contracts
 
-`com.opside-leaf:leaf-contracts:2.0.1` · paquete `com.ops.leaf_core.api`
+`com.opside-leaf:leaf-contracts:2.0.1` · paquete `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-contracts)
 
 Declara los contratos tipados del ecosistema. No ejecuta sesiones ni conoce UI.
 
@@ -12,7 +12,7 @@ interface Module {
 }
 ```
 
-Contrato de módulo. Encapsula dependencias (por constructor) y expone capacidades tipadas como propiedades `val`.
+Contrato de módulo. Encapsula dependencias (por constructor) y expone capabilities tipadas como propiedades `val`.
 
 ## ModuleInfo
 
