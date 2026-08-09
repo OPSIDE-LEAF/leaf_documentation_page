@@ -70,6 +70,41 @@ fun `unexpected gateway error becomes a failed session`() = runTest {
 
 Los fakes de gateways son objetos anónimos o clases simples — no necesitas frameworks de mocking.
 
+## Testing de Action (sin estado)
+
+Los módulos con `Action` se prueban con `Leaf.run` directamente — no hay sesión, estado ni eventos:
+
+```kotlin
+class NotificationModuleTest {
+
+    @Test
+    fun `successful send returns Delivered`() = runTest {
+        val module = NotificationModule(FakeNotificationGateway(result = NotificationOutcome.Delivered))
+        val result = Leaf.run(module.notify, NotificationRequest(to = "user", message = "hi"))
+        assertEquals(NotificationOutcome.Delivered, result)
+    }
+
+    @Test
+    fun `invalid input returns domain error - not exception`() = runTest {
+        val module = NotificationModule(FakeNotificationGateway())
+        val result = Leaf.run(module.notify, NotificationRequest(to = "", message = "hi"))
+        assertIs<NotificationOutcome.Failed>(result)
+    }
+
+    @Test
+    fun `unexpected gateway error surfaces as LeafException`() = runTest {
+        val module = NotificationModule(
+            FakeNotificationGateway(throwable = RuntimeException("network down"))
+        )
+        assertFailsWith<LeafException> {
+            Leaf.run(module.notify, NotificationRequest(to = "user", message = "hi"))
+        }
+    }
+}
+```
+
+Los tres niveles de un Action: resultado de negocio exitoso, rechazo por validación, y fallo técnico inesperado.
+
 ## Ejecutar
 
 ```shell

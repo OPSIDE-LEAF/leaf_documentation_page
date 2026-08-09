@@ -8,7 +8,7 @@ Un módulo Leaf es un **repositorio independiente** que expone capabilities tipa
 
 ## 1. Crear el repositorio
 
-- Repositorio en la organización `OPSIDE-LEAF` con nombre `leaf-<modulo>` (ej. `leaf-checkout`).
+- Repositorio en tu cuenta u organización de GitHub (o cualquier hosting Git) con nombre `leaf-<modulo>` (ej. `leaf-checkout`). No necesita estar en la organización OPSIDE-LEAF.
 - Directorio local `leaf_<modulo>` por convención.
 
 ## 2. Archivos del primer commit
@@ -108,12 +108,13 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.leaf.contracts)
-            api(compose.runtime)
-            api(compose.ui)
-            implementation(libs.leaf.compose)
-            implementation(compose.foundation)
-            implementation(compose.material3)
             implementation(libs.kotlinx.coroutines.core)
+            // Solo si el módulo tiene UI:
+            // api(compose.runtime)
+            // api(compose.ui)
+            // implementation(libs.leaf.compose)
+            // implementation(compose.foundation)
+            // implementation(compose.material3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -136,7 +137,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/OPSIDE-LEAF/leaf-<modulo>")
+            url = uri("https://maven.pkg.github.com/<OWNER>/<REPO>")
             credentials {
                 username = System.getenv("GPR_USER")
                 password = System.getenv("GPR_GIT_KEY")
@@ -146,6 +147,32 @@ publishing {
     // publications.withType<MavenPublication> { pom { ... } }
 }
 ```
+
+::: tip ¿Dónde publico mis artefactos?
+La URL de `publishing.repositories.maven` determina **dónde** se almacenan los artefactos. El `group` y `version` del módulo no cambian — solo cambia el destino.
+
+No necesitas pertenecer a la organización OPSIDE-LEAF ni usar sus repos. Cualquier desarrollador puede crear módulos Leaf y publicarlos en su propia cuenta, organización o servidor Maven. Lo único que importa es que el módulo respete la arquitectura Leaf y que los consumidores sepan dónde encontrarlo.
+
+**Opción A — Repo centralizado de distribución (recomendado para organizaciones):**
+Todos los módulos publican al mismo repo. Los consumidores solo configuran una fuente.
+```kotlin
+url = uri("https://maven.pkg.github.com/MI-ORG/packages-distribution")
+```
+
+**Opción B — El mismo repo del módulo:**
+Cada módulo publica en su propio repo. Simple, pero los consumidores deben agregar una URL por cada módulo que usen.
+```kotlin
+url = uri("https://maven.pkg.github.com/MI-USUARIO/mi-modulo-leaf")
+```
+
+**Opción C — Repositorio Maven privado o público:**
+Cualquier servidor Maven compatible (Sonatype Nexus, JFrog Artifactory, Maven Central, etc.).
+```kotlin
+url = uri("https://my-nexus.example.com/repository/maven-releases/")
+```
+
+En todos los casos, los consumidores deben agregar el repositorio correspondiente en su `settings.gradle.kts` para resolver las dependencias. OPSIDE-LEAF usa la Opción A con el repo [`packages-distribution`](https://github.com/OPSIDE-LEAF/packages-distribution).
+:::
 
 ### `gradle.properties`
 

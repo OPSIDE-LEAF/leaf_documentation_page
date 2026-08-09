@@ -22,6 +22,14 @@ Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulat
 - Incluye dominio (`LoginModels`), port (`AuthGateway`), UI (`LoginRoute` + `LoginScreen`) y clean consumer
 - Es la implementación de referencia para la arquitectura 2.x → [walkthrough completo](/es/guide/login-reference)
 
+### leaf-email — ✅ Estable
+
+- **Coordenada**: `com.opside-leaf:leaf-email:1.0.0` · **Paquete**: `com.opside.leaf.email` · **Repo**: [OPSIDE-LEAF/leaf_email](https://github.com/OPSIDE-LEAF/leaf_email)
+- `EmailModule` expone `val send: Action<EmailInput, EmailResult>`
+- Envío SMTP en background en ambas plataformas (jakarta.mail en Android, NSStream en iOS)
+- Gateways internos vía `expect/actual`; el host solo proporciona `EmailConfig`
+- → [Walkthrough completo](/es/guide/email-reference)
+
 ### leaf-mp-payments — 🚧 Stub inicial
 
 - **Paquete**: `com.ops.leaf_mp_payment`
@@ -38,7 +46,6 @@ Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulat
 
 | Módulo | Paquete | Estado |
 |---|---|---|
-| leaf-email | `com.ops.email` | Pendiente de migración a 2.x |
 | leaf-authentication | `com.ops.authentication` | Pendiente de migración a 2.x (usa Core 1.0 y registro antiguo) |
 | leaf-catalog | `com.ops.catalog` | Pendiente de migración a 2.x |
 

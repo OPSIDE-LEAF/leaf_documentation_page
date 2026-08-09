@@ -71,6 +71,23 @@ when (val outcome = Leaf.run(payments.pay, request)) {
 }
 ```
 
+### Módulos con gateways internos
+
+Algunos módulos resuelven sus gateways internamente con `expect/actual` porque el transporte es propio del módulo, no del host. En estos casos el host solo proporciona configuración:
+
+```kotlin
+val email = EmailModule(
+    EmailConfig(host = "smtp.gmail.com", port = 587, ...)
+)
+
+when (val r = Leaf.run(email.send, EmailInput(to, subject, body))) {
+    EmailResult.Sent        -> onSent()
+    is EmailResult.Rejected -> showError(r.reason)
+}
+```
+
+No hay gateway que implementar — el módulo trae su propia implementación de plataforma. El constructor del módulo recibe datos de configuración, no interfaces.
+
 ## 4. Distingue dominio de fallo técnico
 
 - **Resultados de dominio** (variantes del output) → decisiones de negocio y estados de UI.

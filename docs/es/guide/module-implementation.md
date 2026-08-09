@@ -93,13 +93,27 @@ class CheckoutModule(
 ```
 
 ::: tip ¿Solo necesitas una operación sin estado?
-Usa `Action` en lugar de `Feature`:
+Usa `Action` en lugar de `Feature`. No hay `State`, `Event` ni UI — solo input y resultado:
 
 ```kotlin
-val pay = action<PaymentRequest, PaymentOutcome>(info) { input ->
-    // lógica
+class NotificationModule(
+    private val gateway: NotificationGateway,
+) : Module {
+    override val info = ModuleInfo(id = "com.opside.leaf.notification", version = "1.0.0")
+
+    val notify = action<NotificationRequest, NotificationOutcome>(info) { input ->
+        gateway.send(input)
+    }
+}
+
+// Uso:
+when (val r = Leaf.run(module.notify, request)) {
+    NotificationOutcome.Delivered -> onSuccess()
+    is NotificationOutcome.Failed -> onError(r.reason)
 }
 ```
+
+Ver [leaf-email](/es/guide/email-reference) como ejemplo completo de un módulo Action.
 :::
 
 ## 4. UI Compose (opcional)
@@ -143,7 +157,7 @@ fun CheckoutRoute(
 - Errores de negocio esperados → variantes del `Result` o `stay` con error en el estado. Nunca excepciones.
 - No guardes secretos en `State`, `Event`, `Output`, logs ni telemetría ([reglas de privacidad](/es/guide/errores-telemetria)).
 - Cola de eventos: default 16, máximo 1,024. No la infles para ocultar sobreproducción.
-- Todo en `commonMain`; `androidMain`/`iosMain` solo cuando sea estrictamente necesario.
+- Todo en `commonMain`; `androidMain`/`iosMain` solo cuando sea estrictamente necesario. El caso legítimo son **gateways de plataforma** que requieren APIs nativas (ej. transporte de red, sensores, almacenamiento). Usa `expect/actual` para la fábrica y mantén la interfaz del gateway en `commonMain`.
 
 ## Siguiente paso
 

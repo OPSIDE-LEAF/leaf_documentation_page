@@ -72,9 +72,11 @@ Si ambas pasan, el artefacto candidato es consumible tal como lo recibirán los 
 git init
 git add .
 git commit -m "feat: initial module setup"
-git remote add origin git@github.com:OPSIDE-LEAF/leaf-<modulo>.git
+git remote add origin git@github.com:<OWNER>/leaf-<modulo>.git
 git push -u origin main
 ```
+
+`<OWNER>` es tu usuario u organización de GitHub (ej. `mi-usuario`, `mi-org`, `OPSIDE-LEAF`). El repositorio puede estar en cualquier cuenta — no necesita pertenecer a OPSIDE-LEAF.
 
 ## 5. Publicación por tag
 
@@ -85,7 +87,11 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-El CI/CD (GitHub Actions) ejecuta tests, valida ABI y publica a GitHub Packages con `GPR_USER` / `GPR_GIT_KEY`.
+El CI/CD (GitHub Actions) ejecuta tests, valida ABI y publica al repositorio Maven configurado en `build.gradle.kts`. Las credenciales (`GPR_USER` / `GPR_GIT_KEY` para GitHub Packages, o las que correspondan a tu servidor Maven) deben estar como secrets en el repo.
+
+::: info Destino de publicación
+El destino lo define la URL en `publishing.repositories.maven` de tu `build.gradle.kts`. Puede ser el mismo repo del módulo, un repo centralizado de distribución, o cualquier servidor Maven compatible. Consulta las opciones en [setup del repositorio → ¿Dónde publico mis artefactos?](/es/guide/module-setup).
+:::
 
 ::: warning Tag ↔ catálogo
 Si el tag no coincide con `leaf-<modulo>` en `libs.versions.toml`, la publicación no debe proceder. El versionado es semántico e independiente por módulo.
