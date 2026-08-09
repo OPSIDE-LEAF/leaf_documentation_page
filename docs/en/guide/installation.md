@@ -1,113 +1,111 @@
 # Installation
 
-This page covers the different ways to install and configure Leaf in your project.
+## Prerequisites
 
-## Global CLI installation
+| Requirement | Detail |
+|---|---|
+| JDK | 11+ |
+| Gradle | 8.14.3 (via wrapper) |
+| Kotlin | 2.3.20 |
+| Android SDK | compileSdk 36, minSdk 24 |
+| Xcode | For iOS targets (Arm64, Simulator Arm64) |
+| GitHub PAT | Classic token with `read:packages` (consume) and `write:packages` (publish) |
 
-You can install the Leaf CLI globally to create projects from anywhere:
+## 1. Configure credentials
 
-::: code-group
+Artifacts are distributed via GitHub Packages, which requires authentication even for reads (a limitation of GitHub's Maven registry, even with public repos). This is the current stage: the [roadmap](/en/guide/roadmap) plans to migrate to a self-hosted Maven server with anonymous reads. In the meantime, Leaf uses a **dual** credential pattern:
 
-```bash [npm]
-npm install -g @leaf/cli
+1. **Local development** — `local.properties` (not committed)
+2. **CI/CD** — environment variables `GPR_USER` and `GPR_GIT_KEY`
+
+Create `local.properties` in the project root:
+
+```properties
+gpr.user=YOUR_GITHUB_USERNAME
+gpr.key=YOUR_PERSONAL_ACCESS_TOKEN
 ```
 
-```bash [pnpm]
-pnpm add -g @leaf/cli
-```
-
+::: danger Never commit credentials
+`local.properties` must always be in `.gitignore`. Never hardcode username or token in versioned files.
 :::
 
-Once installed, verify the installation:
+## 2. Configure repositories
 
-```bash
-leaf --version
+In `settings.gradle.kts`:
+
+```kotlin
+import java.io.FileInputStream
+
+val localProperties = java.util.Properties()
+val localPropertiesFile = File(rootDir, "local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+dependencyResolutionManagement {
+    repositories {
+        if (providers.gradleProperty("leaf.useMavenLocal").orNull == "true") {
+            mavenLocal()
+        }
+        listOf("leaf-contracts", "leaf-core", "leaf-compose").forEach { repository ->
+            maven {
+                name = "GitHubPackages-$repository"
+                url = uri("https://maven.pkg.github.com/OPSIDE-LEAF/$repository")
+                credentials {
+                    username = localProperties.getProperty("gpr.user") ?: System.getenv("GPR_USER")
+                    password = localProperties.getProperty("gpr.key") ?: System.getenv("GPR_GIT_KEY")
+                }
+                content { includeGroup("com.opside-leaf") }
+            }
+        }
+        google()
+        mavenCentral()
+    }
+}
 ```
 
-## Manual installation
+## 3. Add dependencies
 
-If you prefer to add Leaf to an existing project:
-
-::: code-group
-
-```bash [npm]
-npm install @leaf/core
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api("com.opside-leaf:leaf-contracts:%LEAF_VERSION%")
+            implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")    // Only if you need Leaf.run/open
+            implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // Only if you have Compose UI
+        }
+    }
+}
 ```
 
-```bash [pnpm]
-pnpm add @leaf/core
-```
+| Coordinate | Contents | When you need it |
+|---|---|---|
+| `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` | `Module`, `ModuleInfo`, `Action`, `Feature`, DSLs | Always (as `api` if you expose Leaf types) |
+| `com.opside-leaf:leaf-core:%LEAF_VERSION%` | `Leaf.run`, `Leaf.open`, `FeatureSession` | Hosts that execute capabilities |
+| `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | `Leaf.rememberLeaf` | Hosts with Compose UI |
+| `com.opside-leaf:leaf-login:1.0.0` | Reference module (login Feature + UI) | Optional |
 
+::: tip leaf-contracts as an `api` dependency
+If your module exposes Leaf types in its public surface (the usual case), use `api("com.opside-leaf:leaf-contracts:...")` so that your consumers can resolve them.
 :::
 
-## Configuration
+## 4. Maven Local (development)
 
-Create a `leaf.config.ts` file at the root of your project:
+To test artifacts without publishing them, the projects support `mavenLocal()` conditionally via the property `leaf.useMavenLocal=true`:
 
-```typescript
-import { defineConfig } from '@leaf/core'
-
-export default defineConfig({
-  // Development server port
-  port: 3000,
-
-  // Enable strict TypeScript mode
-  strict: true,
-
-  // Database configuration
-  database: {
-    driver: 'sqlite',
-    filename: './data/app.db',
-  },
-
-  // Global middlewares
-  middleware: ['cors', 'logger'],
-})
+```shell
+./gradlew publishToMavenLocal -Pleaf.useMavenLocal=true
+./gradlew :consumer:assembleDebug -Pleaf.useMavenLocal=true --refresh-dependencies
 ```
 
-## Environment variables
+## Verify
 
-Leaf natively supports `.env` files:
-
-```bash
-# .env
-APP_PORT=3000
-APP_ENV=development
-DB_CONNECTION=sqlite
-DB_DATABASE=./data/app.db
-SECRET_KEY=your-secret-key
+```shell
+./gradlew build
 ```
 
-Access variables in your code:
-
-```typescript
-import { env } from '@leaf/core'
-
-const port = env('APP_PORT', 3000)
-const secret = env('SECRET_KEY')
-```
-
-## Verify installation
-
-Run the development server to confirm everything works:
-
-```bash
-leaf dev
-```
-
-You should see something like:
-
-```
-🌿 Leaf v1.0.0
-   ➜ Local:   http://localhost:3000
-   ➜ Network: http://192.168.1.100:3000
-   ➜ Ready in 120ms
-```
-
-::: warning Note
-Make sure you have Node.js 18+ installed. You can check your version with `node --version`.
-:::
+If dependency resolution fails with 401/403, check that the PAT has `read:packages` and that `local.properties` is in the correct root.
 
 ## Next step
 
-Done! Now you can explore the [Getting Started](/en/guide/) guide to learn the basic concepts of the framework.
+Your first module: [Quickstart with Action](/en/guide/quickstart-action).
