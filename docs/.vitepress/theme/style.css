@@ -284,3 +284,184 @@ html:not(.dark) .dark-only {
   height: 26px;
   fill: var(--vp-c-brand-1);
 }
+
+/* ============================================
+   REFINAMIENTO "LEAF THINGS"
+   Sensibilidad calma y espaciosa: más aire, esquinas suaves,
+   tipografía refinada y superficies sobrias — sobre la paleta LEAF.
+   ============================================ */
+
+/* ---- Aire general ---- */
+:root {
+  --vp-layout-max-width: 1440px;
+}
+
+.vp-doc {
+  line-height: 1.78;
+  letter-spacing: 0.1px;
+}
+
+.vp-doc p,
+.vp-doc li {
+  margin: 14px 0;
+}
+
+.vp-doc li + li {
+  margin-top: 8px;
+}
+
+/* ---- Headings más tranquilos y con respiración ---- */
+.vp-doc h1 {
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
+}
+
+.vp-doc h2 {
+  font-weight: 650;
+  letter-spacing: -0.016em;
+  margin-top: 3rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc h3 {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  margin-top: 2.2rem;
+}
+
+/* ---- Esquinas suaves (lo "Things"): código, bloques, tablas, imágenes ---- */
+.vp-doc div[class*='language-'] {
+  border-radius: 16px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc :not(pre) > code {
+  border-radius: 7px;
+  padding: 3px 7px;
+  font-size: 0.85em;
+}
+
+.vp-doc .custom-block {
+  border-radius: 16px;
+  border: 1px solid var(--vp-c-divider);
+  padding: 18px 22px;
+}
+
+.vp-doc .custom-block.tip,
+.vp-doc .custom-block.info,
+.vp-doc .custom-block.warning,
+.vp-doc .custom-block.danger {
+  border-color: transparent;
+}
+
+.vp-doc .custom-block-title {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.vp-doc table {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc th,
+.vp-doc td {
+  border: none;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding: 12px 16px;
+}
+
+.vp-doc tr:last-child td {
+  border-bottom: none;
+}
+
+.vp-doc th {
+  background: var(--vp-c-bg-soft);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.vp-doc tr {
+  background: transparent;
+}
+
+.vp-doc img {
+  border-radius: 14px;
+}
+
+.vp-doc blockquote {
+  border-left-width: 3px;
+  border-radius: 0 12px 12px 0;
+  background: var(--vp-c-bg-soft);
+  padding: 4px 18px;
+}
+
+.vp-doc hr {
+  margin: 40px 0;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+/* ---- Botones y búsqueda como "pastillas" ---- */
+.VPButton {
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.VPNavBarSearchButton,
+.DocSearch-Button,
+button.DocSearch-Button {
+  border-radius: 999px !important;
+}
+
+/* ---- Navbar y sidebar: más calma ---- */
+.VPNavBar .content-body {
+  letter-spacing: 0.01em;
+}
+
+.VPNavBarMenuLink {
+  font-weight: 550;
+}
+
+.VPSidebarItem.level-0 > .item > .text {
+  font-weight: 650;
+  letter-spacing: -0.005em;
+}
+
+.VPSidebarItem .link {
+  border-radius: 8px;
+  padding: 3px 8px;
+  margin: 1px 0;
+  transition: background-color 0.15s ease;
+}
+
+.VPSidebarItem .link:hover {
+  background: var(--vp-c-bg-soft);
+}
+
+.VPSidebarItem.is-active > .item .link {
+  background: var(--vp-c-brand-soft);
+}
+
+/* ---- Links del contenido: subrayado sutil ---- */
+.vp-doc a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* ---- Aside "En esta página": más aire ---- */
+.VPDocAside .outline-link {
+  line-height: 1.7;
+}
+
+/* ---- Índice / tarjetas del home más redondeadas ---- */
+.VPFeature {
+  border-radius: 18px;
+}
