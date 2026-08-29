@@ -49,6 +49,7 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Catálogo de módulos', link: '/es/guide/catalogo' },
       { text: 'Login: módulo de referencia', link: '/es/guide/login-reference' },
       { text: 'Email: módulo de ejemplo (Action)', link: '/es/guide/email-reference' },
+      { text: 'Catálogo: módulo de ejemplo (Feature con UI)', link: '/es/guide/catalog-reference' },
       { text: 'Migración desde legacy', link: '/es/guide/legacy-migration' },
       { text: 'Roadmap', link: '/es/guide/roadmap' },
     ],

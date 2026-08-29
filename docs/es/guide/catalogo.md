@@ -30,6 +30,14 @@ Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulat
 - Gateways internos vía `expect/actual`; el host solo proporciona `EmailConfig`
 - → [Walkthrough completo](/es/guide/email-reference)
 
+### leaf-catalog — ✅ Módulo de ejemplo (Feature con UI + DSL)
+
+- **Coordenada**: `com.opside-leaf:leaf-catalog:1.0.0` · **Paquete**: `com.opside.leaf.catalog` · **Repo**: [OPSIDE-LEAF/leaf-catalog](https://github.com/OPSIDE-LEAF/leaf-catalog)
+- `CatalogModule` expone `val browse: Feature<CatalogInput, CatalogState, CatalogEvent, CatalogResult>`
+- Pattern A: el host implementa `CatalogGateway`; el módulo trae UI Compose + un **DSL** de slots (layout, card, search, filters, sort, detail, pagination, actions)
+- Navegación browse ↔ detail interna; `imageLoader` / `strings` / `telemetry` / `visuals` inyectables por el host
+- Reescritura 2.x del legacy `com.ops.catalog` → [Walkthrough completo](/es/guide/catalog-reference)
+
 ### leaf-mp-payments — 🚧 Stub inicial
 
 - **Paquete**: `com.ops.leaf_mp_payment`

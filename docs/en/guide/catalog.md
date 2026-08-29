@@ -30,6 +30,14 @@ Core artifacts publish Android (AAR), iOS Arm64, iOS Simulator Arm64, and KMP me
 - Internal gateways via `expect/actual`; the host only provides `EmailConfig`
 - → [Full walkthrough](/en/guide/email-reference)
 
+### leaf-catalog — ✅ Example module (Feature with UI + DSL)
+
+- **Coordinate**: `com.opside-leaf:leaf-catalog:1.0.0` · **Package**: `com.opside.leaf.catalog` · **Repo**: [OPSIDE-LEAF/leaf-catalog](https://github.com/OPSIDE-LEAF/leaf-catalog)
+- `CatalogModule` exposes `val browse: Feature<CatalogInput, CatalogState, CatalogEvent, CatalogResult>`
+- Pattern A: the host implements `CatalogGateway`; the module ships Compose UI + a **DSL** of slots (layout, card, search, filters, sort, detail, pagination, actions)
+- Internal browse ↔ detail navigation; host-injectable `imageLoader` / `strings` / `telemetry` / `visuals`
+- 2.x rewrite of the legacy `com.ops.catalog` → [Full walkthrough](/en/guide/catalog-reference)
+
 ### leaf-mp-payments — 🚧 Initial stub
 
 - **Package**: `com.ops.leaf_mp_payment`
