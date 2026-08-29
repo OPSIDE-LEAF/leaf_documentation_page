@@ -31,20 +31,21 @@ defineProps<{
 
 <style scoped>
 .card-grid {
-  margin: 32px 0;
+  margin: 56px 0;
 }
 
 .card-grid__title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-size: 22px;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  margin-bottom: 22px;
   color: var(--vp-c-text-1);
 }
 
 .card-grid__container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  gap: 20px;
 }
 
 @media (max-width: 640px) {

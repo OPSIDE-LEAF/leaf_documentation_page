@@ -1,5 +1,8 @@
 /**
- * Tema personalizado para Leaf
+ * Tema "LEAF Things" para la documentación de Leaf.
+ * Diseño calmado y espacioso: fondos cálidos y sobrios, esquinas generosas,
+ * sombras suaves, tipografía refinada y mucho aire — sobre la paleta LEAF.
+ *
  * Paleta de marca:
  *   Verde:   #095637 → #A0CB38 (gradiente hoja verde)
  *   Naranja: #E33838 → #ED7D31 (gradiente hoja naranja, acento)
@@ -22,6 +25,7 @@
 :root {
   --leaf-green-dark: #095637;
   --leaf-green-mid: #4c9038;
+  --leaf-green: #0b6b45;
   --leaf-lime: #a0cb38;
   --leaf-lime-light: #c3e26a;
   --leaf-orange-dark: #e33838;
@@ -29,61 +33,92 @@
 }
 
 /* ============================================
-   COLORES - MODO CLARO
+   MODO CLARO — superficies cálidas y sobrias
    ============================================ */
 :root {
-  --vp-c-brand-1: #0b6b45; /* Links / primario */
-  --vp-c-brand-2: #095637; /* Hover/Active (verde marca) */
-  --vp-c-brand-3: #095637; /* Botón sólido */
-  --vp-c-brand-soft: rgba(160, 203, 56, 0.16); /* Tinte lima */
+  /* Marca */
+  --vp-c-brand-1: #0b6b45;
+  --vp-c-brand-2: #095637;
+  --vp-c-brand-3: #0b6b45;
+  --vp-c-brand-soft: rgba(160, 203, 56, 0.18);
 
-  /* Backgrounds */
-  --vp-c-bg: #ffffff;
-  --vp-c-bg-alt: #f6f8f4;
+  /* Fondos cálidos (off-white); superficies elevadas en blanco */
+  --vp-c-bg: #faf9f6;
+  --vp-c-bg-alt: #f2f1ec;
   --vp-c-bg-elv: #ffffff;
-  --vp-c-bg-soft: #f6f8f4;
+  --vp-c-bg-soft: #f2f1ec;
+
+  /* Texto templado */
+  --vp-c-text-1: #1f2421;
+  --vp-c-text-2: #5c625c;
+  --vp-c-text-3: #8b908a;
+
+  /* Bordes/divisores muy sutiles */
+  --vp-c-divider: #e8e6df;
+  --vp-c-border: #e2e0d8;
+  --vp-c-gutter: #ece9e1;
+
+  /* Sombras suaves (la clave del aire calmado) */
+  --vp-shadow-1: 0 1px 2px rgba(24, 26, 22, 0.04);
+  --vp-shadow-2: 0 2px 10px rgba(24, 26, 22, 0.06);
+  --vp-shadow-3: 0 10px 34px rgba(24, 26, 22, 0.09);
+  --vp-shadow-4: 0 14px 44px rgba(24, 26, 22, 0.11);
+  --vp-shadow-5: 0 20px 56px rgba(24, 26, 22, 0.13);
+
+  /* Nav frosted */
+  --vp-nav-bg-color: rgba(250, 249, 246, 0.72);
+  --vp-sidebar-bg-color: var(--vp-c-bg);
 
   /* Home hero */
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(
     120deg,
-    var(--leaf-green-dark) 20%,
+    var(--leaf-green-dark) 18%,
     var(--leaf-lime)
   );
-
-  /* Sin glow detrás del logo */
   --vp-home-hero-image-background-image: none;
   --vp-home-hero-image-filter: none;
 }
 
 /* ============================================
-   COLORES - MODO OSCURO
+   MODO OSCURO — near-black calmado, no negro puro
    ============================================ */
 .dark {
-  --vp-c-brand-1: #a0cb38; /* Lima como primario en dark */
+  --vp-c-brand-1: #a0cb38;
   --vp-c-brand-2: #c3e26a;
   --vp-c-brand-3: #8ab52b;
-  --vp-c-brand-soft: rgba(160, 203, 56, 0.16);
+  --vp-c-brand-soft: rgba(160, 203, 56, 0.15);
 
-  /* Backgrounds - Modo Oscuro */
-  --vp-c-bg: #1b1b1f;
-  --vp-c-bg-alt: #161618;
-  --vp-c-bg-elv: #202127;
-  --vp-c-bg-soft: #202127;
+  --vp-c-bg: #161719;
+  --vp-c-bg-alt: #1b1c1f;
+  --vp-c-bg-elv: #202226;
+  --vp-c-bg-soft: #1e1f22;
 
-  --vp-home-hero-name-color: transparent;
+  --vp-c-text-1: #eceae4;
+  --vp-c-text-2: #a2a69f;
+  --vp-c-text-3: #71756e;
+
+  --vp-c-divider: #2a2b2f;
+  --vp-c-border: #303237;
+  --vp-c-gutter: #101113;
+
+  --vp-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --vp-shadow-2: 0 2px 12px rgba(0, 0, 0, 0.36);
+  --vp-shadow-3: 0 12px 34px rgba(0, 0, 0, 0.44);
+  --vp-shadow-4: 0 16px 46px rgba(0, 0, 0, 0.5);
+  --vp-shadow-5: 0 22px 60px rgba(0, 0, 0, 0.56);
+
+  --vp-nav-bg-color: rgba(22, 23, 25, 0.72);
+
   --vp-home-hero-name-background: -webkit-linear-gradient(
     120deg,
-    var(--leaf-lime) 30%,
+    var(--leaf-lime) 28%,
     var(--leaf-lime-light)
   );
-
-  --vp-home-hero-image-background-image: none;
-  --vp-home-hero-image-filter: none;
 }
 
 /* ============================================
-   BOTONES
+   BOTONES — pastillas con la paleta Leaf
    ============================================ */
 :root {
   --vp-button-brand-border: transparent;
@@ -98,12 +133,44 @@
 }
 
 .dark {
-  --vp-button-brand-text: #1b1b1f;
+  --vp-button-brand-text: #16171a;
   --vp-button-brand-bg: var(--leaf-lime);
-  --vp-button-brand-hover-text: #1b1b1f;
+  --vp-button-brand-hover-text: #16171a;
   --vp-button-brand-hover-bg: var(--leaf-lime-light);
-  --vp-button-brand-active-text: #1b1b1f;
+  --vp-button-brand-active-text: #16171a;
   --vp-button-brand-active-bg: #8ab52b;
+}
+
+.VPButton {
+  border-radius: 999px !important;
+  font-weight: 620;
+  letter-spacing: 0.01em;
+  padding: 0 24px;
+  line-height: 42px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.VPButton.medium {
+  line-height: 42px;
+}
+
+.VPButton.brand {
+  box-shadow: var(--vp-shadow-2);
+}
+
+.VPButton.brand:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--vp-shadow-3);
+}
+
+.VPButton.alt {
+  background: var(--vp-c-bg-soft);
+  border-color: transparent;
+}
+
+.VPButton.alt:hover {
+  background: var(--vp-c-bg-alt);
 }
 
 /* ============================================
@@ -115,7 +182,6 @@
   --vp-custom-block-tip-bg: var(--vp-c-brand-soft);
   --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
 
-  /* Warning/danger con el naranja de marca */
   --vp-custom-block-warning-border: transparent;
   --vp-custom-block-warning-bg: rgba(237, 125, 49, 0.14);
   --vp-custom-block-danger-border: transparent;
@@ -123,31 +189,304 @@
 }
 
 /* ============================================
-   ESTILOS ADICIONALES
+   AIRE Y RITMO TIPOGRÁFICO
+   ============================================ */
+:root {
+  --vp-layout-max-width: 1460px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.vp-doc {
+  line-height: 1.8;
+  letter-spacing: 0.1px;
+}
+
+.vp-doc p,
+.vp-doc li {
+  margin: 15px 0;
+}
+
+.vp-doc li + li {
+  margin-top: 8px;
+}
+
+.vp-doc h1 {
+  font-weight: 740;
+  letter-spacing: -0.028em;
+  line-height: 1.12;
+  font-size: 2.5rem;
+}
+
+.vp-doc h2 {
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  margin-top: 3.25rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc h3 {
+  font-weight: 660;
+  letter-spacing: -0.012em;
+  margin-top: 2.3rem;
+}
+
+.vp-doc a {
+  font-weight: 550;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 0.15s ease;
+}
+
+/* ============================================
+   ESQUINAS SUAVES Y SUPERFICIES CALMADAS
    ============================================ */
 
-/* Transición suave para el cambio de tema (sin flash) */
-html:not(.dark-transition) {
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* Código en bloque */
+.vp-doc div[class*='language-'] {
+  border-radius: 18px;
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: var(--vp-shadow-1);
 }
 
-/* Sidebar activo */
-.VPSidebarItem.is-active > .item > .link > .text {
-  color: var(--vp-c-brand-1) !important;
-  font-weight: 600;
+.vp-doc div[class*='language-'] pre {
+  padding: 22px 0;
 }
 
-/* Marca del navbar un poco más presente */
+/* Código inline */
+.vp-doc :not(pre) > code {
+  border-radius: 7px;
+  padding: 3px 7px;
+  font-size: 0.84em;
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* Bloques tip / warning / danger */
+.vp-doc .custom-block {
+  border-radius: 18px;
+  border: 1px solid var(--vp-c-divider);
+  padding: 18px 22px;
+  box-shadow: var(--vp-shadow-1);
+}
+
+.vp-doc .custom-block.tip,
+.vp-doc .custom-block.info,
+.vp-doc .custom-block.warning,
+.vp-doc .custom-block.danger {
+  border-color: transparent;
+}
+
+.vp-doc .custom-block-title {
+  font-weight: 660;
+  letter-spacing: -0.01em;
+}
+
+/* Tablas redondeadas, sin bordes duros */
+.vp-doc table {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: var(--vp-shadow-1);
+  margin: 22px 0;
+}
+
+.vp-doc th,
+.vp-doc td {
+  border: none;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding: 13px 18px;
+}
+
+.vp-doc tr:last-child td {
+  border-bottom: none;
+}
+
+.vp-doc th {
+  background: var(--vp-c-bg-soft);
+  font-weight: 620;
+  letter-spacing: 0.01em;
+}
+
+.vp-doc tr {
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.vp-doc tbody tr:hover {
+  background: var(--vp-c-bg-soft);
+}
+
+/* Blockquote calmada */
+.vp-doc blockquote {
+  border-left: 3px solid var(--vp-c-brand-1);
+  border-radius: 0 14px 14px 0;
+  background: var(--vp-c-bg-soft);
+  padding: 6px 20px;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc hr {
+  margin: 46px 0;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+/* ============================================
+   BÚSQUEDA COMO PASTILLA
+   ============================================ */
+.VPNavBarSearchButton,
+.DocSearch-Button,
+button.DocSearch-Button {
+  border-radius: 999px !important;
+  background: var(--vp-c-bg-soft) !important;
+}
+
+/* ============================================
+   NAV FROSTED + CALMA
+   ============================================ */
+.VPNavBar:not(.home) {
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+}
+
+.VPNavBar .divider-line {
+  background-color: var(--vp-c-divider);
+}
+
 .VPNavBarTitle .logo {
   height: 28px;
   width: auto;
 }
 
-/* Badge de versión junto al logo — pill con la paleta Leaf */
+.VPNavBarMenuLink {
+  font-weight: 560;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================
+   SIDEBAR — aire y píldora activa
+   ============================================ */
+.VPSidebar {
+  padding-top: 26px;
+}
+
+.VPSidebarItem.level-0 > .item > .text {
+  font-weight: 680;
+  letter-spacing: -0.006em;
+  color: var(--vp-c-text-1);
+}
+
+.VPSidebarItem .link {
+  border-radius: 10px;
+  padding: 4px 10px;
+  margin: 1px 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.VPSidebarItem .link:hover {
+  background: var(--vp-c-bg-soft);
+}
+
+.VPSidebarItem.is-active > .item .link {
+  background: var(--vp-c-brand-soft);
+}
+
+.VPSidebarItem.is-active > .item > .link > .text {
+  color: var(--vp-c-brand-1) !important;
+  font-weight: 620;
+}
+
+/* ============================================
+   ASIDE "EN ESTA PÁGINA"
+   ============================================ */
+.VPDocAside .outline-marker {
+  background-color: var(--vp-c-brand-1);
+}
+
+.VPDocAside .outline-link {
+  line-height: 1.75;
+  transition: color 0.15s ease;
+}
+
+/* ============================================
+   HOME — hero, features, layout
+   ============================================ */
+.VPHero .name {
+  font-weight: 760;
+  letter-spacing: -0.03em;
+}
+
+.VPHero .text {
+  color: var(--vp-c-text-2);
+  font-weight: 450;
+  letter-spacing: -0.005em;
+}
+
+.VPHero .tagline {
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+}
+
+/* Tarjetas de features: superficie suave con sombra y "lift" al hover */
+.VPFeature {
+  border-radius: 22px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-elv);
+  box-shadow: var(--vp-shadow-2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.VPFeature:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--vp-shadow-4);
+  border-color: var(--vp-c-border);
+}
+
+.VPFeature .title {
+  font-weight: 660;
+  letter-spacing: -0.012em;
+}
+
+.VPFeature .details {
+  color: var(--vp-c-text-2);
+  line-height: 1.7;
+}
+
+/* Ícono de feature redondeado con tinte de marca */
+.VPFeature .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background-color: var(--vp-c-brand-soft);
+}
+
+.VPFeature .icon svg {
+  width: 26px;
+  height: 26px;
+  fill: var(--vp-c-brand-1);
+}
+
+/* ============================================
+   BADGE DE VERSIÓN — pastilla con la paleta Leaf
+   ============================================ */
 .leaf-version-badge {
   margin-left: 8px;
   align-self: center;
-  padding: 4px 9px;
+  padding: 4px 10px;
   border-radius: 999px;
   font-family: var(--vp-font-family-mono);
   font-size: 11px;
@@ -157,10 +496,10 @@ html:not(.dark-transition) {
   color: var(--leaf-green-dark);
   background: linear-gradient(
     120deg,
-    rgba(160, 203, 56, 0.22),
+    rgba(160, 203, 56, 0.24),
     rgba(9, 86, 55, 0.14)
   );
-  border: 1px solid rgba(9, 86, 55, 0.18);
+  border: 1px solid rgba(9, 86, 55, 0.16);
 }
 
 .dark .leaf-version-badge {
@@ -174,10 +513,15 @@ html:not(.dark-transition) {
 }
 
 /* ============================================
-   HEADINGS — Ícono de hoja alternado (Android/iOS)
+   TRANSICIÓN DE TEMA (sin flash)
    ============================================ */
+html:not(.dark-transition) {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-/* Ocultar el # por defecto */
+/* ============================================
+   HEADINGS — ícono de hoja alternado (Android/iOS)
+   ============================================ */
 .vp-doc h1 .header-anchor::before,
 .vp-doc h2 .header-anchor::before,
 .vp-doc h3 .header-anchor::before,
@@ -205,14 +549,12 @@ html:not(.dark-transition) {
   transition: opacity 0.2s ease;
 }
 
-/* Alternar: headings pares usan hoja iOS */
 .vp-doc h2:nth-of-type(even) .header-anchor,
 .vp-doc h3:nth-of-type(even) .header-anchor,
 .vp-doc h4:nth-of-type(even) .header-anchor {
   background-image: url('/hoja_swift.png');
 }
 
-/* Mostrar al hacer hover en el heading */
 .vp-doc h1:hover .header-anchor,
 .vp-doc h2:hover .header-anchor,
 .vp-doc h3:hover .header-anchor,
@@ -224,39 +566,32 @@ html:not(.dark-transition) {
 
 /* ============================================
    IMÁGENES EN CONTENIDO (.vp-doc)
-   Uso: guardar en docs/public/images/<seccion>/ y referenciar
-   con ruta absoluta: ![Alt](/images/guide/diagrama.png)
    ============================================ */
-
-/* Estilo base: bordes redondeados y marco sutil con la paleta */
 .vp-doc img {
-  border-radius: 10px;
+  border-radius: 16px;
   border: 1px solid var(--vp-c-divider);
+  box-shadow: var(--vp-shadow-1);
   display: block;
-  margin: 16px auto;
+  margin: 20px auto;
   max-width: 100%;
 }
 
-/* Sin marco (logos, iconos, badges):
-   <img src="/images/x.png" class="no-frame" alt="..."> */
 .vp-doc img.no-frame {
   border: none;
+  box-shadow: none;
   border-radius: 0;
   margin: initial;
   display: inline-block;
 }
 
-/* Variantes por tema — mostrar una imagen distinta en light/dark:
-   <img src="/images/guide/diagrama-light.png" class="light-only">
-   <img src="/images/guide/diagrama-dark.png" class="dark-only"> */
 .dark .light-only {
   display: none !important;
 }
+
 html:not(.dark) .dark-only {
   display: none !important;
 }
 
-/* Pie de imagen: *texto en cursiva* inmediatamente después de la imagen */
 .vp-doc img + em {
   display: block;
   text-align: center;
@@ -264,204 +599,4 @@ html:not(.dark) .dark-only {
   color: var(--vp-c-text-2);
   margin-top: -8px;
   margin-bottom: 16px;
-}
-
-/* ============================================
-   ICONOS MATERIAL DESIGN 3 EN FEATURES
-   ============================================ */
-.VPFeature .icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background-color: var(--vp-c-brand-soft);
-}
-
-.VPFeature .icon svg {
-  width: 26px;
-  height: 26px;
-  fill: var(--vp-c-brand-1);
-}
-
-/* ============================================
-   REFINAMIENTO "LEAF THINGS"
-   Sensibilidad calma y espaciosa: más aire, esquinas suaves,
-   tipografía refinada y superficies sobrias — sobre la paleta LEAF.
-   ============================================ */
-
-/* ---- Aire general ---- */
-:root {
-  --vp-layout-max-width: 1440px;
-}
-
-.vp-doc {
-  line-height: 1.78;
-  letter-spacing: 0.1px;
-}
-
-.vp-doc p,
-.vp-doc li {
-  margin: 14px 0;
-}
-
-.vp-doc li + li {
-  margin-top: 8px;
-}
-
-/* ---- Headings más tranquilos y con respiración ---- */
-.vp-doc h1 {
-  font-weight: 700;
-  letter-spacing: -0.022em;
-  line-height: 1.15;
-}
-
-.vp-doc h2 {
-  font-weight: 650;
-  letter-spacing: -0.016em;
-  margin-top: 3rem;
-  padding-top: 1.6rem;
-  border-top: 1px solid var(--vp-c-divider);
-}
-
-.vp-doc h3 {
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  margin-top: 2.2rem;
-}
-
-/* ---- Esquinas suaves (lo "Things"): código, bloques, tablas, imágenes ---- */
-.vp-doc div[class*='language-'] {
-  border-radius: 16px;
-  border: 1px solid var(--vp-c-divider);
-}
-
-.vp-doc :not(pre) > code {
-  border-radius: 7px;
-  padding: 3px 7px;
-  font-size: 0.85em;
-}
-
-.vp-doc .custom-block {
-  border-radius: 16px;
-  border: 1px solid var(--vp-c-divider);
-  padding: 18px 22px;
-}
-
-.vp-doc .custom-block.tip,
-.vp-doc .custom-block.info,
-.vp-doc .custom-block.warning,
-.vp-doc .custom-block.danger {
-  border-color: transparent;
-}
-
-.vp-doc .custom-block-title {
-  font-weight: 650;
-  letter-spacing: -0.01em;
-}
-
-.vp-doc table {
-  display: table;
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid var(--vp-c-divider);
-}
-
-.vp-doc th,
-.vp-doc td {
-  border: none;
-  border-bottom: 1px solid var(--vp-c-divider);
-  padding: 12px 16px;
-}
-
-.vp-doc tr:last-child td {
-  border-bottom: none;
-}
-
-.vp-doc th {
-  background: var(--vp-c-bg-soft);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-.vp-doc tr {
-  background: transparent;
-}
-
-.vp-doc img {
-  border-radius: 14px;
-}
-
-.vp-doc blockquote {
-  border-left-width: 3px;
-  border-radius: 0 12px 12px 0;
-  background: var(--vp-c-bg-soft);
-  padding: 4px 18px;
-}
-
-.vp-doc hr {
-  margin: 40px 0;
-  border-top: 1px solid var(--vp-c-divider);
-}
-
-/* ---- Botones y búsqueda como "pastillas" ---- */
-.VPButton {
-  border-radius: 999px !important;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-.VPNavBarSearchButton,
-.DocSearch-Button,
-button.DocSearch-Button {
-  border-radius: 999px !important;
-}
-
-/* ---- Navbar y sidebar: más calma ---- */
-.VPNavBar .content-body {
-  letter-spacing: 0.01em;
-}
-
-.VPNavBarMenuLink {
-  font-weight: 550;
-}
-
-.VPSidebarItem.level-0 > .item > .text {
-  font-weight: 650;
-  letter-spacing: -0.005em;
-}
-
-.VPSidebarItem .link {
-  border-radius: 8px;
-  padding: 3px 8px;
-  margin: 1px 0;
-  transition: background-color 0.15s ease;
-}
-
-.VPSidebarItem .link:hover {
-  background: var(--vp-c-bg-soft);
-}
-
-.VPSidebarItem.is-active > .item .link {
-  background: var(--vp-c-brand-soft);
-}
-
-/* ---- Links del contenido: subrayado sutil ---- */
-.vp-doc a {
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-}
-
-/* ---- Aside "En esta página": más aire ---- */
-.VPDocAside .outline-link {
-  line-height: 1.7;
-}
-
-/* ---- Índice / tarjetas del home más redondeadas ---- */
-.VPFeature {
-  border-radius: 18px;
 }

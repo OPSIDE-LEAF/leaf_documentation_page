@@ -25,31 +25,32 @@ defineProps<{
 .card {
   display: flex;
   flex-direction: column;
-  padding: 24px;
-  border-radius: 16px;
+  padding: 26px;
+  border-radius: 20px;
   border: 1px solid var(--vp-c-divider);
-  background-color: var(--vp-c-bg-soft);
-  transition: all 0.25s ease;
+  background-color: var(--vp-c-bg-elv);
+  box-shadow: var(--vp-shadow-2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   text-decoration: none;
   color: inherit;
   height: 100%;
 }
 
 .card--linked:hover {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.08);
-  transform: translateY(-2px);
+  border-color: var(--vp-c-border);
+  box-shadow: var(--vp-shadow-4);
+  transform: translateY(-4px);
 }
 
 .card__icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
   background-color: var(--vp-c-brand-soft);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .card__icon :deep(svg) {
@@ -61,15 +62,16 @@ defineProps<{
 
 .card__title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 640;
   line-height: 1.4;
+  letter-spacing: -0.01em;
   margin: 0 0 8px;
   color: var(--vp-c-text-1);
 }
 
 .card__description {
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.65;
   margin: 0;
   color: var(--vp-c-text-2);
 }
