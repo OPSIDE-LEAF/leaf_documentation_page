@@ -52,6 +52,8 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Login: reference module', link: '/en/guide/login-reference' },
       { text: 'Email: example module (Action)', link: '/en/guide/email-reference' },
       { text: 'Catalog: example module (Feature with UI)', link: '/en/guide/catalog-reference' },
+      { text: 'Visuals: optional visual identity', link: '/en/guide/visuals-reference' },
+      { text: 'Sandbox backend: the test environment', link: '/en/guide/sandbox-backend' },
       { text: 'Legacy migration', link: '/en/guide/legacy-migration' },
       { text: 'Roadmap', link: '/en/guide/roadmap' },
     ],
@@ -71,6 +73,21 @@ const apiSidebar: DefaultTheme.SidebarItem[] = [
   },
 ]
 
+const projectSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'The project',
+    items: [
+      { text: 'Summary and abstract', link: '/en/project/' },
+      { text: 'Introduction and justification', link: '/en/project/introduction' },
+      { text: 'Ch. I — Framing the problem', link: '/en/project/chapter-1' },
+      { text: 'Ch. II — Theoretical framework', link: '/en/project/chapter-2' },
+      { text: 'Ch. III — Design and development', link: '/en/project/chapter-3' },
+      { text: 'Ch. IV — Results', link: '/en/project/chapter-4' },
+      { text: 'References and appendices', link: '/en/project/references' },
+    ],
+  },
+]
+
 export const enLocale = {
   label: 'English',
   lang: 'en',
@@ -81,11 +98,13 @@ export const enLocale = {
       { text: 'Home', link: '/en/' },
       { text: 'Guide', link: '/en/guide/' },
       { text: 'API', link: '/en/api/' },
+      { text: 'Project', link: '/en/project/' },
     ],
 
     sidebar: {
       '/en/guide/': guideSidebar,
       '/en/api/': apiSidebar,
+      '/en/project/': projectSidebar,
     },
 
     outline: {

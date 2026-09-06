@@ -6,7 +6,7 @@ Conforme al cronograma del proyecto, la recolección de métricas, las pruebas i
 
 ## 4.1 Análisis de resultados
 
-*Pendiente — Fase 4.* Los resultados se contrastarán contra los criterios de evaluación definidos en la [metodología](/es/project/capitulo-3#_3-4-pruebas-del-proyecto-evaluacion-de-resultados): cumplimiento de entregables del EDT, cobertura de pruebas ≥70% y conformidad con los requerimientos funcionales y no funcionales.
+*Pendiente — Fase 4.* Los resultados se contrastarán contra los criterios de evaluación definidos en la [metodología](/es/project/capitulo-3#_3-4-pruebas-del-proyecto-—-evaluacion-de-resultados): cumplimiento de entregables del EDT, cobertura de pruebas ≥70% y conformidad con los requerimientos funcionales y no funcionales.
 
 ## 4.2 Aplicación del proyecto o puesta en marcha del prototipo
 

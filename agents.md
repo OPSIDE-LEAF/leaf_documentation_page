@@ -4,180 +4,193 @@
 Eres un Desarrollador Frontend Experto especializado en Documentación y DX (Developer Experience).
 
 ## Tarea
-Tu tarea es inicializar y configurar el sitio de documentación para el framework "Leaf".
-
-## Pasos a ejecutar
-
-### 1. INICIALIZACIÓN
-Configura un proyecto base utilizando VitePress (Vue).
-
-### 2. TEMA Y LAYOUT
-Asegura la configuración del diseño de tres columnas:
-- Sidebar lateral (navegación de contexto)
-- Contenido central (área de lectura)
-- Tabla de contenidos derecha (TOC con scroll-spy)
-
-### 3. ESTILOS
-Sobrescribe el tema base. Configura las variables CSS para:
-- **Color principal (Primary Color)** del framework Leaf (verde — ver comentarios `/* TODO: CAMBIAR COLOR LEAF */` en el código para personalizar)
-- **Soporte nativo y sin destellos** para Modo Claro y Modo Oscuro
-- **Tipografía principal** "Inter" y monoespaciada "JetBrains Mono"
-
-### 4. COMPONENTES
-Implementa una grilla (Grid) de componentes tipo "Card" en la página principal que replique la sección "Quickstart / Popular use cases" de la documentación de Kotlin.
-
-### 5. BÚSQUEDA
-Integra el plugin de búsqueda (búsqueda local de VitePress con MiniSearch), asegurando que el atajo `Cmd+K` abra el modal con estilos coherentes al tema.
-
-### 6. COMPONENTES MDX
-Asegura que los bloques de código tengan botón de "Copiar" y soporte nativo para bloques de pestañas (Tabs) dentro del texto.
-
-### 7. INTERNACIONALIZACIÓN (i18n)
-Soporte multilenguaje con archivos de configuración separados por idioma.
+Mantener y extender el sitio de documentación del ecosistema **Leaf**. El sitio **ya está
+construido y publicado**; este documento describe cómo funciona hoy y las reglas para modificarlo.
+La fase de inicialización terminó — no vuelvas a montar el proyecto desde cero.
 
 ---
 
-## Referencia de Diseño
+## Estado actual
 
-El diseño está inspirado en la documentación oficial de Kotlin Multiplatform (KMP). Consulta `implementation_plan.md` para los detalles técnicos completos de la implementación.
+| Aspecto | Valor |
+|---------|-------|
+| Stack | VitePress (Vue 3) + TypeScript |
+| Versión LEAF documentada | Declarada en `docs/.vitepress/leaf-version.ts` (hoy `3.0.0`) |
+| Idiomas | Español (`/es/`) e Inglés (`/en/`) |
+| Secciones | `guide/` (guía), `api/` (referencia API), `project/` (memoria del proyecto) |
+| Scripts | `npm run docs:dev`, `docs:build`, `docs:preview` |
+| Despliegue | `server/static-server.mjs` bajo PM2 |
 
-## Notas Importantes
-- El color principal es un verde placeholder. Busca los comentarios `/* TODO: CAMBIAR COLOR LEAF */` para actualizarlo.
-- VitePress ya incluye botón de copiar en bloques de código de forma nativa.
-- VitePress ya incluye búsqueda local con Cmd+K de forma nativa.
-- El layout de 3 columnas es el comportamiento por defecto de VitePress con sidebar y outline habilitados.
+### Layout
+
+El diseño de tres columnas (sidebar · contenido · TOC con scroll-spy) es el comportamiento por
+defecto de VitePress con `sidebar` y `outline` habilitados. La tipografía es **Inter** (texto) y
+**JetBrains Mono** (código), cargadas desde Google Fonts en `head`. El modo claro/oscuro es nativo
+(`appearance: true`) y las variables de fondo están definidas en `:root` y en `.dark` dentro de
+`docs/.vitepress/theme/style.css`.
+
+### Paleta
+
+La identidad LEAF ya está aplicada (no quedan placeholders por sustituir). Las variables viven en
+`theme/style.css` y alimentan a `--vp-c-brand-1`:
+
+| Variable | Valor |
+|----------|-------|
+| `--leaf-green-dark` | `#095637` |
+| `--leaf-green` | `#0b6b45` (color de marca) |
+| `--leaf-green-mid` | `#4c9038` |
+| `--leaf-lime` | `#a0cb38` |
+| `--leaf-orange` | `#ed7d31` |
+| `--leaf-orange-dark` | `#e33838` |
+
+Es la misma paleta que el módulo `leaf-visuals` expone a las apps mediante `thingsLeafVisuals()`,
+así que **cualquier cambio de color aquí debe reflejarse allá** para que el sitio y las apps no
+diverjan.
 
 ---
 
-## Arquitectura de Internacionalización (i18n)
-
-### Estrategia
-Se usa la funcionalidad nativa de `locales` de VitePress con archivos de configuración separados por idioma en `docs/.vitepress/languages/`.
+## Arquitectura del sitio
 
 ### Estructura de archivos
 
 ```
 docs/
 ├── .vitepress/
-│   ├── config.mts                  # Config principal — importa locales
-│   ├── languages/                  # Configuraciones por idioma
+│   ├── config.mts                  # Config principal — locales, markdown, vite, themeConfig
+│   ├── leaf-version.ts             # ÚNICA fuente de la versión de LEAF
+│   ├── env.d.ts                    # Tipos: virtual:markdown-raw, *.vue, *.css, __LEAF_VERSION__
+│   ├── languages/
 │   │   ├── index.ts                # Barrel export
-│   │   ├── es.ts                   # Locale español
+│   │   ├── es.ts                   # Locale español (guide/api/project sidebars)
 │   │   └── en.ts                   # Locale inglés
+│   ├── plugins/
+│   │   └── markdownRaw.ts          # Módulo virtual con el .md crudo de cada página
 │   └── theme/
-│       ├── index.ts
-│       ├── style.css
+│       ├── index.ts                # Slots del layout + registro de componentes globales
+│       ├── style.css               # Paleta LEAF y overrides del tema
 │       └── components/
-├── es/                             # Contenido en español → /es/
-│   ├── index.md
-│   └── guide/
-│       ├── index.md
-│       └── installation.md
-├── en/                             # Contenido en inglés → /en/
-│   ├── index.md
-│   └── guide/
-│       ├── index.md
-│       └── installation.md
+│           ├── Card.vue            # Tarjeta individual (title, details?, icon?, link?)
+│           ├── CardGrid.vue        # Grilla de tarjetas (title, items)
+│           └── CopyMarkdown.vue    # Botón "Copiar como Markdown"
+├── es/                             # Contenido español → /es/
+│   ├── index.md                    # Home (layout: home + CardGrid)
+│   ├── guide/                      # Guía: conceptos, host, author, ecosistema
+│   ├── api/                        # Referencia API por artefacto
+│   └── project/                    # Memoria académica del proyecto
+├── en/                             # Contenido inglés → /en/ (misma estructura)
 ├── index.md                        # Redirección raíz → /es/
 └── public/
+    ├── images/{api,guide,project}/ # Imágenes agrupadas por sección
+    └── LOGO_SOLO.png, favicon*
 ```
 
-### Cómo agregar un nuevo idioma
+### Versión centralizada (`leaf-version.ts`)
 
-1. **Crear archivo de configuración**: Crear `docs/.vitepress/languages/{lang}.ts` con la estructura de `nav`, `sidebar`, `outline`, `footer`, `docFooter` y traducciones de UI.
-2. **Exportar en barrel**: Agregar el export en `docs/.vitepress/languages/index.ts`.
-3. **Registrar en config**: Agregar el locale al objeto `locales` en `docs/.vitepress/config.mts` y su configuración de búsqueda en `themeConfig.search.options.locales`.
-4. **Crear contenido**: Crear la carpeta `docs/{lang}/` con los archivos `.md` traducidos.
+`export const LEAF_VERSION` es la **única** fuente de verdad de la versión. Se propaga por dos vías:
 
-### Ejemplo de archivo de idioma (`languages/es.ts`)
+1. **`__LEAF_VERSION__`** — definido en `vite.define`, se usa en `theme/index.ts` para pintar el
+   badge `v3.0.0` junto al logo (slot `nav-bar-title-after`).
+2. **`%LEAF_VERSION%`** — placeholder textual sustituido por una regla de `markdown-it`
+   (`md.core.ruler.after('normalize', …)`) en **todas** las páginas `.md`: prosa, tablas y bloques
+   de código. Al operar dentro del renderer, también entra al índice de búsqueda local.
 
-Cada archivo exporta:
-- `{lang}Locale` — Objeto con `label`, `lang`, `link`, `description` y `themeConfig` (nav, sidebar, outline, footer, docFooter, labels de UI).
-- `{lang}SearchConfig` — Objeto con traducciones del modal de búsqueda.
+> **Regla:** nunca escribas un número de versión de LEAF a mano en un `.md`. Usa `%LEAF_VERSION%`.
+> Publicar un tren nuevo debe ser editar **una sola línea** en `leaf-version.ts`.
 
-### URLs resultantes
-- Español: `/es/`, `/es/guide/`, `/es/guide/installation`
-- Inglés: `/en/`, `/en/guide/`, `/en/guide/installation`
-- Raíz (`/`): Redirige automáticamente a `/es/`
+El plugin `markdownRaw.ts` aplica la misma sustitución, para que el botón "Copiar como Markdown"
+entregue la versión resuelta y no el placeholder.
 
-### Modo Oscuro
-Las variables CSS de fondo (`--vp-c-bg`, `--vp-c-bg-alt`, `--vp-c-bg-elv`, `--vp-c-bg-soft`) están definidas tanto en `:root` (modo claro) como en `.dark` (modo oscuro) en `docs/.vitepress/theme/style.css`. La opción `appearance: true` está habilitada en la configuración.
+### Componentes del tema
+
+| Componente | Registro | Uso |
+|------------|----------|-----|
+| `Card` | Global (`enhanceApp`) | Tarjeta suelta dentro de cualquier `.md` |
+| `CardGrid` | Global (`enhanceApp`) | `<CardGrid title="…" :items="itemsArray" />` — la home define los arrays en su frontmatter/script |
+| `CopyMarkdown` | Slot `doc-before` | Automático en todas las páginas; no se invoca a mano |
+
+### Botón "Copiar como Markdown"
+
+- `plugins/markdownRaw.ts` genera el módulo virtual `virtual:markdown-raw`, un
+  `Record<string, string>` con el fuente de cada página. Las claves son rutas relativas sin
+  extensión (ej. `es/guide/installation`). Se invalida en HMR al cambiar un `.md`.
+- `CopyMarkdown.vue` resuelve la página con `useRoute()`, el idioma con `useData()`, y muestra
+  "¡Copiado!" / "Copied!" durante 2 s. En móvil oculta el texto y deja solo el icono.
+- Para añadir un idioma, agrega la condición en el `computed` `i18n` del componente.
+
+### Búsqueda
+
+Búsqueda local nativa de VitePress (MiniSearch) con `Cmd+K`. Cada idioma aporta sus traducciones
+del modal vía `{lang}SearchConfig`, registradas en `themeConfig.search.options.locales`.
+
+### Despliegue
+
+`server/static-server.mjs` sirve `docs/.vitepress/dist` resolviendo `/ruta`, `/ruta.html` y
+`/ruta/index.html` — algo que `pm2 serve` no hace (falla con `EISDIR` en directorios como `/es/`).
+Puerto por defecto `5000`, configurable con `PORT`.
+
+```bash
+npm run docs:build
+pm2 start server/static-server.mjs --name leaf-docs
+```
 
 ---
 
-## Botón "Copiar como Markdown"
+## Internacionalización (i18n)
 
-### Descripción
-Se implementó un botón global que permite copiar el contenido fuente (raw `.md`) de la página actual al portapapeles. Aparece como un toolbar alineado a la derecha, justo arriba del contenido principal del documento (slot `doc-before`).
+### Estrategia
 
-### Arquitectura
+Funcionalidad nativa de `locales` de VitePress, con un archivo de configuración por idioma en
+`docs/.vitepress/languages/`. Cada archivo exporta:
 
-#### Plugin de Vite (`docs/.vitepress/plugins/markdownRaw.ts`)
-- Genera un **módulo virtual** (`virtual:markdown-raw`) que expone un mapa `Record<string, string>` con todas las páginas `.md` del proyecto.
-- Las claves son las rutas relativas sin extensión (ej: `es/guide/installation`).
-- Se invalida automáticamente en HMR cuando un archivo `.md` cambia.
+- **`{lang}Locale`** — `label`, `lang`, `link`, `description` y `themeConfig` (nav, sidebar,
+  outline, footer, docFooter y labels de UI).
+- **`{lang}SearchConfig`** — traducciones del modal de búsqueda.
 
-#### Componente Vue (`docs/.vitepress/theme/components/CopyMarkdown.vue`)
-- Usa `useRoute()` para determinar la página actual y buscar su contenido en el módulo virtual.
-- Usa `useData()` para detectar el idioma activo (`lang`) y mostrar textos traducidos.
-- Feedback visual: muestra "¡Copiado!" / "Copied!" durante 2 segundos tras copiar.
-- Responsive: en móvil oculta el texto y solo muestra el icono.
+Dentro de cada archivo los sidebars se declaran como constantes nombradas y luego se mapean por
+ruta, en vez de escribirse en línea:
 
-#### Registro en el tema (`docs/.vitepress/theme/index.ts`)
-- Se renderiza en el slot `'doc-before'` del layout de VitePress.
-
-#### Declaración de tipos (`docs/.vitepress/env.d.ts`)
-- Declara el módulo virtual `virtual:markdown-raw` para TypeScript.
-- Declara módulos `*.vue` y `*.css`.
-
-### Soporte i18n
-El componente detecta el idioma activo y muestra:
-- **Español** (`es`): "Copiar como Markdown" / "¡Copiado!"
-- **Inglés** (`en`): "Copy as Markdown" / "Copied!"
-
-Para agregar un nuevo idioma, añadir una condición en el `computed` `i18n` dentro del componente `CopyMarkdown.vue`.
-
-### Configuración en `config.mts`
-El plugin se registra en la sección `vite.plugins`:
 ```ts
-import { markdownRawPlugin } from './plugins/markdownRaw'
-import { fileURLToPath, URL } from 'node:url'
+const guideSidebar: DefaultTheme.SidebarItem[] = [ /* … */ ]
+const apiSidebar: DefaultTheme.SidebarItem[] = [ /* … */ ]
+const projectSidebar: DefaultTheme.SidebarItem[] = [ /* … */ ]
 
-const docsDir = fileURLToPath(new URL('../', import.meta.url))
-
-export default defineConfig({
-  vite: {
-    plugins: [markdownRawPlugin(docsDir)],
-  },
-  // ...
-})
+sidebar: {
+  '/es/guide/': guideSidebar,
+  '/es/api/': apiSidebar,
+  '/es/project/': projectSidebar,
+},
 ```
+
+### URLs resultantes
+
+- Español: `/es/`, `/es/guide/`, `/es/api/`, `/es/project/`
+- Inglés: `/en/`, `/en/guide/`, `/en/api/`, `/en/project/`
+- Raíz (`/`): redirige a `/es/`
+
+### Cómo agregar un nuevo idioma
+
+1. Crear `docs/.vitepress/languages/{lang}.ts` con los tres sidebars, `nav`, `outline`, `footer`,
+   `docFooter` y labels de UI.
+2. Exportarlo en `languages/index.ts`.
+3. Registrar el locale en `config.mts` (`locales`) y su búsqueda en
+   `themeConfig.search.options.locales`.
+4. Crear `docs/{lang}/` con las carpetas `guide/`, `api/` y `project/` traducidas.
+5. Añadir la condición de idioma en `CopyMarkdown.vue`.
 
 ---
 
 ## Estrategia para Agregar Más Documentación
 
-### Resumen
-Para agregar nuevas páginas o secciones de documentación al sitio, se deben seguir **3 pasos obligatorios**: crear el archivo `.md`, registrarlo en el sidebar del idioma correspondiente, y replicar la estructura en todos los idiomas soportados.
-
----
+Toda página nueva exige **3 pasos**: crear el `.md`, registrarlo en el sidebar de su idioma y
+replicar ambos en todos los idiomas soportados.
 
 ### Paso 1: Crear el archivo Markdown
 
-Crear el archivo `.md` dentro de la carpeta del idioma correspondiente, siguiendo la convención de rutas existente.
+Convención de rutas: `docs/{lang}/{sección}/{página}.md`. Ejemplo: `docs/es/guide/routing.md`.
 
-**Convención de rutas:**
-```
-docs/{lang}/{sección}/{página}.md
-```
+**Plantilla base:**
 
-**Ejemplo** — Agregar una página "Routing" a la guía en español:
-```
-docs/es/guide/routing.md
-```
-
-**Plantilla base para una página nueva:**
-```markdown
+````markdown
 # Título de la Página
 
 Descripción introductoria breve del contenido.
@@ -185,10 +198,6 @@ Descripción introductoria breve del contenido.
 ## Sección principal
 
 Contenido con explicaciones claras.
-
-### Subsección
-
-Detalles adicionales.
 
 ::: tip
 Consejos útiles para el desarrollador.
@@ -202,140 +211,121 @@ Advertencias importantes.
 
 ::: code-group
 
-```bash [npm]
-npm run ejemplo
+```kotlin [Gradle KTS]
+implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")
 ```
 
-```bash [pnpm]
-pnpm run ejemplo
+```toml [Version Catalog]
+leaf-core = { module = "com.opside-leaf:leaf-core", version = "%LEAF_VERSION%" }
 ```
 
 :::
 
 ## Siguiente paso
 
-Enlace a la siguiente página lógica: [Siguiente tema](/es/guide/siguiente-tema)
-```
-
----
+[Siguiente tema](/es/guide/siguiente-tema)
+````
 
 ### Paso 2: Registrar en el Sidebar
 
-Agregar la entrada de la nueva página en el archivo de configuración del idioma correspondiente en `docs/.vitepress/languages/{lang}.ts`.
-
-**Ejemplo** — Agregar "Routing" al sidebar en español (`languages/es.ts`):
+Agregar la entrada en la constante correspondiente de `docs/.vitepress/languages/{lang}.ts`:
 
 ```ts
-sidebar: {
-  '/es/guide/': [
-    {
-      text: 'Introducción',
-      items: [
-        { text: 'Getting Started', link: '/es/guide/' },
-        { text: 'Instalación', link: '/es/guide/installation' },
-      ],
-    },
-    // ✅ NUEVO GRUPO O NUEVA ENTRADA
-    {
-      text: 'Fundamentos',
-      items: [
-        { text: 'Routing', link: '/es/guide/routing' },
-        { text: 'Middlewares', link: '/es/guide/middlewares' },
-      ],
-    },
-  ],
-},
+const guideSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Ecosistema',
+    items: [
+      { text: 'Catálogo de módulos', link: '/es/guide/catalogo' },
+      // ✅ NUEVA ENTRADA
+      { text: 'Routing', link: '/es/guide/routing' },
+    ],
+  },
+]
 ```
 
 **Reglas del sidebar:**
-- Cada grupo (`text` + `items`) representa una sección colapsable en la navegación lateral.
-- Los `link` deben coincidir exactamente con la ruta del archivo sin extensión `.md`.
-- El orden de los items define el orden de navegación y los botones "Anterior" / "Siguiente".
-
----
+- Cada grupo (`text` + `items`) es una sección colapsable.
+- El `link` debe coincidir exactamente con la ruta del archivo, sin `.md`.
+- El orden define la navegación y los botones "Anterior" / "Siguiente".
 
 ### Paso 3: Replicar en todos los idiomas
 
-Cada página debe existir en **todos los idiomas soportados**. Repetir los pasos 1 y 2 para cada idioma.
+| Idioma  | Contenido                     | Configuración                     |
+|---------|-------------------------------|-----------------------------------|
+| Español | `docs/es/guide/routing.md`    | `docs/.vitepress/languages/es.ts` |
+| Inglés  | `docs/en/guide/routing.md`    | `docs/.vitepress/languages/en.ts` |
 
-| Idioma   | Archivo de contenido          | Archivo de configuración         |
-|----------|-------------------------------|----------------------------------|
-| Español  | `docs/es/guide/routing.md`    | `docs/.vitepress/languages/es.ts` |
-| Inglés   | `docs/en/guide/routing.md`    | `docs/.vitepress/languages/en.ts` |
+Ojo con los nombres de archivo: el inglés **traduce el slug** cuando el español lo tiene traducido
+(`arquitectura.md` → `architecture.md`, `glosario.md` → `glossary.md`,
+`errores-telemetria.md` → `errors-telemetry.md`). Los slugs ya en inglés se mantienen idénticos
+(`module-setup.md`, `catalog-reference.md`).
 
----
+### Agregar una sección completa nueva
 
-### Agregar una nueva sección completa (no solo una página)
-
-Si necesitas crear una sección completamente nueva (ej: `api/`, `advanced/`, `plugins/`):
-
-1. **Crear la carpeta** en cada idioma:
-   ```
-   docs/es/api/
-   docs/en/api/
-   ```
-
-2. **Crear un `index.md`** dentro de cada carpeta (página de entrada de la sección):
-   ```
-   docs/es/api/index.md
-   docs/en/api/index.md
-   ```
-
-3. **Agregar un nuevo bloque de sidebar** en cada archivo de idioma:
-   ```ts
-   sidebar: {
-     '/es/guide/': [ /* ... */ ],
-     // ✅ NUEVA SECCIÓN
-     '/es/api/': [
-       {
-         text: 'Referencia API',
-         items: [
-           { text: 'Visión general', link: '/es/api/' },
-           { text: 'Configuración', link: '/es/api/configuration' },
-           { text: 'Router', link: '/es/api/router' },
-         ],
-       },
-     ],
-   },
-   ```
-
-4. **Actualizar la navegación superior (`nav`)** si la sección debe aparecer en el menú principal:
-   ```ts
-   nav: [
-     { text: 'Inicio', link: '/es/' },
-     { text: 'Guía', link: '/es/guide/' },
-     { text: 'API', link: '/es/api/' },  // ← Ya existe, verificar que el link sea correcto
-   ],
-   ```
-
-5. **(Opcional) Actualizar la home page** — Si la nueva sección debe aparecer en las cards de "Inicio rápido", editar el array `quickstartItems` en `docs/{lang}/index.md` y actualizar el `link` correspondiente.
+1. Crear la carpeta en cada idioma (`docs/es/plugins/`, `docs/en/plugins/`).
+2. Crear su `index.md` de entrada en cada idioma.
+3. Declarar una constante de sidebar nueva y mapearla (`'/es/plugins/': pluginsSidebar`).
+4. Agregar la entrada al `nav` de cada idioma.
+5. Crear `docs/public/images/{sección}/` si la sección llevará imágenes.
+6. (Opcional) Añadir la sección a las cards de la home en `docs/{lang}/index.md`.
 
 ---
 
-### Checklist rápido para agregar documentación
+## Documentar un módulo LEAF nuevo
+
+Los módulos del ecosistema siguen un patrón fijo de tres toques:
+
+1. **Página de referencia** `docs/{lang}/guide/{modulo}-reference.md`, en el grupo **Ecosistema**
+   del sidebar. Modelos a seguir: `login-reference` (módulo de referencia),
+   `email-reference` (Action) y `catalog-reference` (Feature con UI).
+2. **Fila en el catálogo** `docs/{lang}/guide/catalogo.md` / `catalog.md`: coordenada Maven con
+   `%LEAF_VERSION%` cuando el módulo sigue el tren estable, o su versión propia cuando versiona
+   aparte, más el enlace al repositorio.
+3. **Roadmap** `docs/{lang}/guide/roadmap.md` si el módulo aún no es estable.
+
+> **Regla de veracidad:** el catálogo describe lo que está **publicado**, no lo que existe en
+> local. Si un módulo no está en GitHub Packages, dilo explícitamente en su fila en vez de
+> insinuar disponibilidad. Cuando una versión local y una publicada difieran, la documentación no
+> debe afirmar compatibilidad entre ambas.
+
+---
+
+## Paridad entre idiomas
+
+Cada página debe existir en **todos** los idiomas, con la misma jerarquía de headings y secciones;
+solo cambia el texto. Antes de dar por cerrada una tarea, compara:
+
+```bash
+diff <(cd docs/es && find . -name '*.md' | sort) <(cd docs/en && find . -name '*.md' | sort)
+```
+
+---
+
+## Checklist rápido
 
 ```
 - [ ] Crear archivo .md en docs/{lang}/{sección}/{página}.md
-- [ ] Agregar entrada en sidebar de docs/.vitepress/languages/{lang}.ts
+- [ ] Usar %LEAF_VERSION% en vez de escribir la versión a mano
+- [ ] Agregar entrada en el sidebar de docs/.vitepress/languages/{lang}.ts
 - [ ] Repetir para TODOS los idiomas soportados (es, en)
-- [ ] (Si es sección nueva) Crear carpeta + index.md en cada idioma
-- [ ] (Si es sección nueva) Agregar bloque de sidebar nuevo en cada idioma
-- [ ] (Si es sección nueva) Verificar/actualizar nav en cada idioma
-- [ ] (Opcional) Actualizar cards de quickstart en la home page
-- [ ] Verificar que los links internos entre páginas sean correctos
-- [ ] Ejecutar `npm run docs:dev` y validar navegación y renderizado
+- [ ] (Sección nueva) Carpeta + index.md + constante de sidebar + nav en cada idioma
+- [ ] (Sección nueva) Crear docs/public/images/{sección}/ si lleva imágenes
+- [ ] (Módulo nuevo) Página *-reference + fila en el catálogo + roadmap si aplica
+- [ ] Verificar los links internos entre páginas
+- [ ] Ejecutar npm run docs:build (falla ante links muertos) y npm run docs:dev para revisar
 ```
 
 ---
 
-### Buenas prácticas de contenido
+## Buenas prácticas de contenido
 
 | Práctica | Descripción |
 |----------|-------------|
-| **Frontmatter mínimo** | Solo usar frontmatter cuando sea necesario (ej: `layout: home` para la página principal). Las páginas normales no lo requieren. |
-| **Headings jerárquicos** | Usar `#` para el título principal (uno solo por página), `##` para secciones, `###` para subsecciones. El TOC derecho muestra niveles 2 y 3. |
-| **Code groups** | Usar `::: code-group` para mostrar alternativas (npm/pnpm/yarn). |
-| **Containers** | Usar `:::tip`, `:::warning`, `:::danger`, `:::info` para callouts. |
-| **Links internos** | Siempre usar rutas absolutas con el prefijo del idioma: `/es/guide/routing` (sin `.md`). |
-| **Imágenes** | Colocar en `docs/public/images/` y referenciar como `/images/nombre.png`. |
-| **Consistencia entre idiomas** | Mantener la misma estructura de headings y secciones en todos los idiomas, solo traducir el contenido. |
+| **Frontmatter mínimo** | Solo cuando hace falta (ej. `layout: home`). Las páginas normales no lo requieren. |
+| **Headings jerárquicos** | Un solo `#` por página, `##` para secciones, `###` para subsecciones. El TOC muestra niveles 2 y 3. |
+| **Versión** | Siempre `%LEAF_VERSION%`; nunca un número literal. |
+| **Code groups** | `::: code-group` para alternativas (Gradle KTS / Version Catalog, npm / pnpm). |
+| **Containers** | `:::tip`, `:::warning`, `:::danger`, `:::info` para callouts. |
+| **Links internos** | Rutas absolutas con prefijo de idioma: `/es/guide/routing` (sin `.md`). |
+| **Imágenes** | En `docs/public/images/{sección}/`, referenciadas como `/images/{sección}/nombre.png`. |
+| **Consistencia entre idiomas** | Misma estructura de headings en todos los idiomas; solo se traduce el texto. |
