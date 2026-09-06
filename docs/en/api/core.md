@@ -2,7 +2,7 @@
 
 `com.opside-leaf:leaf-core:%LEAF_VERSION%` · package `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-core)
 
-Ecosystem runtime: executes Actions and owns Feature sessions (event serialization, cancellation, result, backpressure, technical errors). Does not know domain rules or render UI.
+Ecosystem runtime: executes Actions and owns Feature sessions (event serialization, cancellation, result, backpressure, technical errors). It also executes [experimental Workflow](/en/api/workflow) sessions. It does not know domain rules or render UI.
 
 ## Leaf.run
 
@@ -57,7 +57,7 @@ enum class FeatureSendResult { ACCEPTED, REJECTED_TERMINATED, REJECTED_OVERFLOW 
 
 ```kotlin
 sealed interface FeatureSessionResult<out Output> {
-    data class Finished<Output>(val output: Output) : FeatureSessionResult<Output>
+    data class Completed<Output>(val output: Output) : FeatureSessionResult<Output>
     data object Cancelled : FeatureSessionResult<Nothing>
     data class Failed(val failure: FeatureTechnicalFailure) : FeatureSessionResult<Nothing>
 }
@@ -76,7 +76,7 @@ No payloads or throwable messages.
 ## FeatureSessionTerminalCause
 
 ```kotlin
-enum class FeatureSessionTerminalCause { FINISHED, CANCELLED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED }
+enum class FeatureSessionTerminalCause { COMPLETED, CANCELLED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED }
 ```
 
 ## FeatureSessionMetrics
@@ -89,7 +89,7 @@ val terminalCause: FeatureSessionTerminalCause?
 
 ## LeafException
 
-Redacted technical error: only exposes `moduleInfo` and the `LeafOperation` (e.g. `FEATURE_INITIALIZATION`). Never the input, state, or original message.
+Redacted technical error. Its constructor is internal and its only additional public property is `moduleInfo`. `LeafOperation` is internal too: it contributes a safe description to the message but consumers cannot read it as a property. The input, state, and original message are never retained.
 
 ## LeafTelemetry
 
@@ -110,3 +110,5 @@ fun interface LeafTelemetry {
 | `result` | `RUNNING`, `SUCCEEDED`, `FAILED`, `CANCELLED` |
 
 Best-effort and isolated: no input, state, event, output, throwable, or PII. A hook failure does not alter execution.
+
+`LeafTelemetryPhase.FINISHED` remains the name of a technical phase. It is independent from `FeatureSessionResult.Completed` and `FeatureSessionTerminalCause.COMPLETED`.

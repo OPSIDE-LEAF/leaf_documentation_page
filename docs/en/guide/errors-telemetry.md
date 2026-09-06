@@ -17,13 +17,13 @@ sealed interface LoginResult {
     data class Authenticated(val userId: String) : LoginResult
 }
 
-// Recoverable: stay with the error in the form state
+// Recoverable: continueFeature with the error in the form state
 state.copy(formError = "Invalid email or password")
 ```
 
 ## LeafException
 
-Technical failures are normalized to `LeafException`, a **redacted** error: it only exposes `moduleInfo` and the `LeafOperation` -- never the input, state, or message of the original throwable.
+Technical failures are normalized to `LeafException`, a **redacted** error: it exposes `moduleInfo`, while `LeafOperation` is internal and only contributes a safe description to the message. It never retains the input, state, or original throwable message.
 
 - In `Leaf.run`: the Action that throws produces `LeafException`.
 - In sessions: the transition that throws terminates the session with `Failed(TRANSITION_FAILED)`; if `initialState` throws, `FEATURE_INITIALIZATION` / `INITIALIZATION_FAILED`.

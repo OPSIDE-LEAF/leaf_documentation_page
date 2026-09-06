@@ -8,8 +8,8 @@ Una `Feature<Input, State, Event, Output>` modela una interacción: como host ob
 import com.ops.leaf_core.api.Module
 import com.ops.leaf_core.api.ModuleInfo
 import com.ops.leaf_core.api.feature
-import com.ops.leaf_core.api.finish
-import com.ops.leaf_core.api.stay
+import com.ops.leaf_core.api.completeFeature
+import com.ops.leaf_core.api.continueFeature
 
 sealed interface CounterEvent {
     data object Increment : CounterEvent
@@ -28,14 +28,14 @@ class CounterModule : Module {
         initialState = { 0 },
     ) { state, event ->
         when (event) {
-            CounterEvent.Increment -> stay(state + 1)
-            CounterEvent.Done -> finish(CounterResult.FinalCount(state))
+            CounterEvent.Increment -> continueFeature(state + 1)
+            CounterEvent.Done -> completeFeature(CounterResult.FinalCount(state))
         }
     }
 }
 ```
 
-Lo que te importa como host: cada evento produce `stay` (nuevo estado, sesión abierta) o `finish` (resultado terminal, una sola vez). Tú no implementas esa lógica — solo la consumes.
+Lo que te importa como host: cada evento produce `continueFeature` (nuevo estado, sesión abierta) o `completeFeature` (resultado terminal, una sola vez). Tú no implementas esa lógica: solo la consumes.
 
 ## 2. Desde una corrutina (`Leaf.open`)
 
@@ -44,20 +44,19 @@ import com.ops.leaf_core.api.FeatureSendResult
 import com.ops.leaf_core.api.FeatureSessionResult
 import com.ops.leaf_core.api.Leaf
 import com.ops.leaf_core.api.open
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 
 suspend fun runCounter(module: CounterModule) {
     val session = Leaf.open(module.counter, Unit)
     try {
-        when (session.send(CounterEvent.Increment)) {
-            FeatureSendResult.ACCEPTED -> Unit
-            FeatureSendResult.REJECTED_OVERFLOW -> showBackpressureMessage()
-            FeatureSendResult.REJECTED_TERMINATED -> Unit
-        }
+        check(session.send(CounterEvent.Increment) == FeatureSendResult.ACCEPTED)
+        check(session.send(CounterEvent.Done) == FeatureSendResult.ACCEPTED)
 
-        session.result.collect { result ->
-            if (result is FeatureSessionResult.Finished) {
-                persistCount(result.output.value)
-            }
+        when (val result = session.result.filterNotNull().first()) {
+            is FeatureSessionResult.Completed -> persistCount(result.output.value)
+            FeatureSessionResult.Cancelled -> Unit
+            is FeatureSessionResult.Failed -> showTechnicalFailure(result.failure)
         }
     } finally {
         session.close()
@@ -66,6 +65,8 @@ suspend fun runCounter(module: CounterModule) {
 ```
 
 `Leaf.open` requiere una corrutina con `Job`: la sesión es **hija** de esa corrutina. Si el host se cancela, la sesión se cancela.
+
+El ejemplo envía `Done` y espera el primer resultado no nulo; así alcanza terminalidad y deja de observar. En una UI real, trata cada `FeatureSendResult` de acuerdo con la interacción.
 
 ## 3. Desde Compose (`rememberLeaf`)
 
@@ -103,3 +104,4 @@ No implementes un reducer, una cola o una sesión paralela en el host. No abras 
 - [FeatureSession a fondo](/es/guide/feature-session) — lifecycle, backpressure, métricas.
 - [Compose a fondo](/es/guide/compose-adapter) — la clave `(feature, input)` y el ciclo de vida.
 - [Integrar módulos publicados](/es/guide/host-integration) — gateways del host y navegación.
+- [Migrar desde LEAF 2.0.1](/es/guide/feature-migration) — nombres retirados y reemplazos.

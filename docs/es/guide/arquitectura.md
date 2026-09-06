@@ -3,7 +3,7 @@
 ## Principios de diseño
 
 1. **Ruta local tipada** — Los hosts invocan capabilities directamente con referencias Kotlin tipadas. Los errores de tipo aparecen al compilar.
-2. **Diseño modular** — Los módulos encapsulan dependencias por constructor y exponen capabilities tipadas (`Action` o `Feature`).
+2. **Diseño modular** — Los módulos encapsulan dependencias por constructor y exponen capabilities tipadas (`Action`, `Feature` o el preview `Workflow`).
 3. **Cancelación estructurada** — Core administra concurrencia, lifecycle y cleanup. Los consumidores no administran coroutines ni Flows.
 4. **Kotlin Multiplatform** — Lógica compartida compilada nativamente para cada plataforma, sin capas de abstracción en runtime.
 5. **Sin dinámica en Core** — Quedan prohibidos `Map<String, Any?>`, payloads genéricos, codecs, casts no comprobados, registry, instalación e invocación manual en la ruta local.
@@ -18,9 +18,9 @@ El ecosistema separa responsabilidades en tres artefactos publicados de forma in
 
 | Artefacto | Responsabilidad | No hace |
 |---|---|---|
-| `leaf-contracts` | Declara `Module`, `Action`, `Feature` y transiciones tipadas | Ejecutar sesiones o conocer UI |
-| `leaf-core` | Ejecuta Actions y posee la sesión de una Feature: serialización de eventos, cancelación, resultado, presión y errores técnicos | Conocer reglas de dominio o renderizar UI |
-| `leaf-compose` | Observa una sesión de Core y expone un holder para Compose | Crear otra sesión, cola o reducer |
+| `leaf-contracts` | Declara `Module`, `Action`, `Feature` y el protocolo experimental de `Workflow` | Ejecutar sesiones o conocer UI |
+| `leaf-core` | Ejecuta Actions y posee sesiones de Feature/Workflow: serialización, efectos, cancelación, resultados y presión | Conocer reglas de dominio o renderizar UI |
+| `leaf-compose` | Observa sesiones de Core y expone holders para Compose | Crear otra sesión, cola, reducer o handler |
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -37,7 +37,7 @@ El ecosistema separa responsabilidades en tres artefactos publicados de forma in
 ┌───────────────▼─────────────────────────────┐
 │              leaf-contracts                 │
 │  Module · ModuleInfo · Action · Feature ·   │
-│  FeatureTransition (stay / finish)          │
+│  Workflow · Continue / Emit / Complete      │
 └───────────────▲─────────────────────────────┘
                 │ implementa
 ┌───────────────┴─────────────────────────────┐
@@ -50,8 +50,8 @@ El ecosistema separa responsabilidades en tres artefactos publicados de forma in
 ## El paradigma Module → Capability → Host
 
 - Un **Module** es un objeto local que implementa `Module`, encapsula sus dependencias (inyectadas por constructor) y publica capabilities como propiedades `val` tipadas.
-- Una **capability** es una `Action<Input, Output>` (operación finita) o una `Feature<Input, State, Event, Output>` (interacción con estado).
-- Un **Host** construye el módulo explícitamente y ejecuta sus capabilities con `Leaf.run` / `Leaf.open` / `Leaf.rememberLeaf`. El host conserva la navegación y decide con los resultados de dominio.
+- Una **capability** estable es una `Action<Input, Output>` (operación finita) o una `Feature<Input, State, Event, Output>` (interacción con estado). `Workflow<Input, State, Event, Effect, Output>` añade reducción síncrona y efectos runtime-owned como preview con opt-in.
+- Un **Host** construye el módulo explícitamente y ejecuta sus capabilities con `Leaf.run`, `Leaf.open`, `Leaf.rememberLeaf` o `rememberLeafWorkflowHolder`. El host conserva la navegación y decide con los resultados de dominio.
 
 Las dependencias externas (APIs, servicios de identidad, pasarelas de pago) se modelan como **ports**: interfaces declaradas dentro del módulo cuya implementación pertenece al host — arquitectura hexagonal (Ports & Adapters).
 
@@ -79,11 +79,17 @@ leaf_core/        → Runtime (Leaf.run, Leaf.open, FeatureSession)
 leaf_compose/     → Adaptador Compose (rememberLeaf)
 leaf_visuals/     → Sistema de diseño (en desarrollo)
 leaf_login/       → Módulo de referencia (Feature + UI)
-leaf_*_payments/  → Módulos de pagos (stubs)
+leaf_*_payment/   → Actions LOCAL_FAKE de pago y observación
 ```
 
 Los paquetes Kotlin públicos son `com.ops.leaf_core.api` (contracts + core) y `com.ops.leaf_core.ui.compose` (compose). Los módulos de dominio nuevos usan `com.opside.leaf.<modulo>`.
 
-::: info Compatibilidad binaria
-Los paquetes históricos `com.ops.leaf_core.api` y `com.ops.leaf_core.ui.compose` se mantienen durante LEAF 2. La migración de namespace queda reservada para LEAF 3.
+::: info Paquetes públicos en 3.0.0
+LEAF 3 conserva `com.ops.leaf_core.api` y `com.ops.leaf_core.ui.compose`. El cambio mayor migra el vocabulario de Feature y añade el preview Workflow; no migra el namespace.
 :::
+
+## Ownership de Workflow
+
+Contracts define reducción síncrona y los steps `Continue`, `Emit` y `Complete`. Core serializa eventos, ejecuta `EffectHandler` como hijo de la sesión y produce un único outcome. Compose refleja esa sesión y delega eventos. El host no ejecuta efectos ni coordina una segunda máquina de estados.
+
+Workflow forma parte del tren `3.0.0` como [preview experimental](/es/guide/workflow); el marcador `@ExperimentalLeafWorkflowApi` sigue siendo obligatorio.

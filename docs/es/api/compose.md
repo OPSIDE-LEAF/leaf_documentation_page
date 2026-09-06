@@ -43,7 +43,9 @@ Constructor interno: la única forma de obtener una instancia es `rememberLeaf`.
 |---|---|
 | `state` | Último estado publicado; `null` durante inicialización |
 | `result` | `null` activa; después exactamente un `FeatureSessionResult` |
-| `isReady` | `true` cuando la sesión acepta eventos |
+| `isReady` | `true` mientras una sesión de Core está adjunta; no garantiza admisión del siguiente evento |
 | `send(event)` | Misma disposición que `FeatureSession.send` (`ACCEPTED` / `REJECTED_*`) |
+
+Un resultado terminal puede propagarse antes de que Compose desadjunte la sesión. En ese intervalo `isReady` puede seguir en `true` mientras `send` devuelve `REJECTED_TERMINATED`; el retorno de `send` es la autoridad sobre admisión.
 
 Ver [guía de uso](/es/guide/compose-adapter) y [anti-patrones](/es/guide/compose-adapter#anti-patrones).

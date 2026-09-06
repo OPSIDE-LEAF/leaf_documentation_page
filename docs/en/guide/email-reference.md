@@ -1,5 +1,9 @@
 # Email: example module (Action)
 
+::: info Independent line
+This page describes Email `1.0.0` observed on its `origin/main`, which declares LEAF `2.0.1`. It is not part of the `3.0.0` release; package availability was not verified from this site.
+:::
+
 `leaf-email` (`com.opside-leaf:leaf-email:1.0.0`, package `com.opside.leaf.email`, [repo](https://github.com/OPSIDE-LEAF/leaf_email)) is the first example module that uses `Action` instead of `Feature`. Unlike `leaf-login`, it has no UI and no observable state — it is a fire-and-forget operation.
 
 ## The Action flow

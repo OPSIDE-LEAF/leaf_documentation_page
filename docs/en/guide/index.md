@@ -2,7 +2,7 @@
 
 **Leaf** is an ecosystem for cross-platform mobile development built on **Kotlin Multiplatform** and **Compose Multiplatform**. It allows structuring applications as sets of independent, reusable, and decoupled modules that are shared between Android and iOS while preserving native performance.
 
-Its core provides **local and direct** capabilities: Module Authors expose `Action<Input, Output>` or `Feature<Input, State, Event, Output>` values, and hosts execute them in a single statement via `Leaf.run`, `Leaf.open`, or the Compose adapter `Leaf.rememberLeaf`.
+Its core provides **local and direct** capabilities. Authors expose `Action` or `Feature`; LEAF 3 adds `Workflow` as an experimental preview for synchronous reduction with Core-managed effects. Hosts consume Kotlin references through `Leaf.run`, `Leaf.open`, or the Compose adapters.
 
 ```kotlin
 // The Author defines the capability
@@ -33,7 +33,7 @@ Instead of building each application from scratch, projects are assembled from *
 
 Each module:
 
-- Encapsulates its dependencies via constructor and exposes ready-to-use capabilities (`Action` or `Feature`).
+- Encapsulates its dependencies via constructor and exposes ready-to-use capabilities (`Action`, `Feature`, or opt-in `Workflow`).
 - Is compiled, tested, and published independently (with its own semantic versioning).
 - Models its external dependencies as ports (interfaces) that the host implements.
 - Validates its public surface with ABI validation and a *clean consumer*.
@@ -60,3 +60,5 @@ Each module:
 - [Architecture and principles](/en/guide/architecture) — how the ecosystem is built.
 - [Installation](/en/guide/installation) — set up credentials and dependencies.
 - [Your first Action](/en/guide/quickstart-action) — Hello World in 5 minutes.
+- [Workflow preview](/en/guide/workflow) — reduction, effects, and Core-managed sessions.
+- [Migrate Feature from 2.0.1](/en/guide/feature-migration) — mappings for the breaking change.

@@ -2,7 +2,7 @@
 
 `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` · paquete `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-contracts)
 
-Declara los contratos tipados del ecosistema. No ejecuta sesiones ni conoce UI.
+Declara los contratos tipados del ecosistema. No ejecuta sesiones ni conoce UI. La superficie estable incluye Action y Feature; Workflow se documenta aparte como [preview experimental](/es/api/workflow).
 
 ## Module
 
@@ -72,16 +72,18 @@ fun <Input, State, Event, Output> feature(
 
 ```kotlin
 sealed interface FeatureTransition<out State, out Output> {
-    data class Stay<State>(val state: State) : FeatureTransition<State, Nothing>
-    data class Finish<Output>(val output: Output) : FeatureTransition<Nothing, Output>
+    data class Continue<State>(val state: State) : FeatureTransition<State, Nothing>
+    data class Complete<Output>(val output: Output) : FeatureTransition<Nothing, Output>
 }
 
-fun <State> stay(state: State): FeatureTransition<State, Nothing>
-fun <Output> finish(output: Output): FeatureTransition<Nothing, Output>
+fun <State> continueFeature(state: State): FeatureTransition<State, Nothing>
+fun <Output> completeFeature(output: Output): FeatureTransition<Nothing, Output>
 ```
 
-- `stay(state)` publica nuevo estado sin terminar la sesión.
-- `finish(output)` produce exactamente un resultado terminal.
+- `continueFeature(state)` publica nuevo estado sin terminar la sesión.
+- `completeFeature(output)` produce exactamente un resultado terminal.
+
+Los nombres anteriores de LEAF 2.0.1 se retiraron; consulta la [migración](/es/guide/feature-migration).
 
 ## Constantes
 

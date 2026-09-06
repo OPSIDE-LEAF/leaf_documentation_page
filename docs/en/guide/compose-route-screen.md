@@ -20,7 +20,7 @@ fun LoginRoute(
     val result = leaf.result
 
     LaunchedEffect(result) {
-        if (result is FeatureSessionResult.Finished) {
+        if (result is FeatureSessionResult.Completed) {
             onAuthenticated(result.output as LoginResult.Authenticated)
         }
     }
@@ -39,7 +39,7 @@ fun LoginRoute(
 }
 ```
 
-The Route **does not navigate on its own**: it delivers the `Finished` result to a callback. Navigation belongs to the host.
+The Route **does not navigate on its own**: it delivers the `Completed` result to a callback. Navigation belongs to the host.
 
 ## Screen: the pure view
 

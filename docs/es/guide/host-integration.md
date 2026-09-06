@@ -8,7 +8,7 @@ Esta página cubre el flujo completo de un host que integra un módulo del [cat�
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.opside-leaf:leaf-login:1.0.0")
+            implementation("com.opside-leaf:leaf-login:%LEAF_VERSION%")
             implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")
             implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // si tu host es Compose
         }

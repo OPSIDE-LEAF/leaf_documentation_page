@@ -171,7 +171,7 @@ Any compatible Maven server (Sonatype Nexus, JFrog Artifactory, Maven Central, e
 url = uri("https://my-nexus.example.com/repository/maven-releases/")
 ```
 
-In all cases, consumers must add the corresponding repository in their `settings.gradle.kts` to resolve dependencies. OPSIDE-LEAF uses Option A with the [`packages-distribution`](https://github.com/OPSIDE-LEAF/packages-distribution) repo.
+In every case, consumers must add the matching repository to `settings.gradle.kts` to resolve dependencies. The observed LEAF train repositories use Option B: one destination per artifact (`leaf-contracts`, `leaf-core`, `leaf-compose`, and `leaf-login`). Their builds do not use `packages-distribution` as the destination.
 :::
 
 ### `gradle.properties`
@@ -193,6 +193,8 @@ Create `local.properties` (do NOT commit) with `gpr.user` / `gpr.key`, and valid
 ```shell
 ./gradlew build
 ```
+
+Run the build with JDK 17. `JvmTarget.JVM_11` and `JavaVersion.VERSION_11` define published Android bytecode; they do not select the JDK that runs Gradle.
 
 ## Module conventions
 

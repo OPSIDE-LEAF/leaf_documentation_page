@@ -36,7 +36,7 @@ Its constructor is internal: the host receives an instance **exclusively** from 
 |---|---|
 | `state` | Last published state; `null` while the session initializes |
 | `result` | `null` while active; afterwards, exactly one terminal result |
-| `isReady` | `true` when the session is ready to receive events |
+| `isReady` | `true` while a Core session is attached to the holder; it does not guarantee that the next event will be accepted |
 | `send(event)` | Same disposition as `FeatureSession.send` |
 
 ## The composition key: `(feature, input)`
@@ -67,6 +67,8 @@ fun Login(module: LoginModule) {
 ```
 
 If `initialState` fails, `rememberLeaf` publishes `Failed(INITIALIZATION_FAILED)`, leaves `isReady` as `false`, and **does not expose the throwable**.
+
+`isReady` describes the Compose–Core attachment. While a terminal result propagates it may still be observed as `true` even though `send` already returns `REJECTED_TERMINATED`. Use `result` to render terminality and always inspect the value returned by `send` when disposition matters.
 
 ## Anti-patterns
 

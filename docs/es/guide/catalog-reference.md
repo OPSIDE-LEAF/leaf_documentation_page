@@ -1,5 +1,9 @@
 # Catálogo: módulo de ejemplo (Feature con UI)
 
+::: warning Línea LEAF 2.0.1
+Esta página conserva la API del módulo Catalog `1.0.0` observada en su `origin/main`, que declara LEAF `2.0.1`. Sus nombres y DSL no deben interpretarse como una referencia de Feature `3.0.0`. El módulo no forma parte del release LEAF 3.
+:::
+
 `leaf-catalog` (`com.opside-leaf:leaf-catalog:1.0.0`, paquete `com.opside.leaf.catalog`, [repo](https://github.com/OPSIDE-LEAF/leaf-catalog)) es un módulo de dominio **Feature con UI Compose** para navegar colecciones paginadas: grilla/lista, búsqueda, filtros, orden, detalle y acciones. Sigue **Pattern A (Host Gateway)**: el host implementa la fuente de datos, el módulo trae la UI, la lógica y un **DSL** para activar y configurar cada parte.
 
 ## El recorrido de la Feature

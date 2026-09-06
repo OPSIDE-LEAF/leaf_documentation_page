@@ -4,7 +4,7 @@
 
 | Requirement | Detail |
 |---|---|
-| JDK | 11+ |
+| Build JDK | 17 (toolchain used by Gradle/CI) |
 | Gradle | 8.14.3 (via wrapper) |
 | Kotlin | 2.3.20 |
 | Android SDK | compileSdk 36, minSdk 24 |
@@ -13,7 +13,7 @@
 
 ## 1. Configure credentials
 
-Artifacts are distributed via GitHub Packages, which requires authentication even for reads (a limitation of GitHub's Maven registry, even with public repos). This is the current stage: the [roadmap](/en/guide/roadmap) plans to migrate to a self-hosted Maven server with anonymous reads. In the meantime, Leaf uses a **dual** credential pattern:
+LEAF projects configure GitHub Packages as their Maven destination and source; resolving from that registry requires authentication even for reads. Check each version's availability by resolving it. Leaf uses a **dual** credential pattern:
 
 1. **Local development** — `local.properties` (not committed)
 2. **CI/CD** — environment variables `GPR_USER` and `GPR_GIT_KEY`
@@ -47,7 +47,7 @@ dependencyResolutionManagement {
         if (providers.gradleProperty("leaf.useMavenLocal").orNull == "true") {
             mavenLocal()
         }
-        listOf("leaf-contracts", "leaf-core", "leaf-compose").forEach { repository ->
+        listOf("leaf-contracts", "leaf-core", "leaf-compose", "leaf-login").forEach { repository ->
             maven {
                 name = "GitHubPackages-$repository"
                 url = uri("https://maven.pkg.github.com/OPSIDE-LEAF/$repository")
@@ -83,10 +83,14 @@ kotlin {
 | `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` | `Module`, `ModuleInfo`, `Action`, `Feature`, DSLs | Always (as `api` if you expose Leaf types) |
 | `com.opside-leaf:leaf-core:%LEAF_VERSION%` | `Leaf.run`, `Leaf.open`, `FeatureSession` | Hosts that execute capabilities |
 | `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | `Leaf.rememberLeaf` | Hosts with Compose UI |
-| `com.opside-leaf:leaf-login:1.0.0` | Reference module (login Feature + UI) | Optional |
+| `com.opside-leaf:leaf-login:%LEAF_VERSION%` | Reference module (stable Feature/UI and experimental Workflow/UI) | Optional |
 
 ::: tip leaf-contracts as an `api` dependency
 If your module exposes Leaf types in its public surface (the usual case), use `api("com.opside-leaf:leaf-contracts:...")` so that your consumers can resolve them.
+:::
+
+::: info JDK 17 and JVM 11 target
+JDK 17 runs Gradle, AGP, and CI jobs. Android artifacts continue to compile with `jvmTarget = JVM_11` and Java 11 bytecode compatibility. These are separate choices.
 :::
 
 ## 4. Maven Local (development)

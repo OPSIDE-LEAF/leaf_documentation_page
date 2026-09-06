@@ -7,4 +7,4 @@
  *  - Todas las páginas markdown que usan el placeholder %LEAF_VERSION%
  *    (prosa, tablas y bloques de código)
  */
-export const LEAF_VERSION = '2.0.1'
+export const LEAF_VERSION = '3.0.0'

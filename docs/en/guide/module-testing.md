@@ -4,7 +4,7 @@ Tests live in `commonTest` using Kotlin Test + `kotlinx-coroutines-test`. Test t
 
 ## What to test
 
-1. **Transitions** -- validation and recovery return `stay`; a successful exit returns `finish` once.
+1. **Transitions** -- validation and recovery return `Continue`; a successful exit returns `Complete` once.
 2. **Gateway** -- success and expected invalidation map to domain results/state, not exceptions.
 3. **Errors** -- an unexpected exception during a transition ends up as `Failed(TRANSITION_FAILED)` without leaking details.
 4. **Lifecycle** -- canceling the host scope produces `Cancelled`; closing twice does not change the result.
@@ -25,8 +25,8 @@ class CheckoutModuleTest {
             CheckoutState(field = ""),
             CheckoutEvent.Submit,
         )
-        val stay = assertIs<FeatureTransition.Stay<CheckoutState>>(transition)
-        assertEquals("El campo es obligatorio", stay.state.error)
+        val continued = assertIs<FeatureTransition.Continue<CheckoutState>>(transition)
+        assertEquals("El campo es obligatorio", continued.state.error)
     }
 
     @Test
@@ -35,8 +35,8 @@ class CheckoutModuleTest {
             CheckoutState(field = "valid-input"),
             CheckoutEvent.Submit,
         )
-        val finish = assertIs<FeatureTransition.Finish<CheckoutResult>>(transition)
-        assertEquals(CheckoutResult.Success("id-1"), finish.output)
+        val completed = assertIs<FeatureTransition.Complete<CheckoutResult>>(transition)
+        assertEquals(CheckoutResult.Success("id-1"), completed.output)
     }
 
     private fun module(response: PaymentResponse) = CheckoutModule(
