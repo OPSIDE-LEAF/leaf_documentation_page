@@ -1,7 +1,7 @@
 # Visuals: identidad visual opcional
 
 ::: info Línea independiente
-Esta página describe LeafVisuals `1.3.0` ([repo](https://github.com/OPSIDE-LEAF/leaf-visuals)). No forma parte del release `%LEAF_VERSION%` y **no está publicado en GitHub Packages**: la evidencia disponible es local, vía `publishToMavenLocal`.
+Esta página describe LeafVisuals `1.4.0` ([repo](https://github.com/OPSIDE-LEAF/leaf-visuals)). Versiona aparte del release `%LEAF_VERSION%` y se publica en GitHub Packages en las cuatro variantes KMP: común, `-android`, `-iosarm64` y `-iossimulatorarm64`.
 :::
 
 `leaf-visuals` (`com.opside-leaf:leaf-visuals`, paquete `com.opside.leaf.visuals`) es el puente opcional de Material 3 entre el host y los renderers de las Features. Resuelve un problema concreto: un módulo con UI no debe imponer su propio tema, pero tampoco puede adivinar el del host.
@@ -31,7 +31,13 @@ Sin provider → la Feature hereda el MaterialTheme ambiente del host
 | `ProvideLeafVisuals(visuals, darkTheme, content)` | Publica una selección explícita del host. La política de modo oscuro la decide el host. |
 | `ProvideLeafVisuals(visuals, darkTheme, enabled, content)` | Igual que la anterior, pero con `enabled = false` **enmascara** cualquier provider externo y no resuelve nada. |
 | `isLeafVisualsProvided(): Boolean` | `true` solo si hay un provider en este subárbol de composición. |
+| `currentLeafVisuals(): LeafVisualsValues?` | Los valores ya resueltos (color, tipografía, formas) del provider más cercano, o `null` si no hay. |
 | `LeafVisualsMaterialTheme(content)` | Aplica los valores del provider más cercano. Sin provider, deja intactos colores, tipografía y formas. |
+| `LeafVisualsSurface(modifier, content)` | Lo anterior **más el fondo del esquema**, a pantalla completa. |
+
+::: danger El tema no pinta el fondo
+`LeafVisualsMaterialTheme` transporta colores pero no dibuja nada. Si el host no pinta un fondo, el `background` del esquema no se usa nunca y la pantalla conserva el color de la ventana de la plataforma — con el esquema claro eso deja texto oscuro sobre un fondo oscuro. `LeafVisualsSurface` es la forma de una sola llamada para un host que es dueño de toda la pantalla.
+:::
 
 ## La identidad LEAF Things
 
@@ -80,7 +86,9 @@ MaterialTheme(colorScheme = miEsquema) {
 
 ```kotlin [Imponer la identidad LEAF]
 ThingsLeafTheme {                    // provee + aplica en una llamada
-    CatalogRoute(module, onResult = ::route)
+    LeafVisualsSurface {             // ...y pinta el fondo del esquema
+        CatalogRoute(module, onResult = ::route)
+    }
 }
 ```
 
@@ -105,20 +113,14 @@ ProvideLeafVisuals(visuals, darkTheme = isSystemInDarkTheme()) {
 
 ## Consumo
 
-Mientras el módulo no esté en GitHub Packages, la única vía comprobada es Maven Local:
-
-```bash
-# En el repositorio leaf-visuals
-./gradlew publishToMavenLocal
-
-# En el consumidor
-./gradlew build -Pleaf.useMavenLocal=true
-```
+El artefacto se resuelve desde GitHub Packages como cualquier otro módulo LEAF:
 
 ```kotlin
-implementation("com.opside-leaf:leaf-visuals:1.3.0")
+implementation("com.opside-leaf:leaf-visuals:1.4.0")
 ```
 
-::: warning Disponibilidad
-`leaf-visuals` versiona aparte del tren estable: su `1.3.0` no se corresponde con `%LEAF_VERSION%`. Antes de depender de él desde un módulo que sí publiques, verifica que esté disponible en el repositorio de paquetes que usa tu build.
+El repositorio necesita credenciales de GitHub Packages, igual que el resto del ecosistema; la [integración de módulos publicados](/es/guide/host-integration) cubre esa configuración.
+
+::: warning La versión no sigue al tren estable
+`leaf-visuals` versiona aparte: su `1.4.0` no se corresponde con `%LEAF_VERSION%`. Fija su versión de forma explícita en tu catálogo en vez de reutilizar la del tren.
 :::

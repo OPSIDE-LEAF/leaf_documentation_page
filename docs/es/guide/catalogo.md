@@ -24,9 +24,9 @@ Estos módulos no forman parte del release `3.0.0` y sus builds observados todav
 | Catalog | `1.0.0` | `CatalogModule.browse: Feature<...>`, UI Compose y DSL | La implementación aparece en `origin/main` tras el fetch; el checkout local está dos commits detrás. |
 | Stripe payment | `0.1.0` | Actions `createOrReplay` y `observe` | PoC `LOCAL_FAKE`; no prueba integración, SDK, tokenización ni cobro real con Stripe. |
 | Mercado Pago payment | `0.1.0` | Actions `createOrReplay` y `observe` | PoC `LOCAL_FAKE`; no prueba integración, SDK, tokenización ni cobro real con Mercado Pago. |
-| LeafVisuals | `1.3.0` | Provider Compose opcional, `LeafVisualsMaterialTheme` y la identidad `thingsLeafVisuals()` | Evidencia local/Maven Local; publicación remota no comprobada. |
+| LeafVisuals | `1.3.0` | Provider Compose opcional, `LeafVisualsMaterialTheme` y la identidad `thingsLeafVisuals()` | Publicado en GitHub Packages en las cuatro variantes KMP. |
 
-El `origin/main` observado de Catalog declara `leaf-visuals:1.3.0`. El repositorio LeafVisuals tiene esa misma línea `1.3.0` — con el tema de marca `thingsLeafVisuals()` — en la rama de adopción `feature/adopt-leaf-brand-visuals`, todavía sin fusionar a `main`, que sigue en `1.0.0`. La `1.3.0` solo se ha comprobado en Maven Local: no está publicada en GitHub Packages, así que esta documentación no afirma disponibilidad remota.
+El `origin/main` observado de Catalog declara `leaf-visuals:1.3.0`, y esa misma línea `1.3.0` — con el tema de marca `thingsLeafVisuals()` — es la que está en `main` de LeafVisuals y publicada en GitHub Packages. Catalog, en cambio, sigue sin publicar: consumirlo requiere Maven Local.
 
 ::: warning Compatibilidad entre líneas
 Authentication, Email, Catalog y los pagos no se promovieron con este tren. Antes de combinarlos con LEAF 3, migra su dependencia y vocabulario de Feature cuando corresponda, y ejecuta sus consumers. La [migración de Feature](/es/guide/feature-migration) cubre el cambio de nombres.

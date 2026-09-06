@@ -24,9 +24,9 @@ These modules are not part of the `3.0.0` release. Their observed builds still d
 | Catalog | `1.0.0` | `CatalogModule.browse: Feature<...>`, Compose UI, and DSL | The implementation appears on `origin/main` after fetch; the local checkout is two commits behind. |
 | Stripe payment | `0.1.0` | `createOrReplay` and `observe` Actions | `LOCAL_FAKE` PoC; it does not prove a real Stripe integration, SDK, tokenization, or charge. |
 | Mercado Pago payment | `0.1.0` | `createOrReplay` and `observe` Actions | `LOCAL_FAKE` PoC; it does not prove a real Mercado Pago integration, SDK, tokenization, or charge. |
-| LeafVisuals | `1.3.0` | Optional Compose provider, `LeafVisualsMaterialTheme`, and the `thingsLeafVisuals()` brand identity | Local/Maven Local evidence; remote publication was not verified. |
+| LeafVisuals | `1.3.0` | Optional Compose provider, `LeafVisualsMaterialTheme`, and the `thingsLeafVisuals()` brand identity | Published to GitHub Packages in all four KMP variants. |
 
-The observed Catalog `origin/main` declares `leaf-visuals:1.3.0`. The LeafVisuals repository carries that same `1.3.0` line — including the `thingsLeafVisuals()` brand theme — on the adoption branch `feature/adopt-leaf-brand-visuals`, not yet merged into `main`, which remains at `1.0.0`. That `1.3.0` has only been verified through Maven Local: it is not published to GitHub Packages, so this documentation makes no remote availability claim.
+The observed Catalog `origin/main` declares `leaf-visuals:1.3.0`, and that same `1.3.0` line — including the `thingsLeafVisuals()` brand theme — is what LeafVisuals `main` carries and what is published to GitHub Packages. Catalog itself remains unpublished: consuming it still requires Maven Local.
 
 ::: warning Compatibility across lines
 Authentication, Email, Catalog, and payment modules were not promoted with this train. Before combining them with LEAF 3, migrate their dependency and Feature vocabulary where applicable, then run their consumers. The [Feature migration](/en/guide/feature-migration) covers the renamed API.
