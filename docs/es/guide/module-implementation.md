@@ -57,8 +57,8 @@ Las dependencias externas se modelan como interfaces; la implementación pertene
 import com.ops.leaf_core.api.Module
 import com.ops.leaf_core.api.ModuleInfo
 import com.ops.leaf_core.api.feature
-import com.ops.leaf_core.api.finish
-import com.ops.leaf_core.api.stay
+import com.ops.leaf_core.api.completeFeature
+import com.ops.leaf_core.api.continueFeature
 
 class CheckoutModule(
     private val gateway: PaymentGateway,
@@ -73,16 +73,16 @@ class CheckoutModule(
         initialState = { input -> CheckoutState(field = input.someParam) },
     ) { state, event ->
         when (event) {
-            is CheckoutEvent.FieldChanged -> stay(state.copy(field = event.value, error = null))
+            is CheckoutEvent.FieldChanged -> continueFeature(state.copy(field = event.value, error = null))
             CheckoutEvent.Submit -> handleSubmit(state)
         }
     }
 
     private suspend fun handleSubmit(state: CheckoutState) = when {
-        state.field.isBlank() -> stay(state.copy(error = "El campo es obligatorio"))
+        state.field.isBlank() -> continueFeature(state.copy(error = "El campo es obligatorio"))
         else -> when (val response = gateway.execute(state.field)) {
-            is PaymentResponse.Success -> finish(CheckoutResult.Success(response.id))
-            PaymentResponse.Failed -> stay(state.copy(error = "Operación fallida"))
+            is PaymentResponse.Success -> completeFeature(CheckoutResult.Success(response.id))
+            PaymentResponse.Failed -> continueFeature(state.copy(error = "Operación fallida"))
         }
     }
 
@@ -131,7 +131,7 @@ fun CheckoutRoute(
     val result = leaf.result
 
     LaunchedEffect(result) {
-        if (result is FeatureSessionResult.Finished) {
+        if (result is FeatureSessionResult.Completed) {
             val output = result.output
             if (output is CheckoutResult.Success) onSuccess(output)
         }
@@ -154,7 +154,7 @@ fun CheckoutRoute(
 
 ## Reglas al implementar
 
-- Errores de negocio esperados → variantes del `Result` o `stay` con error en el estado. Nunca excepciones.
+- Errores de negocio esperados → variantes del `Result` o `continueFeature` con error en el estado. Nunca excepciones.
 - No guardes secretos en `State`, `Event`, `Output`, logs ni telemetría ([reglas de privacidad](/es/guide/errores-telemetria)).
 - Cola de eventos: default 16, máximo 1,024. No la infles para ocultar sobreproducción.
 - Todo en `commonMain`; `androidMain`/`iosMain` solo cuando sea estrictamente necesario. El caso legítimo son **gateways de plataforma** que requieren APIs nativas (ej. transporte de red, sensores, almacenamiento). Usa `expect/actual` para la fábrica y mantén la interfaz del gateway en `commonMain`.

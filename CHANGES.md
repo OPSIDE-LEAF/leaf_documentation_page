@@ -1,5 +1,16 @@
 # Registro de cambios — Sitio de documentación Leaf
 
+## LEAF 3.0.0 — 2026-09-05
+
+- Actualiza la versión única del sitio a `3.0.0` y documenta el cambio incompatible de Feature: `Continue` / `Complete`, `continueFeature` / `completeFeature`, `Completed` / `COMPLETED`.
+- Conserva la sintaxis de LEAF `2.0.1` como referencia histórica explícita en una guía de migración bilingüe.
+- Añade guía y referencia API bilingües de Workflow. La capability se distribuye dentro del tren `3.0.0`, pero continúa como preview protegida por `@ExperimentalLeafWorkflowApi`.
+- Describe reducción síncrona, `Continue` / `Emit` / `Complete`, ownership de `EffectHandler`, sesión, overflow no terminal, outcome, identidad Compose, telemetría y privacidad.
+- Corrige los ejemplos terminales de Feature, el significado de `isReady`, la visibilidad de `LeafException`, los repositorios de instalación, la distinción JDK/JVM y el estado del catálogo observado en el workspace.
+- Marca los requisitos académicos de registro y resolución dinámica como diseño histórico superado por la ruta local tipada.
+
+La documentación de release describe la superficie fuente del candidato local. Este registro no prueba publicación de paquetes ni ejecución externa Swift/iOS.
+
 > Sesión del 2026-07-31. Adaptación de marca + generación completa del contenido en español.
 
 ## 1. Identidad visual (branding Leaf)

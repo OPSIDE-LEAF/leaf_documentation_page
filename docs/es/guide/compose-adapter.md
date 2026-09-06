@@ -36,7 +36,7 @@ Su constructor es interno: el host recibe una instancia **exclusivamente** desde
 |---|---|
 | `state` | Último estado publicado; `null` mientras la sesión inicializa |
 | `result` | `null` mientras está activa; después, exactamente un resultado terminal |
-| `isReady` | `true` cuando la sesión está lista para recibir eventos |
+| `isReady` | `true` mientras una sesión de Core está adjunta al holder; no garantiza que el siguiente evento será aceptado |
 | `send(event)` | Misma disposición que `FeatureSession.send` |
 
 ## La clave de composición: `(feature, input)`
@@ -67,6 +67,8 @@ fun Login(module: LoginModule) {
 ```
 
 Si falla `initialState`, `rememberLeaf` publica `Failed(INITIALIZATION_FAILED)`, deja `isReady` en `false` y **no expone el throwable**.
+
+`isReady` describe el vínculo Compose–Core. Durante la propagación de un resultado terminal puede observarse todavía como `true`, aunque `send` ya devuelva `REJECTED_TERMINATED`. Usa `result` para renderizar terminalidad y comprueba siempre el valor devuelto por `send` cuando la disposición importe.
 
 ## Anti-patrones
 

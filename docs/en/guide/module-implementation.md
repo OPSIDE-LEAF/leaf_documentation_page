@@ -57,8 +57,8 @@ External dependencies are modeled as interfaces; the implementation belongs to t
 import com.ops.leaf_core.api.Module
 import com.ops.leaf_core.api.ModuleInfo
 import com.ops.leaf_core.api.feature
-import com.ops.leaf_core.api.finish
-import com.ops.leaf_core.api.stay
+import com.ops.leaf_core.api.completeFeature
+import com.ops.leaf_core.api.continueFeature
 
 class CheckoutModule(
     private val gateway: PaymentGateway,
@@ -73,16 +73,16 @@ class CheckoutModule(
         initialState = { input -> CheckoutState(field = input.someParam) },
     ) { state, event ->
         when (event) {
-            is CheckoutEvent.FieldChanged -> stay(state.copy(field = event.value, error = null))
+            is CheckoutEvent.FieldChanged -> continueFeature(state.copy(field = event.value, error = null))
             CheckoutEvent.Submit -> handleSubmit(state)
         }
     }
 
     private suspend fun handleSubmit(state: CheckoutState) = when {
-        state.field.isBlank() -> stay(state.copy(error = "El campo es obligatorio"))
+        state.field.isBlank() -> continueFeature(state.copy(error = "El campo es obligatorio"))
         else -> when (val response = gateway.execute(state.field)) {
-            is PaymentResponse.Success -> finish(CheckoutResult.Success(response.id))
-            PaymentResponse.Failed -> stay(state.copy(error = "Operación fallida"))
+            is PaymentResponse.Success -> completeFeature(CheckoutResult.Success(response.id))
+            PaymentResponse.Failed -> continueFeature(state.copy(error = "Operación fallida"))
         }
     }
 
@@ -131,7 +131,7 @@ fun CheckoutRoute(
     val result = leaf.result
 
     LaunchedEffect(result) {
-        if (result is FeatureSessionResult.Finished) {
+        if (result is FeatureSessionResult.Completed) {
             val output = result.output
             if (output is CheckoutResult.Success) onSuccess(output)
         }
@@ -154,7 +154,7 @@ fun CheckoutRoute(
 
 ## Rules when implementing
 
-- Expected business errors -> `Result` variants or `stay` with an error in the state. Never exceptions.
+- Expected business errors -> `Result` variants or `continueFeature` with an error in the state. Never exceptions.
 - Do not store secrets in `State`, `Event`, `Output`, logs, or telemetry ([privacy rules](/en/guide/errors-telemetry)).
 - Event queue: default 16, maximum 1,024. Do not inflate it to hide overproduction.
 - Everything in `commonMain`; `androidMain`/`iosMain` only when strictly necessary. The legitimate case is **platform gateways** that require native APIs (e.g. network transport, sensors, storage). Use `expect/actual` for the factory and keep the gateway interface in `commonMain`.

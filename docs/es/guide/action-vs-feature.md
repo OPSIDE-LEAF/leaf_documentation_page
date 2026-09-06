@@ -1,6 +1,6 @@
 # Action vs Feature
 
-Toda capability de un módulo es una `Action` o una `Feature`. La elección depende de la **interacción**, no de la capa de UI que la consuma.
+Las capabilities estables de un módulo son `Action` y `Feature`. LEAF 3 también incluye `Workflow` como [preview experimental](/es/guide/workflow). La elección depende de la **interacción**, no de la capa de UI que la consuma.
 
 ## Criterios de elección
 
@@ -8,29 +8,30 @@ Toda capability de un módulo es una `Action` o una `Feature`. La elección depe
 |---|---|
 | ¿Solo necesito ejecutar una capability y obtener una respuesta? | `Action` |
 | ¿La persona puede editar, corregir y continuar mientras ve estado? | `Feature` |
-| ¿La operación debe navegar/terminar con un resultado de dominio? | `finish(output)` en una `Feature` |
+| ¿La operación debe navegar/terminar con un resultado de dominio? | `completeFeature(output)` en una `Feature` |
+| ¿Core debe ejecutar efectos suspendidos y regresarlos como eventos? | `Workflow` (preview con opt-in) |
 
 **`Action<Input, Output>`** — operación finita: recibe un input, se ejecuta y devuelve un output. No ofrece estado interactivo observable. Ejemplos: procesar un pago, enviar un email, autenticar sin formulario interactivo.
 
 **`Feature<Input, State, Event, Output>`** — el host muestra estado y envía intenciones durante la interacción. Core procesa los eventos **en serie** y la Feature responde con una transición. Ejemplos: formulario de login, contador, checkout editable.
 
-## Transiciones: `stay` vs `finish`
+## Transiciones: `Continue` y `Complete`
 
 ```kotlin
 sealed interface FeatureTransition<out State, out Output> {
-    data class Stay<State>(val state: State) : FeatureTransition<State, Nothing>
-    data class Finish<Output>(val output: Output) : FeatureTransition<Nothing, Output>
+    data class Continue<State>(val state: State) : FeatureTransition<State, Nothing>
+    data class Complete<Output>(val output: Output) : FeatureTransition<Nothing, Output>
 }
 
-fun <State> stay(state: State): FeatureTransition<State, Nothing>
-fun <Output> finish(output: Output): FeatureTransition<Nothing, Output>
+fun <State> continueFeature(state: State): FeatureTransition<State, Nothing>
+fun <Output> completeFeature(output: Output): FeatureTransition<Nothing, Output>
 ```
 
-- `stay(state)` conserva la sesión abierta y publica el nuevo estado. Úsalo para correcciones esperables — un campo inválido, credenciales rechazadas, un error recuperable.
-- `finish(output)` fija la salida terminal **exactamente una vez**. Después, la sesión rechaza eventos con `REJECTED_TERMINATED`.
+- `continueFeature(state)` conserva la sesión abierta y publica el nuevo estado. Úsalo para correcciones esperables: un campo inválido, credenciales rechazadas o un error recuperable.
+- `completeFeature(output)` fija la salida terminal **exactamente una vez**. Después, la sesión rechaza eventos con `REJECTED_TERMINATED`.
 
 ::: warning No uses excepciones para resultados de negocio
-`InvalidCredentials` no es una excepción: es un `stay` con el error en el estado del formulario, o una variante del tipo de salida. Las excepciones quedan reservadas para fallos técnicos inesperados.
+`InvalidCredentials` no es una excepción: es un `continueFeature` con el error en el estado del formulario, o una variante del tipo de salida. Las excepciones quedan reservadas para fallos técnicos inesperados.
 :::
 
 ## Firmas estables
@@ -74,6 +75,8 @@ class CheckoutModule(private val gateway: PaymentGateway) : Module {
     val checkout = feature<CheckoutInput, CheckoutState, CheckoutEvent, CheckoutResult>(
         moduleInfo = info,
         initialState = { input -> CheckoutState(items = input.items) },
-    ) { state, event -> /* stay o finish */ }
+    ) { state, event -> /* continueFeature o completeFeature */ }
 }
 ```
+
+Si vienes de LEAF 2.0.1, consulta la [tabla de migración de Feature](/es/guide/feature-migration).

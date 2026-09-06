@@ -18,9 +18,9 @@ interface FeatureSession<State, Event, Output> {
 
 - **Cola acotada** — capacidad predeterminada 16, rango 1..1,024 (`DEFAULT_FEATURE_EVENT_CAPACITY` / `MAX_FEATURE_EVENT_CAPACITY`). Nunca `Channel.UNLIMITED`.
 - **Envío nunca suspende** — `send` es linearizado contra terminación; la presión falla rápido con `REJECTED_OVERFLOW`.
-- **Terminalidad única** — `finish` produce exactamente un resultado; eventos tardíos se rechazan con `REJECTED_TERMINATED`.
+- **Terminalidad única** — `completeFeature` produce exactamente un resultado; eventos tardíos se rechazan con `REJECTED_TERMINATED`.
 - **Cancelación estructurada** — la sesión es hija de la corrutina que llamó `Leaf.open`; si el host se cancela, la sesión se cancela. `cancel()` y `close()` son idempotentes.
-- **Inicialización segura** — si `initialState(input)` lanza, Core produce `LeafException` con operación `FEATURE_INITIALIZATION` (en Compose: `Failed(INITIALIZATION_FAILED)`).
+- **Inicialización segura** — si `initialState(input)` lanza, Core produce una `LeafException` redactada (en Compose: `Failed(INITIALIZATION_FAILED)`). La operación participa en el mensaje técnico, pero no es una propiedad pública.
 
 ## Disposición de `send`
 
@@ -40,7 +40,7 @@ Mientras la sesión está activa, `result` es `null`. Después retiene exactamen
 
 ```kotlin
 sealed interface FeatureSessionResult<out Output> {
-    data class Finished<Output>(val output: Output) : FeatureSessionResult<Output>
+    data class Completed<Output>(val output: Output) : FeatureSessionResult<Output>
     data object Cancelled : FeatureSessionResult<Nothing>
     data class Failed(val failure: FeatureTechnicalFailure) : FeatureSessionResult<Nothing>
 }
@@ -53,7 +53,7 @@ Los fallos técnicos posibles son `INITIALIZATION_FAILED`, `EVENT_QUEUE_OVERFLOW
 ```kotlin
 // FeatureSessionMetrics
 val eventQueueOverflowCount: Long
-val terminalCause: FeatureSessionTerminalCause? // FINISHED, CANCELLED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED
+val terminalCause: FeatureSessionTerminalCause? // COMPLETED, CANCELLED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED
 ```
 
 Métricas sin payload: solo el contador de overflow y la causa terminal.
@@ -64,11 +64,13 @@ Métricas sin payload: solo el contador de overflow y la causa terminal.
 suspend fun runCounter(module: CounterModule) {
     val session = Leaf.open(module.counter, Unit)
     try {
-        session.send(CounterEvent.Increment)
-        session.result.collect { result ->
-            if (result is FeatureSessionResult.Finished) {
-                persistCount(result.output.value)
-            }
+        check(session.send(CounterEvent.Increment) == FeatureSendResult.ACCEPTED)
+        check(session.send(CounterEvent.Done) == FeatureSendResult.ACCEPTED)
+
+        when (val result = session.result.filterNotNull().first()) {
+            is FeatureSessionResult.Completed -> persistCount(result.output.value)
+            FeatureSessionResult.Cancelled -> Unit
+            is FeatureSessionResult.Failed -> showTechnicalFailure(result.failure)
         }
     } finally {
         session.close()
@@ -76,6 +78,10 @@ suspend fun runCounter(module: CounterModule) {
 }
 ```
 
+`Done` solicita la transición terminal y `filterNotNull().first()` detiene la observación al recibir el único resultado.
+
 ::: warning El host no duplica al Core
 No implementes un reducer, una cola o una sesión paralela en el host. Una única `FeatureSession` por `Leaf.open`, administrada por Core.
 :::
+
+Los nombres exitosos cambiaron en LEAF 3; consulta la [migración desde 2.0.1](/es/guide/feature-migration).

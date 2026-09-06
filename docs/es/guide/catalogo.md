@@ -1,75 +1,50 @@
 # Catálogo de módulos
 
-Organización en GitHub: [github.com/OPSIDE-LEAF](https://github.com/OPSIDE-LEAF)
+Esta página distingue el tren LEAF 3 del código de módulos independientes observado en el workspace. Describe superficies fuente y versiones declaradas; no confirma que una coordenada esté disponible en un registry remoto.
 
-## Core del ecosistema
+## Tren LEAF 3.0.0
 
-| Artefacto | Coordenada | Versión | Estado | Repositorio |
-|---|---|---|---|---|
-| leaf-contracts | `com.opside-leaf:leaf-contracts` | `%LEAF_VERSION%` | ✅ Estable | [OPSIDE-LEAF/leaf-contracts](https://github.com/OPSIDE-LEAF/leaf-contracts) |
-| leaf-core | `com.opside-leaf:leaf-core` | `%LEAF_VERSION%` | ✅ Estable | [OPSIDE-LEAF/leaf-core](https://github.com/OPSIDE-LEAF/leaf-core) |
-| leaf-compose | `com.opside-leaf:leaf-compose` | `%LEAF_VERSION%` | ✅ Estable | [OPSIDE-LEAF/leaf-compose](https://github.com/OPSIDE-LEAF/leaf-compose) |
-| leaf-visuals | — | — | 🚧 En desarrollo inicial (sistema de diseño) | [OPSIDE-LEAF/leaf-visuals](https://github.com/OPSIDE-LEAF/leaf-visuals) |
+| Artefacto | Coordenada | API en 3.0.0 | Repositorio |
+|---|---|---|---|
+| leaf-contracts | `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` | Action y Feature estables; contratos Workflow en preview | [leaf-contracts](https://github.com/OPSIDE-LEAF/leaf-contracts) |
+| leaf-core | `com.opside-leaf:leaf-core:%LEAF_VERSION%` | Runtime estable de Action/Feature; sesión Workflow en preview | [leaf-core](https://github.com/OPSIDE-LEAF/leaf-core) |
+| leaf-compose | `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | Adapter estable de Feature; holder Workflow en preview | [leaf-compose](https://github.com/OPSIDE-LEAF/leaf-compose) |
+| leaf-login | `com.opside-leaf:leaf-login:%LEAF_VERSION%` | Feature/UI estable y Login Workflow/UI con opt-in | [leaf-login](https://github.com/OPSIDE-LEAF/leaf-login) |
 
-Los artefactos del core publican variantes Android (AAR), iOS Arm64, iOS Simulator Arm64 y metadata KMP.
+Workflow conserva `@ExperimentalLeafWorkflowApi` aunque viaje dentro del tren estable. Consulta la [guía de Workflow](/es/guide/workflow).
 
-## Módulos de dominio (Leaf 2.x)
+## Líneas independientes observadas
 
-### leaf-login — ✅ Módulo de referencia
+Estos módulos no forman parte del release `3.0.0` y sus builds observados todavía declaran Contracts/Core `2.0.1` cuando dependen de ellos.
 
-- **Coordenada**: `com.opside-leaf:leaf-login:1.0.0` · **Paquete**: `com.opside.leaf.login` · **Repo**: [OPSIDE-LEAF/leaf-login](https://github.com/OPSIDE-LEAF/leaf-login)
-- `LoginModule` expone `val login: Feature<LoginInput, LoginState, LoginEvent, LoginResult>`
-- Incluye dominio (`LoginModels`), port (`AuthGateway`), UI (`LoginRoute` + `LoginScreen`) y clean consumer
-- Es la implementación de referencia para la arquitectura 2.x → [walkthrough completo](/es/guide/login-reference)
+| Módulo | Versión declarada | Superficie observada | Estado comprobable en el workspace |
+|---|---|---|---|
+| Authentication | `0.1.0` | `signIn`, `continueChallenge`, `restoreSession`, `signOut` y `accessTokens` | Implementación KMP tipada; factory `LOCAL_FAKE`. Ya no usa el registro legacy. |
+| Email | `1.0.0` | `EmailModule.send: Action<EmailInput, EmailResult>` | La implementación multiplataforma y SMTP nativo aparece en `origin/main` tras el fetch; el checkout local está detrás. |
+| Catalog | `1.0.0` | `CatalogModule.browse: Feature<...>`, UI Compose y DSL | La implementación aparece en `origin/main` tras el fetch; el checkout local está dos commits detrás. |
+| Stripe payment | `0.1.0` | Actions `createOrReplay` y `observe` | PoC `LOCAL_FAKE`; no prueba integración, SDK, tokenización ni cobro real con Stripe. |
+| Mercado Pago payment | `0.1.0` | Actions `createOrReplay` y `observe` | PoC `LOCAL_FAKE`; no prueba integración, SDK, tokenización ni cobro real con Mercado Pago. |
+| LeafVisuals | `1.0.0-alpha02` local | Provider Compose opcional y `LeafVisualsMaterialTheme` | Evidencia local/Maven Local; publicación remota no comprobada. |
 
-### leaf-email — ✅ Estable
+El `origin/main` observado de Catalog declara `leaf-visuals:1.3.0`, mientras el repositorio local de LeafVisuals está en `1.0.0-alpha02`. Esta documentación no afirma compatibilidad ni disponibilidad entre esas dos versiones.
 
-- **Coordenada**: `com.opside-leaf:leaf-email:1.0.0` · **Paquete**: `com.opside.leaf.email` · **Repo**: [OPSIDE-LEAF/leaf_email](https://github.com/OPSIDE-LEAF/leaf_email)
-- `EmailModule` expone `val send: Action<EmailInput, EmailResult>`
-- Envío SMTP en background en ambas plataformas (jakarta.mail en Android, NSStream en iOS)
-- Gateways internos vía `expect/actual`; el host solo proporciona `EmailConfig`
-- → [Walkthrough completo](/es/guide/email-reference)
-
-### leaf-catalog — ✅ Módulo de ejemplo (Feature con UI + DSL)
-
-- **Coordenada**: `com.opside-leaf:leaf-catalog:1.0.0` · **Paquete**: `com.opside.leaf.catalog` · **Repo**: [OPSIDE-LEAF/leaf-catalog](https://github.com/OPSIDE-LEAF/leaf-catalog)
-- `CatalogModule` expone `val browse: Feature<CatalogInput, CatalogState, CatalogEvent, CatalogResult>`
-- Pattern A: el host implementa `CatalogGateway`; el módulo trae UI Compose + un **DSL** de slots (layout, card, search, filters, sort, detail, pagination, actions)
-- Navegación browse ↔ detail interna; `imageLoader` / `strings` / `telemetry` / `visuals` inyectables por el host
-- Reescritura 2.x del legacy `com.ops.catalog` → [Walkthrough completo](/es/guide/catalog-reference)
-
-### leaf-mp-payments — 🚧 Stub inicial
-
-- **Paquete**: `com.ops.leaf_mp_payment`
-- `MercadoPagoPaymentModule` expone `val pay: Action<MercadoPagoPaymentRequest, MercadoPagoPaymentOutcome>`
-- Estado: stub que retorna `Unavailable`
-
-### leaf-stripe-payments — 🚧 Stub inicial
-
-- **Paquete**: `com.ops.leaf_stripe_payment`
-- `StripePaymentModule` expone `val pay: Action<StripePaymentRequest, StripePaymentOutcome>`
-- Estado: stub que retorna `Unavailable`
-
-## Módulos legacy — ⚠️ Arquitectura anterior
-
-| Módulo | Paquete | Estado |
-|---|---|---|
-| leaf-authentication | `com.ops.authentication` | Pendiente de migración a 2.x (usa Core 1.0 y registro antiguo) |
-| leaf-catalog | `com.ops.catalog` | Pendiente de migración a 2.x |
-
-::: warning Incompatibles con LEAF 2
-Los módulos legacy fueron creados con la arquitectura anterior (registro dinámico). No los combines con el tren %LEAF_VERSION%. Ver [Migración desde legacy](/es/guide/legacy-migration).
+::: warning Compatibilidad entre líneas
+Authentication, Email, Catalog y los pagos no se promovieron con este tren. Antes de combinarlos con LEAF 3, migra su dependencia y vocabulario de Feature cuando corresponda, y ejecuta sus consumers. La [migración de Feature](/es/guide/feature-migration) cubre el cambio de nombres.
 :::
 
-## Repositorios de artefactos
+## Historia de la arquitectura anterior
 
-Cada artefacto se publica en su propio repositorio de GitHub Packages bajo la organización `OPSIDE-LEAF`:
+El registro dinámico pertenece a LEAF 1.x. Authentication y Catalog tienen implementaciones tipadas posteriores en el workspace, así que ya no deben figurar como módulos legacy pendientes. La [guía histórica de 1.x a 2.0.1](/es/guide/legacy-migration) conserva ese contexto.
 
-```
+## Repositorios de paquetes configurados
+
+Los proyectos del tren configuran un repositorio de GitHub Packages por artefacto:
+
+```text
 https://maven.pkg.github.com/OPSIDE-LEAF/leaf-contracts
 https://maven.pkg.github.com/OPSIDE-LEAF/leaf-core
 https://maven.pkg.github.com/OPSIDE-LEAF/leaf-compose
 https://maven.pkg.github.com/OPSIDE-LEAF/leaf-login
 ```
 
-Group ID común: `com.opside-leaf`.
+El Group ID común es `com.opside-leaf`. Configuración de publicación no equivale a comprobación de disponibilidad; valida la coordenada en tu build.

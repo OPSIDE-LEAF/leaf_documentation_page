@@ -1,32 +1,24 @@
 # Roadmap
 
-## Tren estable actual: %LEAF_VERSION%
+## Tren actual: %LEAF_VERSION%
 
-Las coordenadas estables son `leaf-contracts:%LEAF_VERSION%`, `leaf-core:%LEAF_VERSION%` y `leaf-compose:%LEAF_VERSION%`, con `leaf-login:1.0.0` como módulo de referencia.
+Contracts, Core, Compose y Login forman el release coordinado `3.0.0`. Action y Feature son superficies estables. El cambio mayor de Feature está descrito en la [guía de migración](/es/guide/feature-migration).
+
+Workflow se incluye en los artefactos del tren como **preview provisional**. Conserva `@ExperimentalLeafWorkflowApi`, requiere opt-in y no adquiere una promesa estable por compartir el número `3.0.0`. Consulta su [guía](/es/guide/workflow) y [referencia](/es/api/workflow).
+
+Los paquetes Kotlin públicos continúan en `com.ops.leaf_core.api` y `com.ops.leaf_core.ui.compose`; `3.0.0` no realiza una migración de namespace.
 
 ## Distribución
 
-Hoy los artefactos se distribuyen por **GitHub Packages**, que exige un PAT con `read:packages` incluso para paquetes públicos (limitación del registry Maven de GitHub, sin acceso anónimo). El plan es migrar a un **servidor Maven propio** con lectura anónima: los Hosts consumirán sin credenciales y el token quedará solo del lado de publicación. Mientras tanto aplica el [patrón dual de credenciales](/es/guide/installation).
+Los workflows de release y los builds están configurados para publicar y resolver un repositorio GitHub Packages por artefacto. La configuración requiere credenciales de lectura. La presencia de una URL en Gradle no demuestra que una versión ya esté publicada; el consumer debe resolver la coordenada requerida.
 
-## En curso
+La [instalación](/es/guide/installation) enumera las cuatro fuentes del tren. Un servidor Maven con lectura anónima continúa como opción futura sin fecha comprometida.
 
-- **leaf-visuals** — sistema de diseño visual compartido (desarrollo inicial).
-- **Módulos de pagos** — `leaf-mp-payments` y `leaf-stripe-payments` evolucionarán de stubs a integraciones reales (Mercado Pago para el mercado local, Stripe para el internacional).
-- **Migración de módulos legacy** — email, authentication y catalog al modelo tipado 2.x ([guía](/es/guide/legacy-migration)).
+## Trabajo posterior
 
-## LEAF 3 (futuro)
+- Graduar Workflow solo después de una decisión explícita de estabilidad y evidencia compatible; mientras tanto su API puede cambiar.
+- Migrar y validar Authentication, Email, Catalog, Stripe payment y Mercado Pago payment contra LEAF 3. Esos módulos conservan líneas independientes observadas sobre LEAF 2.0.1.
+- Reconciliar la dependencia `leaf-visuals:1.3.0` declarada por Catalog con la línea local `1.0.0-alpha02` antes de afirmar compatibilidad o publicación.
+- Validar la integración Swift/iOS externa sobre los heads finales del release; la compilación Kotlin/Native local no sustituye ese gate.
 
-- **Workflow** — nueva capability para orquestar flujos multi-paso, con `WorkflowSession`, efectos runtime-owned y su propio adaptador Compose. Será una feature de LEAF 3; ver detalle abajo.
-- **Migración de namespace** — los paquetes históricos `com.ops.leaf_core.api` y `com.ops.leaf_core.ui.compose` se mantienen durante todo LEAF 2 por compatibilidad binaria; su migración queda reservada para LEAF 3.
-
-### Workflow
-
-`Workflow` será el tercer tipo de capability del ecosistema, pensado para interacciones que hoy no cubren `Action` (operación finita) ni `Feature` (interacción con estado): flujos multi-paso con efectos administrados por el runtime. Tendrá `WorkflowSession` y un adaptador Compose propio — **no es una evolución transparente de `Feature`**, sino un contrato distinto.
-
-::: warning Estado: experimental, fuera del tren %LEAF_VERSION%
-Mientras se desarrolla, `Workflow` vive detrás de `@ExperimentalLeafWorkflowApi` (staging `0.0.0-leaf3-experiment.1`) y no forma parte del tren estable:
-
-- No combines contratos `Workflow` (`rememberLeafWorkflowHolder`, etc.) con los módulos y hosts 2.x de esta documentación.
-- Evalúalo solo en rama, módulo y consumer **aislados**, con opt-in explícito y validación propia.
-- No cambies las coordenadas estables %LEAF_VERSION% ni presentes evidencia experimental como publicación estable.
-:::
+Consulta el [catálogo](/es/guide/catalogo) para distinguir el tren de release de los módulos independientes.

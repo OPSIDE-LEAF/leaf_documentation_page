@@ -2,7 +2,7 @@
 
 **Leaf** es un ecosistema para desarrollo móvil multiplataforma construido sobre **Kotlin Multiplatform** y **Compose Multiplatform**. Permite estructurar aplicaciones como conjuntos de módulos independientes, reutilizables y desacoplados, que se comparten entre Android e iOS conservando el rendimiento nativo.
 
-Su núcleo provee capabilities **locales y directas**: los Authors de módulos exponen valores `Action<Input, Output>` o `Feature<Input, State, Event, Output>`, y los hosts los ejecutan en una sentencia mediante `Leaf.run`, `Leaf.open` o el adaptador Compose `Leaf.rememberLeaf`.
+Su núcleo provee capabilities **locales y directas**. Los Authors exponen `Action` o `Feature`; LEAF 3 añade `Workflow` como preview experimental para reducción síncrona con efectos administrados por Core. Los hosts consumen referencias Kotlin mediante `Leaf.run`, `Leaf.open` o los adaptadores Compose.
 
 ```kotlin
 // El Author define la capability
@@ -33,7 +33,7 @@ En lugar de construir cada aplicación desde cero, los proyectos se ensamblan a 
 
 Cada módulo:
 
-- Encapsula sus dependencias por constructor y expone capabilities listas para usar (`Action` o `Feature`).
+- Encapsula sus dependencias por constructor y expone capabilities listas para usar (`Action`, `Feature` o, con opt-in, `Workflow`).
 - Se compila, prueba y publica de forma independiente (semantic versioning propio).
 - Modela sus dependencias externas como ports (interfaces) que el host implementa.
 - Valida su superficie pública con ABI validation y un *clean consumer*.
@@ -60,3 +60,5 @@ Cada módulo:
 - [Arquitectura y principios](/es/guide/arquitectura) — cómo está construido el ecosistema.
 - [Instalación](/es/guide/installation) — configura credenciales y dependencias.
 - [Tu primera Action](/es/guide/quickstart-action) — Hello World en 5 minutos.
+- [Workflow preview](/es/guide/workflow) — reducción, efectos y sesiones administradas por Core.
+- [Migrar Feature desde 2.0.1](/es/guide/feature-migration) — equivalencias del cambio incompatible.

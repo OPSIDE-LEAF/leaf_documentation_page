@@ -1,4 +1,8 @@
-# Migration from the legacy architecture
+# Historical migration: LEAF 1.x to 2.0.1
+
+::: info Historical scope
+This page preserves the transition that removed the dynamic registry in LEAF 2.0.1. Its `stay` / `finish` examples deliberately belong to that version and are not the `3.0.0` Feature API. For current code use the [Feature 2 to 3 migration](/en/guide/feature-migration).
+:::
 
 ## What changed between Leaf 1.x and Leaf 2.x
 
@@ -14,23 +18,23 @@ The previous architecture was based on a **dynamic registry**: modules were inst
 
 In 2.x the following are prohibited on the local route: `Map<String, Any?>`, generic payloads, codecs, unchecked casts, registry, installation, and manual invocation.
 
-## Modules pending migration
+## Later status observed
 
-| Module | Package | Notes |
+| Module | Later package | Status observed in the workspace |
 |---|---|---|
-| leaf-authentication | `com.ops.authentication` | Uses Core `1.0` and the old registry. **Incompatible with LEAF 2.** |
-| leaf-email | `com.ops.email` | Previous architecture |
-| leaf-catalog | `com.ops.catalog` | Previous architecture |
+| leaf-authentication | `com.ops.leaf_authentication` | Typed Action implementation `0.1.0` on LEAF 2.0.1. |
+| leaf-email | `com.opside.leaf.email` | Action implementation `1.0.0` observed on fetched `origin/main`. |
+| leaf-catalog | `com.opside.leaf.catalog` | Feature/UI/DSL implementation `1.0.0` observed on fetched `origin/main`. |
 
-::: warning Do not mix release trains
-Do not combine legacy modules with artifacts from the stable `%LEAF_VERSION%` release train in the same host. Migrate the module first.
+::: warning Do not mix this syntax with LEAF 3
+The later implementations declare LEAF 2.0.1 and were not part of the 3.0.0 release. Migrate and validate each consumer before combining lines.
 :::
 
 ## Migration strategy
 
-`leaf_login` is the reference for the target model. To migrate a legacy module:
+This was the strategy used to reach the 2.0.1 model:
 
-1. **Create the 2.x repository** following the [Author setup](/en/guide/module-setup) (independent repo, Gradle, ABI).
+1. **Create the 2.x repository** as an independent Gradle project with ABI validation.
 2. **Model the domain with types**: replace generic payloads with `Input`, `State`, `Event`, and `Result` (`sealed interface` for events and results).
 3. **Convert services into ports**: each external dependency becomes an interface (gateway) whose implementation is provided by the host.
 4. **Rewrite the capability**: the handling logic becomes an `Action` (finite operation) or a `Feature` with `stay`/`finish` transitions.
@@ -61,5 +65,5 @@ class AuthenticationModule(
 ```
 
 ::: info Didactic example
-This example shows LEAF's boundary; it is not a migration of the legacy `leaf-authentication` module nor a production-grade authentication. In production, add secure transport, credential protection, attempt limits, and identity provider policies — LEAF does not deliver those guarantees on its own.
+This historical example shows the LEAF 2.0.1 boundary; it does not describe the observed Authentication implementation or production-grade authentication. In production, add secure transport, credential protection, attempt limits, and identity provider policies: LEAF does not deliver those guarantees on its own.
 :::

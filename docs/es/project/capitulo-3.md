@@ -4,6 +4,10 @@
 
 El proyecto Leaf define un conjunto esencial de requerimientos que aseguran la viabilidad arquitectónica del ecosistema. Estos requerimientos se organizan en requerimientos funcionales (qué debe hacer el sistema) y requerimientos no funcionales (cómo debe comportarse el sistema). Cada requerimiento está vinculado directamente a los objetivos específicos del proyecto y al núcleo de la propuesta: un ecosistema modular multiplataforma que reduzca tiempos de desarrollo sin sacrificar rendimiento nativo.
 
+::: warning Documento histórico del diseño inicial
+Las tablas de esta sección conservan los requerimientos académicos formulados antes de cerrar LEAF 2.0.1. RF001 y RF006 describen un Core con registro y resolución dinámica que fue superado por la ruta local tipada. En LEAF 2 y 3, el host construye módulos y llama sus capabilities directamente; Core administra la ejecución y el lifecycle de cada sesión, no un registro de instancias. Los RNF de rendimiento siguen siendo objetivos de evaluación mientras el Capítulo IV no aporte resultados.
+:::
+
 ### Requerimientos funcionales
 
 | Ref. | Requerimiento | Descripción | Prioridad |
@@ -16,6 +20,15 @@ El proyecto Leaf define un conjunto esencial de requerimientos que aseguran la v
 | RF006 | Gestión del ciclo de vida de dependencias | El Core soporta distintos ciclos de vida para las instancias de los módulos registrados, basado en un runtime | 2 |
 | RF007 | Encapsulación funcional de cada módulo | Cada módulo expone una API pública clara y predecible, manteniendo privados los detalles internos de persistencia, validaciones e integraciones externas | 1 |
 | RF008 | Ejecución multiplataforma del Core | El Core ejecuta su lógica de orquestación tanto en aplicaciones Android como iOS a partir de un código base compartido construido sobre Kotlin Multiplatform | 1 |
+
+### Trazabilidad con la arquitectura implementada
+
+| Requerimiento histórico | Estado actual | Contrato que lo reemplaza |
+|---|---|---|
+| RF001 — registro, resolución y ejecución dinámica | Superado | Referencias Kotlin tipadas y llamadas directas a `Leaf.run`, `Leaf.open` y adapters Compose. |
+| RF006 — lifecycle de módulos registrados | Superado | El host posee las instancias de Module; Core posee el lifecycle estructurado de `FeatureSession` y `WorkflowSession`. |
+
+El resto de la tabla conserva el lenguaje del proyecto académico y no constituye por sí mismo evidencia de cumplimiento o publicación.
 
 ### Requerimientos no funcionales
 

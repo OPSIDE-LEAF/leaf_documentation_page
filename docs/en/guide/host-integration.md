@@ -8,7 +8,7 @@ This page covers the full flow for a host integrating a module from the [catalog
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.opside-leaf:leaf-login:1.0.0")
+            implementation("com.opside-leaf:leaf-login:%LEAF_VERSION%")
             implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")
             implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // if your host is Compose
         }

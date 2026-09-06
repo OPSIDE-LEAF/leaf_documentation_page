@@ -55,6 +55,12 @@ const hostItems = [
     link: '/en/guide/quickstart-feature'
   },
   {
+    title: 'Workflow preview',
+    description: 'Synchronous reduction and Core-managed effects behind an experimental opt-in.',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M200-120v-240h80v104l132-132 56 56-132 132h104v80H200Zm320 0v-80h160q33 0 56.5-23.5T760-280v-400q0-33-23.5-56.5T680-760H520v-80h160q66 0 113 47t47 113v400q0 66-47 113t-113 47H520ZM280-520q-66 0-113-47t-47-113q0-66 47-113t113-47h160v80H280q-33 0-56.5 23.5T200-680q0 33 23.5 56.5T280-600h400v80H280Z"/></svg>',
+    link: '/en/guide/workflow'
+  },
+  {
     title: 'Compose',
     description: 'rememberLeaf: an observable session with automatic disposal.',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z"/></svg>',
@@ -107,7 +113,7 @@ const authorItems = [
   },
   {
     title: 'Login as reference',
-    description: 'The validated module that models the 2.x architecture.',
+    description: 'Stable Feature and experimental Workflow route in the 3.0.0 train module.',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z"/></svg>',
     link: '/en/guide/login-reference'
   }

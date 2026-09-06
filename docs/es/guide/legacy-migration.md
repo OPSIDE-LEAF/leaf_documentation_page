@@ -1,4 +1,8 @@
-# Migración desde la arquitectura legacy
+# Migración histórica: LEAF 1.x a 2.0.1
+
+::: info Alcance histórico
+Esta página conserva la transición que eliminó el registro dinámico en LEAF 2.0.1. Sus ejemplos `stay` / `finish` pertenecen deliberadamente a esa versión y no son la API de Feature `3.0.0`. Para código actual usa la [migración de Feature 2 a 3](/es/guide/feature-migration).
+:::
 
 ## Qué cambió entre Leaf 1.x y Leaf 2.x
 
@@ -14,23 +18,23 @@ La arquitectura anterior se basaba en un **registro dinámico**: los módulos se
 
 En 2.x quedan prohibidos en la ruta local: `Map<String, Any?>`, payloads genéricos, codecs, casts no comprobados, registry, instalación e invocación manual.
 
-## Módulos pendientes de migración
+## Estado posterior observado
 
-| Módulo | Paquete | Notas |
+| Módulo | Paquete posterior | Estado observado en el workspace |
 |---|---|---|
-| leaf-authentication | `com.ops.authentication` | Usa Core `1.0` y el registro antiguo. **Incompatible con LEAF 2.** |
-| leaf-email | `com.ops.email` | Arquitectura anterior |
-| leaf-catalog | `com.ops.catalog` | Arquitectura anterior |
+| leaf-authentication | `com.ops.leaf_authentication` | Implementación Action tipada `0.1.0` sobre LEAF 2.0.1. |
+| leaf-email | `com.opside.leaf.email` | Implementación Action `1.0.0` observada en el `origin/main` fetched. |
+| leaf-catalog | `com.opside.leaf.catalog` | Implementación Feature/UI/DSL `1.0.0` observada en el `origin/main` fetched. |
 
-::: warning No mezclar trenes
-No combines módulos legacy con artefactos del tren estable `%LEAF_VERSION%` en el mismo host. Migra el módulo primero.
+::: warning No mezclar esta sintaxis con LEAF 3
+Las implementaciones anteriores declaran LEAF 2.0.1 y no formaron parte del release 3.0.0. Migra y valida cada consumer antes de combinar líneas.
 :::
 
 ## Estrategia de migración
 
-`leaf_login` es la referencia del modelo destino. Para migrar un módulo legacy:
+Esta fue la estrategia usada para llegar al modelo 2.0.1:
 
-1. **Crea el repositorio 2.x** siguiendo el [setup del Author](/es/guide/module-setup) (repos independiente, Gradle, ABI).
+1. **Crea el repositorio 2.x** como proyecto independiente con Gradle y ABI validation.
 2. **Modela el dominio con tipos**: reemplaza payloads genéricos por `Input`, `State`, `Event` y `Result` (`sealed interface` para eventos y resultados).
 3. **Convierte los servicios en ports**: cada dependencia externa se vuelve una interface (gateway) cuya implementación entrega el host.
 4. **Reescribe la capability**: la lógica de manejo se convierte en una `Action` (operación finita) o una `Feature` con transiciones `stay`/`finish`.
@@ -61,5 +65,5 @@ class AuthenticationModule(
 ```
 
 ::: info Ejemplo didáctico
-Este ejemplo muestra la frontera de LEAF; no es una migración del módulo `leaf-authentication` legacy ni una autenticación de producción. En producción añade transporte seguro, protección de credenciales, límites de intento y políticas del proveedor de identidad — LEAF no entrega esas garantías por sí solo.
+Este ejemplo histórico muestra la frontera de LEAF 2.0.1; no describe la implementación Authentication observada ni una autenticación de producción. En producción añade transporte seguro, protección de credenciales, límites de intento y políticas del proveedor de identidad: LEAF no entrega esas garantías por sí solo.
 :::

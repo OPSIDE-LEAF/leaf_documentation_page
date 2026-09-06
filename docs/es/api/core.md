@@ -2,7 +2,7 @@
 
 `com.opside-leaf:leaf-core:%LEAF_VERSION%` · paquete `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-core)
 
-Runtime del ecosistema: ejecuta Actions y posee las sesiones de Features (serialización de eventos, cancelación, resultado, presión, errores técnicos). No conoce reglas de dominio ni renderiza UI.
+Runtime del ecosistema: ejecuta Actions y posee las sesiones de Features (serialización de eventos, cancelación, resultado, presión, errores técnicos). También ejecuta las sesiones de [Workflow experimental](/es/api/workflow). No conoce reglas de dominio ni renderiza UI.
 
 ## Leaf.run
 
@@ -57,7 +57,7 @@ enum class FeatureSendResult { ACCEPTED, REJECTED_TERMINATED, REJECTED_OVERFLOW 
 
 ```kotlin
 sealed interface FeatureSessionResult<out Output> {
-    data class Finished<Output>(val output: Output) : FeatureSessionResult<Output>
+    data class Completed<Output>(val output: Output) : FeatureSessionResult<Output>
     data object Cancelled : FeatureSessionResult<Nothing>
     data class Failed(val failure: FeatureTechnicalFailure) : FeatureSessionResult<Nothing>
 }
@@ -76,7 +76,7 @@ Sin payloads ni mensajes de throwables.
 ## FeatureSessionTerminalCause
 
 ```kotlin
-enum class FeatureSessionTerminalCause { FINISHED, CANCELLED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED }
+enum class FeatureSessionTerminalCause { COMPLETED, CANCELLED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED }
 ```
 
 ## FeatureSessionMetrics
@@ -89,7 +89,7 @@ val terminalCause: FeatureSessionTerminalCause?
 
 ## LeafException
 
-Error técnico **redactado**: solo expone `moduleInfo` y la `LeafOperation` (ej. `FEATURE_INITIALIZATION`). Nunca el input, estado ni mensaje original.
+Error técnico **redactado**. Su constructor es interno y la única propiedad pública adicional es `moduleInfo`. `LeafOperation` también es interna: aporta una descripción segura al mensaje, pero el consumidor no puede leerla como propiedad. Nunca se conserva el input, estado ni mensaje original.
 
 ## LeafTelemetry
 
@@ -110,3 +110,5 @@ fun interface LeafTelemetry {
 | `result` | `RUNNING`, `SUCCEEDED`, `FAILED`, `CANCELLED` |
 
 Best-effort e isolada: sin input, state, event, output, throwable ni PII. Un fallo del hook no altera la ejecución.
+
+`LeafTelemetryPhase.FINISHED` continúa siendo el nombre de una fase técnica. Es independiente de `FeatureSessionResult.Completed` y `FeatureSessionTerminalCause.COMPLETED`.
