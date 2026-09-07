@@ -5,6 +5,7 @@ interface CardItem {
   title: string
   description: string
   icon?: string
+  link?: string
 }
 
 defineProps<{

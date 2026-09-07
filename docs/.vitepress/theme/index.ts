@@ -7,6 +7,7 @@ import './style.css'
 import CardGrid from './components/CardGrid.vue'
 import Card from './components/Card.vue'
 import CopyMarkdown from './components/CopyMarkdown.vue'
+import LanguageLink from './components/LanguageLink.vue'
 
 export default {
   extends: DefaultTheme,
@@ -16,6 +17,8 @@ export default {
       'doc-before': () => h(CopyMarkdown),
       'nav-bar-title-after': () =>
         h('span', { class: 'leaf-version-badge' }, `v${__LEAF_VERSION__}`),
+      'nav-bar-content-after': () => h(LanguageLink),
+      'nav-screen-content-after': () => h(LanguageLink, { mobile: true }),
     })
   },
   enhanceApp({ app }) {

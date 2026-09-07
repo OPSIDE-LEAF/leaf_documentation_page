@@ -1,76 +1,13 @@
-# Errors, telemetry, and privacy
+# Errors and telemetry
 
-## Domain errors vs technical failures
+Not every difficult result is a technical error. For example, a declined quote can be a normal business answer and should appear in your own result type. An unexpected network problem is different.
 
-Leaf strictly separates two categories:
+An Action returns its business result. If a technical exception happens that is not cancellation, `Leaf.run` turns it into `LeafException`. A Workflow ends once with one of these options:
 
-| | Domain error | Technical failure |
-|---|---|---|
-| Nature | **Expected** business result | **Unexpected** exception |
-| Where it lives | In the output type (`sealed interface`) | `LeafException` / `FeatureTechnicalFailure` |
-| Example | `LoginResult.Rejected`, `AuthResponse.InvalidCredentials` | Gateway throws due to network down |
-| Host handling | Business decision / UI state | Safe technical state, no detail |
+- `Completed(output)`: domain result.
+- `Failed(reason)`: payload-free technical failure from initialization, reducer, handler, or a second pending effect.
+- `Cancelled`: abandonment by the host or owning coroutine.
 
-```kotlin
-// Domain error: variant of the result
-sealed interface LoginResult {
-    data class Authenticated(val userId: String) : LoginResult
-}
+`LeafTelemetry` lets you observe when an Action or Workflow starts and finishes. It is only a diagnostic aid: if its callback fails, it does not change state, result, or session cleanup.
 
-// Recoverable: continueFeature with the error in the form state
-state.copy(formError = "Invalid email or password")
-```
-
-## LeafException
-
-Technical failures are normalized to `LeafException`, a **redacted** error: it exposes `moduleInfo`, while `LeafOperation` is internal and only contributes a safe description to the message. It never retains the input, state, or original throwable message.
-
-- In `Leaf.run`: the Action that throws produces `LeafException`.
-- In sessions: the transition that throws terminates the session with `Failed(TRANSITION_FAILED)`; if `initialState` throws, `FEATURE_INITIALIZATION` / `INITIALIZATION_FAILED`.
-- **Cancellation** is not redacted: `CancellationException` is re-thrown preserving structured coroutine semantics.
-
-::: info Keep the cause only where policy permits
-Handle `LeafException` as a redacted technical failure. The real cause should only be handled where a host security policy permits it.
-:::
-
-## Telemetry
-
-```kotlin
-fun interface LeafTelemetry {
-    fun record(event: LeafTelemetryEvent)
-    companion object { val None: LeafTelemetry }
-}
-```
-
-`LeafTelemetryEvent` contains only: `moduleInfo`, `phase` (`STARTED`/`FINISHED`), `duration`, and `result` (`RUNNING`/`SUCCEEDED`/`FAILED`/`CANCELLED`).
-
-Telemetry is **best-effort and isolated**:
-
-- It never contains input, state, event, output, throwable, or messages.
-- A failure in the telemetry hook **does not alter** execution or the result.
-- Its callbacks must not log domain objects or call `toString()` on them.
-
-## Privacy rules
-
-- Do not include credentials, tokens, inputs, states, events, outputs, or throwables in telemetry or logs.
-- Do not store secrets in `State`, outputs, technical errors, `rememberSaveable`, or persistence. Do not publish them through callbacks or navigation.
-- Passwords, tokens, and credentials must be short-lived, at the UI/gateway boundary.
-- Treat business validation messages as controlled UI data; do not re-expose details from a gateway or identity provider.
-
-### Additional defense: redacted `toString()`
-
-For types that carry secrets during a call:
-
-```kotlin
-@JvmInline
-value class AuthenticationSecret private constructor(private val value: String) {
-    companion object {
-        fun from(value: String): AuthenticationSecret = AuthenticationSecret(value)
-    }
-    override fun toString(): String = "[REDACTED]"
-}
-```
-
-::: danger Redacting does not authorize logging
-A redacted `toString()` is an additional defense, not authorization to log the request or sensitive domain values. The request only lives during the call.
-:::
+Do not send secrets, tokens, full backend responses, or sensitive identifiers to telemetry. Record only what is needed to understand a problem without exposing people's data.

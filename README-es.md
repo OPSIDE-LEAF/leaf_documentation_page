@@ -65,13 +65,19 @@ docs/
 │   │   └── en.ts              # Locale inglés
 │   ├── plugins/
 │   │   └── markdownRaw.ts     # Plugin Vite para módulo virtual de Markdown
+│   ├── scripts/                # Comprobaciones de fuentes y documentación bilingüe
+│   │   ├── check-api-surface.mjs
+│   │   ├── check-kotlin-snippets.mjs
+│   │   └── check-parity.mjs
+│   ├── kotlin-snippets/        # Fixture Android que compila los ejemplos documentados
 │   └── theme/
 │       ├── index.ts           # Registro del tema personalizado
 │       ├── style.css          # Variables CSS y estilos globales
 │       └── components/
 │           ├── Card.vue       # Componente de tarjeta individual
 │           ├── CardGrid.vue   # Grilla de tarjetas (quickstart)
-│           └── CopyMarkdown.vue # Botón copiar como Markdown
+│           ├── CopyMarkdown.vue # Botón copiar como Markdown
+│           └── LanguageLink.vue # Enlace al idioma equivalente
 ├── es/                         # Contenido en español → /es/
 │   ├── index.md
 │   └── guide/
@@ -97,6 +103,7 @@ El sitio soporta múltiples idiomas usando la funcionalidad nativa de `locales` 
 | Inglés   | `/en/`   | `docs/.vitepress/languages/en.ts` |
 
 La raíz (`/`) redirige automáticamente a `/es/`.
+El enlace de idioma sigue la página equivalente incluso cuando español e inglés usan slugs distintos.
 
 ### Agregar un nuevo idioma
 
@@ -106,6 +113,23 @@ La raíz (`/`) redirige automáticamente a `/es/`.
 4. Crear carpeta `docs/{lang}/` con los archivos `.md` traducidos
 
 ## 📄 Agregar documentación
+
+El contenido público debe explicar LEAF de una forma válida para cualquier proyecto u organización.
+No incluyas rutas personales, estructuras de repositorios privados ni reglas de compilación,
+publicación o distribución propias de una organización. Maven Local solo puede presentarse como una
+forma opcional de probar un artefacto. Conserva la equivalencia conceptual entre español e inglés.
+
+Ejecuta las comprobaciones públicas desde la raíz del repositorio:
+
+```powershell
+node docs/.vitepress/scripts/check-parity.mjs
+node docs/.vitepress/scripts/check-kotlin-snippets.mjs
+```
+
+Los ejemplos Kotlin marcados como `compiled` se conservan en
+`docs/.vitepress/kotlin-snippets/` y el script comprueba que coincidan con el Markdown.
+Los extractos de API marcados como `reference` son firmas o fragmentos específicos;
+no se presentan como aplicaciones independientes.
 
 ### Nueva página
 
@@ -136,6 +160,8 @@ La raíz (`/`) redirige automáticamente a `/es/`.
 | `npm run docs:dev` | Inicia el servidor de desarrollo |
 | `npm run docs:build` | Genera el sitio estático para producción |
 | `npm run docs:preview` | Previsualiza el build de producción |
+| `node docs/.vitepress/scripts/check-parity.mjs` | Comprueba paridad de páginas, rutas, enlaces y HTML bilingüe |
+| `node docs/.vitepress/scripts/check-kotlin-snippets.mjs` | Comprueba los ejemplos Kotlin contra su fixture compilable |
 
 ## 🤝 Contribuir
 

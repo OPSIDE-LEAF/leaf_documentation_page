@@ -1,110 +1,18 @@
-# Host: integrar módulos publicados
+# Lo que aporta tu app
 
-Esta página cubre el flujo completo de un host que integra un módulo del [catálogo](/es/guide/catalogo): instalar, implementar los ports, ejecutar y navegar.
+La app host ejecuta o presenta el módulo y proporciona las capacidades externas que este necesita. El módulo no define cómo la aplicación accede a internet, guarda datos ni navega fuera de su propia UI. Antes de iniciar una Action o un Workflow, define qué aporta cada lado.
 
-## 1. Instala la dependencia
+| Situación | La app host aporta | El módulo entrega |
+| --- | --- | --- |
+| Action | datos válidos y una corrutina | un resultado o un error técnico |
+| Workflow | datos iniciales, un lugar donde presentarlo y su ciclo de vida | UI, estados, navegación interna y un resultado final |
+| Efecto | un puerto que puede hacer trabajo lento | un evento de vuelta mediante el handler |
+| Navegación externa | el punto desde el que se abre y el destino posterior | navegación interna y un `Output` tipado para decidir |
 
-```kotlin
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation("com.opside-leaf:leaf-login:%LEAF_VERSION%")
-            implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")
-            implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // si tu host es Compose
-        }
-    }
-}
-```
+El backend, el almacenamiento, OAuth, los SDK, los permisos y la telemetría son partes explícitas de la app host. Pásalos como puertos claros, en vez de esconderlos en el módulo. Así puedes reemplazarlos por una versión de prueba cuando haga falta.
 
-Ver [Instalación](/es/guide/installation) para repositorios y credenciales.
+El host puede abrir un Workflow desde una ruta, un botón, una notificación o cualquier otro punto adecuado. No necesita controlar las transiciones entre las pantallas internas. Cuando el Workflow termina, el host interpreta su `Output`; por ejemplo, puede mostrar un mensaje, volver a la pantalla anterior o navegar a otra sección de la aplicación.
 
-## 2. Implementa los gateways del módulo
+Al manejar el final, distingue los casos: `Failed` es un problema técnico y no una respuesta de negocio; `Cancelled` significa que la persona o la pantalla abandonó el flujo y no debe mostrarse como éxito. Implementa cada puerto completo, incluidos sus casos de error y cancelación.
 
-Cada módulo declara sus dependencias externas como **ports** (interfaces). Como host, tú aportas la implementación real:
-
-```kotlin
-// El módulo declara el port:
-interface AuthGateway {
-    suspend fun authenticate(email: String, password: String): AuthResponse
-}
-
-// Tu host aporta el adaptador de infraestructura:
-class HttpAuthGateway(private val client: HttpClient) : AuthGateway {
-    override suspend fun authenticate(email: String, password: String): AuthResponse =
-        // llamada real a tu backend / proveedor de identidad
-}
-```
-
-En desarrollo o pruebas puedes usar un fake:
-
-```kotlin
-class FakeAuthGateway : AuthGateway {
-    override suspend fun authenticate(email: String, password: String) =
-        AuthResponse.Success(userId = "fake-id")
-}
-```
-
-## 3. Construye el módulo y ejecútalo
-
-El host construye el módulo **explícitamente** — sin registro, sin DI global:
-
-```kotlin
-val loginModule = LoginModule(HttpAuthGateway(client))
-
-// Host Compose: el módulo trae su Route
-LoginRoute(
-    module = loginModule,
-    onAuthenticated = { result -> navigateToHome(result.userId) },
-)
-```
-
-El Route del módulo entrega el resultado terminal a tu callback. **La navegación es tuya**: el módulo nunca navega por sí mismo.
-
-Para módulos con `Action` (ej. pagos):
-
-```kotlin
-val payments = MercadoPagoPaymentModule(/* gateways */)
-
-when (val outcome = Leaf.run(payments.pay, request)) {
-    is MercadoPagoPaymentOutcome.Approved -> showReceipt(outcome)
-    // ... resto de variantes de dominio
-}
-```
-
-### Módulos con gateways internos
-
-Algunos módulos resuelven sus gateways internamente con `expect/actual` porque el transporte es propio del módulo, no del host. En estos casos el host solo proporciona configuración:
-
-```kotlin
-val email = EmailModule(
-    EmailConfig(host = "smtp.gmail.com", port = 587, ...)
-)
-
-when (val r = Leaf.run(email.send, EmailInput(to, subject, body))) {
-    EmailResult.Sent        -> onSent()
-    is EmailResult.Rejected -> showError(r.reason)
-}
-```
-
-No hay gateway que implementar — el módulo trae su propia implementación de plataforma. El constructor del módulo recibe datos de configuración, no interfaces.
-
-## 4. Distingue dominio de fallo técnico
-
-- **Resultados de dominio** (variantes del output) → decisiones de negocio y estados de UI.
-- **`LeafException` / `Failed`** → estado técnico seguro, sin exponer detalle. Ver [Errores y telemetría](/es/guide/errores-telemetria).
-
-## Checklist de integración
-
-- [ ] El host construye el módulo explícitamente y conserva la navegación.
-- [ ] Los gateways del módulo tienen implementación del host (real o fake según entorno).
-- [ ] Hay una única sesión Core por Feature; no hay reducer o cola duplicados en el host.
-- [ ] El host distingue resultados de negocio de fallos técnicos.
-- [ ] No hay secretos en logs, telemetría ni persistencia del host.
-- [ ] Las dependencias son exclusivamente el tren estable `%LEAF_VERSION%` cuando este es el objetivo de publicación.
-
-## Reglas del host
-
-- ❌ No implementes reducers, colas o sesiones paralelas — Core es dueño de la sesión.
-- ❌ No guardes sesiones en ViewModels ni las abras en `LaunchedEffect`.
-- ❌ No uses excepciones para leer resultados de negocio.
-- ✅ Observa `state`/`result`, envía eventos, decide con el output.
+Empieza con [Action](/es/guide/quickstart-action) si el módulo no proporciona UI. Usa [Workflow](/es/guide/quickstart-workflow) para cualquier módulo que proporcione UI.

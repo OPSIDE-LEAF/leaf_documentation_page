@@ -1,81 +1,34 @@
-# rememberLeaf y LeafComposeState
+# Compose: holder de Workflow
 
-`leaf-compose` provee el adaptador estable para hosts Compose:
+Una pantalla Compose necesita dos cosas: el estado que puede dibujar ahora y saber cuándo el flujo terminó. `rememberLeafWorkflowHolder` entrega ambas. Abre una sesión de Core para un Workflow, expone `snapshot` y `outcome`, y la cancela cuando la pantalla deja de existir.
 
+<!-- kotlin-snippet: compiled: compose-adapter -->
 ```kotlin
+import androidx.compose.runtime.Composable
+import com.ops.leaf_core.api.Leaf
+import com.ops.leaf_core.api.Workflow
+import com.ops.leaf_core.api.WorkflowOutcome
+import com.ops.leaf_core.api.WorkflowSendResult
+import com.ops.leaf_core.ui.compose.WorkflowSnapshot
+import com.ops.leaf_core.ui.compose.rememberLeafWorkflowHolder
+
 @Composable
-fun <Input, State, Event, Output> Leaf.Companion.rememberLeaf(
-    feature: Feature<Input, State, Event, Output>,
+fun <Input, State, Event, Effect, Output> WorkflowRoute(
+    workflow: Workflow<Input, State, Event, Effect, Output>,
     input: Input,
-): LeafComposeState<State, Event, Output>
-```
-
-`rememberLeaf` abre la única sesión de Core, la expone como estado observable de Compose y la cierra automáticamente. El paquete es `com.ops.leaf_core.ui.compose`.
-
-## LeafComposeState
-
-```kotlin
-@Stable
-class LeafComposeState<State, Event, Output> internal constructor() {
-    var state: State? by mutableStateOf(null)
-        private set
-
-    var result: FeatureSessionResult<Output>? by mutableStateOf(null)
-        private set
-
-    var isReady: Boolean by mutableStateOf(false)
-        private set
-
-    fun send(event: Event): FeatureSendResult
+    sessionKey: Any? = input,
+    screen: @Composable (
+        WorkflowSnapshot<State>,
+        WorkflowOutcome<Output>?,
+        (Event) -> WorkflowSendResult,
+        () -> Unit,
+    ) -> Unit,
+) {
+    val holder = Leaf.rememberLeafWorkflowHolder(workflow, input, sessionKey)
+    screen(holder.snapshot.value, holder.outcome.value, holder::send, holder::cancel)
 }
 ```
 
-Su constructor es interno: el host recibe una instancia **exclusivamente** desde `rememberLeaf`.
+La función `WorkflowRoute` del ejemplo solo conecta Compose con el Workflow. Entrega a tu Screen el estado actual, el resultado final y callbacks para enviar eventos o cancelar. Así, la Screen puede concentrarse en dibujar botones y texto sin conocer cómo se administra la sesión.
 
-| Propiedad | Significado |
-|---|---|
-| `state` | Último estado publicado; `null` mientras la sesión inicializa |
-| `result` | `null` mientras está activa; después, exactamente un resultado terminal |
-| `isReady` | `true` mientras una sesión de Core está adjunta al holder; no garantiza que el siguiente evento será aceptado |
-| `send(event)` | Misma disposición que `FeatureSession.send` |
-
-## La clave de composición: `(feature, input)`
-
-La pareja `(feature, input)` **identifica la sesión**:
-
-- Recomposición con la misma pareja → la sesión se conserva (no se abre otra).
-- Cambia cualquiera de las dos referencias/valores → Compose **cierra la sesión anterior y abre una nueva**.
-- Salir de composición → la sesión se cierra.
-
-::: warning Una edición es un Event, no un input nuevo
-No cambies `input` en cada pulsación del teclado: eso reemplaza la sesión completa. Las ediciones del formulario viajan como eventos (`leaf.send(EmailChanged(...))`).
-:::
-
-## Manejo de estados en el host
-
-```kotlin
-@Composable
-fun Login(module: LoginModule) {
-    val leaf = Leaf.rememberLeaf(module.login, LoginInput())
-
-    when {
-        !leaf.isReady && leaf.result == null -> Loading()
-        leaf.result is FeatureSessionResult.Failed -> TechnicalFailure()
-        else -> LoginContent(state = leaf.state, onEvent = leaf::send)
-    }
-}
-```
-
-Si falla `initialState`, `rememberLeaf` publica `Failed(INITIALIZATION_FAILED)`, deja `isReady` en `false` y **no expone el throwable**.
-
-`isReady` describe el vínculo Compose–Core. Durante la propagación de un resultado terminal puede observarse todavía como `true`, aunque `send` ya devuelva `REJECTED_TERMINATED`. Usa `result` para renderizar terminalidad y comprueba siempre el valor devuelto por `send` cuando la disposición importe.
-
-## Anti-patrones
-
-- ❌ Abrir otra sesión en `LaunchedEffect`.
-- ❌ Guardar la sesión (o `LeafComposeState`) en un ViewModel.
-- ❌ Coleccionar manualmente los flows de la sesión para crear otro estado de UI.
-- ❌ Implementar un reducer o cola paralela en el host.
-- ❌ Cambiar `input` por cada interacción del usuario.
-
-`LeafComposeState` refleja la única sesión de Core; duplicarla rompe la terminalidad única y el ciclo de vida administrado.
+En el contador de [Primer Workflow](/es/guide/quickstart-workflow), pasa `state.value` y `state.persisting` a `CounterScreen`. Mientras `persisting` sea `true`, no llames `send(Save)`: el guardado anterior todavía está en curso. La Route no ejecuta `EffectHandler`, no vuelve a intentar `send` y no abre otra sesión desde `LaunchedEffect`. Cambia `sessionKey` solo si cambiar el dato de entrada debe abrir una sesión nueva.

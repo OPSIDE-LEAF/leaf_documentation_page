@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:dev": "npm run skills:pack && vitepress dev docs",
+    "docs:build": "npm run skills:pack && vitepress build docs",
+    "skills:pack": "node docs/.vitepress/scripts/package-skill.mjs",
+    "skills:check": "node docs/.vitepress/scripts/package-skill.mjs --check",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "fflate": "^0.8.3",
     "vitepress": "^1.6.0",
     "vue": "^3.5.0"
   }

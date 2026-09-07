@@ -1,115 +1,34 @@
 # Instalación
 
-## Prerrequisitos
+Agrega únicamente las dependencias que correspondan a la responsabilidad de cada proyecto. Tu organización puede distribuir los artefactos de LEAF mediante el repositorio y el proceso que prefiera; esa decisión no cambia la API de los módulos.
 
-| Requisito | Detalle |
-|---|---|
-| JDK de build | 17 (toolchain usada por Gradle/CI) |
-| Gradle | 8.14.3 (vía wrapper) |
-| Kotlin | 2.3.20 |
-| Android SDK | compileSdk 36, minSdk 24 |
-| Xcode | Para targets iOS (Arm64, Simulator Arm64) |
-| GitHub PAT | Token clásico con `read:packages` (consumir) y `write:packages` (publicar) |
+## Dependencia necesaria para crear un módulo
 
-## 1. Configurar credenciales
+Para crear el contrato público de un módulo **Action** o **Workflow**, solo necesitas `leaf-contracts`. Ese artefacto contiene las interfaces y los tipos con los que el módulo declara su input, output y, para un Workflow, su estado, eventos y efectos.
 
-Los proyectos de LEAF configuran GitHub Packages como destino y fuente Maven; al resolver desde ese registry se requiere autenticación incluso para lectura. La disponibilidad de cada versión se comprueba al resolverla. Leaf usa un patrón **dual** de credenciales:
+`leaf-core` y `leaf-compose` no son requisitos para declarar ese contrato. Normalmente los agrega la aplicación host según la forma en que vaya a ejecutar o presentar el módulo.
 
-1. **Desarrollo local** — `local.properties` (no se commitea)
-2. **CI/CD** — variables de entorno `GPR_USER` y `GPR_GIT_KEY`
+| Proyecto | Dependencia necesaria |
+| --- | --- |
+| Módulo que declara una Action o un Workflow | `leaf-contracts` |
+| Host que ejecuta Actions o abre sesiones de Workflow | `leaf-core` |
+| Host Compose que presenta y observa la UI de un Workflow | `leaf-compose` |
 
-Crea `local.properties` en la raíz del proyecto:
+Por ejemplo, un host Android con Compose que ejecuta Actions y presenta Workflows puede declarar las tres dependencias:
 
-```properties
-gpr.user=TU_USUARIO_GITHUB
-gpr.key=TU_PERSONAL_ACCESS_TOKEN
-```
-
-::: danger Nunca commitees credenciales
-`local.properties` debe estar siempre en `.gitignore`. Nunca hardcodees usuario o token en archivos versionados.
-:::
-
-## 2. Configurar repositorios
-
-En `settings.gradle.kts`:
-
+<!-- kotlin-snippet: gradle: installation-dependencies -->
 ```kotlin
-import java.io.FileInputStream
-
-val localProperties = java.util.Properties()
-val localPropertiesFile = File(rootDir, "local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(FileInputStream(localPropertiesFile))
-}
-
-dependencyResolutionManagement {
-    repositories {
-        if (providers.gradleProperty("leaf.useMavenLocal").orNull == "true") {
-            mavenLocal()
-        }
-        listOf("leaf-contracts", "leaf-core", "leaf-compose", "leaf-login").forEach { repository ->
-            maven {
-                name = "GitHubPackages-$repository"
-                url = uri("https://maven.pkg.github.com/OPSIDE-LEAF/$repository")
-                credentials {
-                    username = localProperties.getProperty("gpr.user") ?: System.getenv("GPR_USER")
-                    password = localProperties.getProperty("gpr.key") ?: System.getenv("GPR_GIT_KEY")
-                }
-                content { includeGroup("com.opside-leaf") }
-            }
-        }
-        google()
-        mavenCentral()
-    }
+dependencies {
+    implementation("com.opside-leaf:leaf-contracts:%LEAF_VERSION%")
+    implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")
+    implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%")
 }
 ```
 
-## 3. Agregar dependencias
+No copies las tres coordenadas en todos los proyectos. El módulo reutilizable puede depender solo de Contracts. Un host sin Compose puede usar Contracts y Core. Agrega Compose únicamente al host que vaya a presentar un Workflow con esa integración.
 
-```kotlin
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            api("com.opside-leaf:leaf-contracts:%LEAF_VERSION%")
-            implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")    // Solo si necesitas Leaf.run/open
-            implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // Solo si tienes UI Compose
-        }
-    }
-}
-```
+## Maven Local para pruebas
 
-| Coordenada | Contenido | Cuándo la necesitas |
-|---|---|---|
-| `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` | `Module`, `ModuleInfo`, `Action`, `Feature`, DSLs | Siempre (como `api` si expones tipos Leaf) |
-| `com.opside-leaf:leaf-core:%LEAF_VERSION%` | `Leaf.run`, `Leaf.open`, `FeatureSession` | Hosts que ejecutan capabilities |
-| `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | `Leaf.rememberLeaf` | Hosts con UI Compose |
-| `com.opside-leaf:leaf-login:%LEAF_VERSION%` | Módulo de referencia (Feature/UI estable y Workflow/UI experimental) | Opcional |
+Maven Local es una opción para probar cambios antes de distribuir un artefacto. Permite publicar una versión en el repositorio Maven de la máquina de desarrollo y comprobarla desde una aplicación de prueba. No es un requisito de LEAF ni una recomendación para distribuir dependencias dentro de una empresa.
 
-::: tip leaf-contracts como dependencia `api`
-Si tu módulo expone tipos de Leaf en su superficie pública (lo normal), usa `api("com.opside-leaf:leaf-contracts:...")` para que tus consumidores los resuelvan.
-:::
-
-::: info JDK 17 y target JVM 11
-JDK 17 ejecuta Gradle, AGP y los jobs de CI. Los artefactos Android continúan compilando con `jvmTarget = JVM_11` y compatibilidad de bytecode Java 11. Son dos decisiones distintas.
-:::
-
-## 4. Maven Local (desarrollo)
-
-Para probar artefactos sin publicarlos, los proyectos soportan `mavenLocal()` condicionalmente con la propiedad `leaf.useMavenLocal=true`:
-
-```shell
-./gradlew publishToMavenLocal -Pleaf.useMavenLocal=true
-./gradlew :consumer:assembleDebug -Pleaf.useMavenLocal=true --refresh-dependencies
-```
-
-## Verifica
-
-```shell
-./gradlew build
-```
-
-Si la resolución de dependencias falla con 401/403, revisa que el PAT tenga `read:packages` y que `local.properties` esté en la raíz correcta.
-
-## Siguiente paso
-
-Tu primer módulo: [Quickstart con Action](/es/guide/quickstart-action).
+Si necesitas esa comprobación, consulta [probar con Maven Local](/es/guide/maven-local). Para proyectos compartidos, configura el repositorio de dependencias y las reglas de publicación que correspondan a tu organización.

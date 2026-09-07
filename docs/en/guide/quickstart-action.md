@@ -1,73 +1,31 @@
-# Host: running an Action
+# Host: run an Action
 
-As a **host** you consume pre-built modules: you instantiate them with their dependencies and execute their capabilities. An `Action<Input, Output>` is the simplest capability: it receives an input, executes, and returns an output.
+An Action is useful when you want to do one task and receive one answer. In this example the app asks for a quote: it gives a quantity and gets a total. There is no session to keep and no screen with intermediate states.
 
-## 1. The module (published by its Author)
-
+<!-- kotlin-snippet: compiled: quickstart-action -->
 ```kotlin
+import com.ops.leaf_core.api.Action
+import com.ops.leaf_core.api.Leaf
 import com.ops.leaf_core.api.Module
 import com.ops.leaf_core.api.ModuleInfo
 import com.ops.leaf_core.api.action
 
-data class GreetingInput(val name: String)
-data class GreetingOutput(val message: String)
+data class QuoteRequest(val quantity: Int)
+data class Quote(val totalMinorUnits: Long)
 
-class GreetingModule(private val prefix: String) : Module {
-    override val info = ModuleInfo("com.example.greeting", "1.0.0")
-
-    val greet = action<GreetingInput, GreetingOutput>(info) { input ->
-        GreetingOutput("$prefix ${input.name}")
-    }
+class QuoteModule(
+    private val calculate: suspend (QuoteRequest) -> Quote,
+) : Module {
+    override val info = ModuleInfo("com.example.quote", "1.0.0")
+    val quote: Action<QuoteRequest, Quote> = action(info, calculate)
 }
+
+suspend fun requestQuote(module: QuoteModule, quantity: Int): Quote =
+    Leaf.run(module.quote, QuoteRequest(quantity))
 ```
 
-What matters to you as a host: the dependency (`prefix`) is injected **via the constructor** (no DI container or registry) and the capability is a typed `val` — your IDE tells you exactly what it receives and what it returns.
+`quantity` is required data. `calculate` performs the quote calculation and is provided by the app or the code that constructs the module. The module does not depend on whether that implementation uses a network call, a database, or a local rule.
 
-## 2. Build and run it
+If `calculate` fails for a technical reason, `Leaf.run` throws `LeafException`. The screen that started the coroutine decides how to explain it to the person. If the coroutine is cancelled, the Action stops too.
 
-```kotlin
-import com.ops.leaf_core.api.Leaf
-
-suspend fun main() {
-    val module = GreetingModule(prefix = "Hola,")
-    val output = Leaf.run(module.greet, GreetingInput("Ada"))
-    println(output.message) // Hola, Ada
-}
-```
-
-`Leaf.run` is `suspend`: it runs inside the host's coroutine and respects its cancellation.
-
-## 3. Errors
-
-- **Domain errors** (expected) are modeled in the output type, typically a `sealed interface`:
-
-```kotlin
-sealed interface PaymentOutcome {
-    data class Approved(val id: String) : PaymentOutcome
-    data object Declined : PaymentOutcome
-    data object Unavailable : PaymentOutcome
-}
-```
-
-- **Technical failures** (unexpected): if the Action throws, `Leaf.run` throws a redacted `LeafException` — it only exposes the module identity and the operation, never the input or the original message.
-- **Cancellation**: `CancellationException` is re-thrown, preserving structured coroutine semantics.
-
-## Stable signature
-
-```kotlin
-fun <Input, Output> action(
-    moduleInfo: ModuleInfo,
-    execute: suspend (Input) -> Output
-): Action<Input, Output>
-
-suspend fun <Input, Output> Leaf.Companion.run(
-    action: Action<Input, Output>,
-    input: Input,
-    telemetry: LeafTelemetry = LeafTelemetry.None
-): Output
-```
-
-## Next steps
-
-- If the capability shows state and receives user intents, it is a **Feature**: [opening a Feature](/en/guide/quickstart-feature).
-- Want to **create** your own modules? Go to the [Author Guide](/en/guide/module-setup).
+If a person must see loading, send several taps, or wait through steps, do not force that state into an Action. Use [Workflow](/en/guide/quickstart-workflow).

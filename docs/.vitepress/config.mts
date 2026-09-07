@@ -1,13 +1,15 @@
 import { defineConfig } from 'vitepress'
 import { esLocale, esSearchConfig, enLocale, enSearchConfig } from './languages'
 import { markdownRawPlugin } from './plugins/markdownRaw'
-import { LEAF_VERSION, LEAF_WORKFLOW_VERSION } from './leaf-version'
+import { LEAF_VERSION } from './leaf-version'
 import { fileURLToPath, URL } from 'node:url'
 
 const docsDir = fileURLToPath(new URL('../', import.meta.url))
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  // Downloadable skill Markdown is an asset, not a documentation route.
+  srcExclude: ['public/**'],
   vite: {
     plugins: [markdownRawPlugin(docsDir)],
     define: {
@@ -22,7 +24,6 @@ export default defineConfig({
     config(md) {
       md.core.ruler.after('normalize', 'leaf-version', (state) => {
         state.src = state.src.replaceAll('%LEAF_VERSION%', LEAF_VERSION)
-          .replaceAll('%LEAF_WORKFLOW_VERSION%', LEAF_WORKFLOW_VERSION)
       })
     },
   },

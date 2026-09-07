@@ -1,51 +1,36 @@
-# leaf-compose
+# `leaf-compose`
 
-`com.opside-leaf:leaf-compose:%LEAF_VERSION%` · package `com.ops.leaf_core.ui.compose` · [repo](https://github.com/OPSIDE-LEAF/leaf-compose)
+`leaf-compose` %LEAF_VERSION% helps a Compose screen watch a Workflow. Core still manages the session itself.
 
-Compose adapter: observes the single Core session and exposes an observable holder. Does not create another session, queue, or reducer.
-
-## Leaf.rememberLeaf
-
+<!-- kotlin-snippet: reference: compose-surface -->
 ```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State as ComposeState
+import com.ops.leaf_core.api.Leaf
+import com.ops.leaf_core.api.Workflow
+import com.ops.leaf_core.api.WorkflowOutcome
+import com.ops.leaf_core.api.WorkflowSendResult
+import com.ops.leaf_core.ui.compose.WorkflowSnapshot
+
 @Composable
-fun <Input, State, Event, Output> Leaf.Companion.rememberLeaf(
-    feature: Feature<Input, State, Event, Output>,
+fun <Input, WorkflowState, Event, Effect, Output> Leaf.Companion.rememberLeafWorkflowHolder(
+    workflow: Workflow<Input, WorkflowState, Event, Effect, Output>,
     input: Input,
-): LeafComposeState<State, Event, Output>
-```
+    sessionKey: Any? = input,
+): LeafWorkflowHolder<WorkflowState, Event, Output>
 
-- The pair `(feature, input)` is the **composition key**: it identifies the session.
-- Recomposition with the same pair preserves the session; changing it closes the previous one and opens a new one.
-- Leaving composition closes the session (automatic disposal).
-- If `initialState` fails: publishes `Failed(INITIALIZATION_FAILED)`, leaves `isReady = false`, does not expose the throwable.
-
-## LeafComposeState
-
-```kotlin
-@Stable
-class LeafComposeState<State, Event, Output> internal constructor() {
-    var state: State? by mutableStateOf(null)
-        private set
-
-    var result: FeatureSessionResult<Output>? by mutableStateOf(null)
-        private set
-
-    var isReady: Boolean by mutableStateOf(false)
-        private set
-
-    fun send(event: Event): FeatureSendResult
+class LeafWorkflowHolder<WorkflowState, Event, Output> {
+    val snapshot: ComposeState<WorkflowSnapshot<WorkflowState>>
+    val outcome: ComposeState<WorkflowOutcome<Output>?>
+    fun send(event: Event): WorkflowSendResult
+    fun cancel()
 }
 ```
 
-Internal constructor: the only way to obtain an instance is `rememberLeaf`.
+`WorkflowSnapshot` has two forms: `Initializing`, while there is no data to show yet, and `Active(state)`, once there is a state for the screen. The holder identifies a session with the Workflow and `sessionKey`. If changed input should start over, change that key too. When the screen leaves composition, the holder cancels the session.
 
-| Member | Semantics |
-|---|---|
-| `state` | Last published state; `null` during initialization |
-| `result` | `null` while active; afterwards exactly one `FeatureSessionResult` |
-| `isReady` | `true` while a Core session is attached; it does not guarantee admission of the next event |
-| `send(event)` | Same disposition as `FeatureSession.send` (`ACCEPTED` / `REJECTED_*`) |
+The holder only watches and sends events. It does not run effects, retry events, or keep input for you. See [the Compose guide](/en/guide/compose-adapter) to show the final result and disable a button while work is in progress.
 
-A terminal result may propagate before Compose detaches the session. In that interval `isReady` may remain `true` while `send` returns `REJECTED_TERMINATED`; the return value of `send` is authoritative for admission.
+## Feature reference
 
-See [usage guide](/en/guide/compose-adapter) and [anti-patterns](/en/guide/compose-adapter#anti-patterns).
+`rememberLeaf(feature, input)` returns `LeafComposeState` with a `FeatureSession`'s `state`, `result`, and `isReady`. It is here only to document that existing API. For new screens, use the Workflow holder.

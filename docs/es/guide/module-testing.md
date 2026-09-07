@@ -1,116 +1,15 @@
-# Author: testing del módulo
+# Pruebas de módulo
 
-Los tests viven en `commonTest` usando Kotlin Test + `kotlinx-coroutines-test`. Prueba el módulo en el nivel adecuado **antes** de integrarlo.
+Prueba primero las reglas del módulo sin una pantalla real ni un servicio real. En `commonTest` usa puertos fake y corrutinas de prueba. Así puedes comprobar qué pasa en cada caso sin depender de red, permisos o un dispositivo.
 
-## Qué probar
+| Parte | Qué conviene comprobar |
+| --- | --- |
+| Action | datos válidos, resultado y un rechazo esperado del negocio |
+| Reducer del Workflow | que `initialize` y cada `reduce` den el `WorkflowStep` esperado |
+| Ejecución de Workflow | estados, `Completed`, `Failed`, `Cancelled` y cola llena |
+| Effect handler | que un efecto vuelva como evento y no exponga secretos |
+| Holder de Compose | la clave `sessionKey`, el resultado final y la cancelación al salir |
 
-1. **Transiciones** — validación y recuperación devuelven `Continue`; una salida satisfactoria devuelve `Complete` una vez.
-2. **Gateway** — el éxito y la invalidación esperable se mapean a resultados de dominio/estado, no a excepciones.
-3. **Errores** — una excepción inesperada durante una transición termina como `Failed(TRANSITION_FAILED)` sin filtrar detalle.
-4. **Ciclo de vida** — cancelar el scope del host produce `Cancelled`; cerrar dos veces no cambia el resultado.
-5. **Presión** — una cola saturada devuelve `REJECTED_OVERFLOW`, termina con `EVENT_QUEUE_OVERFLOW` e incrementa la métrica.
-6. **Compose** — recomposición con la misma pareja `(feature, input)` no abre otra sesión; reemplazarla o salir de composición cierra la anterior.
-7. **Privacidad** — telemetría/logs no reciben payloads ni secretos; una telemetría que falle no altera el resultado.
+Si algo puede salir mal como parte normal del negocio, represéntalo en el resultado o en un evento. No lo conviertas en excepción solo para que una prueba falle.
 
-## Testing de transiciones (unitario, sin sesión)
-
-La transición de una Feature es una función: puedes invocarla directamente con estado y evento.
-
-```kotlin
-class CheckoutModuleTest {
-
-    @Test
-    fun `blank field keeps the feature active with an error`() = runTest {
-        val transition = module(PaymentResponse.Success("id-1")).checkout.transition(
-            CheckoutState(field = ""),
-            CheckoutEvent.Submit,
-        )
-        val continued = assertIs<FeatureTransition.Continue<CheckoutState>>(transition)
-        assertEquals("El campo es obligatorio", continued.state.error)
-    }
-
-    @Test
-    fun `successful operation finishes with typed result`() = runTest {
-        val transition = module(PaymentResponse.Success("id-1")).checkout.transition(
-            CheckoutState(field = "valid-input"),
-            CheckoutEvent.Submit,
-        )
-        val completed = assertIs<FeatureTransition.Complete<CheckoutResult>>(transition)
-        assertEquals(CheckoutResult.Success("id-1"), completed.output)
-    }
-
-    private fun module(response: PaymentResponse) = CheckoutModule(
-        gateway = object : PaymentGateway {
-            override suspend fun execute(param: String) = response
-        },
-    )
-}
-```
-
-## Testing de sesión (integración con Core)
-
-Para verificar el comportamiento terminal usa `Leaf.open` dentro de `runTest`:
-
-```kotlin
-@Test
-fun `unexpected gateway error becomes a failed session`() = runTest {
-    val module = CheckoutModule(
-        gateway = object : PaymentGateway {
-            override suspend fun execute(param: String): PaymentResponse {
-                error("network unavailable")
-            }
-        },
-    )
-    val session = Leaf.open(module.checkout, input = CheckoutInput())
-    session.send(CheckoutEvent.FieldChanged("value"))
-    session.send(CheckoutEvent.Submit)
-    assertIs<FeatureSessionResult.Failed>(session.result.filterNotNull().first())
-}
-```
-
-Los fakes de gateways son objetos anónimos o clases simples — no necesitas frameworks de mocking.
-
-## Testing de Action (sin estado)
-
-Los módulos con `Action` se prueban con `Leaf.run` directamente — no hay sesión, estado ni eventos:
-
-```kotlin
-class NotificationModuleTest {
-
-    @Test
-    fun `successful send returns Delivered`() = runTest {
-        val module = NotificationModule(FakeNotificationGateway(result = NotificationOutcome.Delivered))
-        val result = Leaf.run(module.notify, NotificationRequest(to = "user", message = "hi"))
-        assertEquals(NotificationOutcome.Delivered, result)
-    }
-
-    @Test
-    fun `invalid input returns domain error - not exception`() = runTest {
-        val module = NotificationModule(FakeNotificationGateway())
-        val result = Leaf.run(module.notify, NotificationRequest(to = "", message = "hi"))
-        assertIs<NotificationOutcome.Failed>(result)
-    }
-
-    @Test
-    fun `unexpected gateway error surfaces as LeafException`() = runTest {
-        val module = NotificationModule(
-            FakeNotificationGateway(throwable = RuntimeException("network down"))
-        )
-        assertFailsWith<LeafException> {
-            Leaf.run(module.notify, NotificationRequest(to = "user", message = "hi"))
-        }
-    }
-}
-```
-
-Los tres niveles de un Action: resultado de negocio exitoso, rechazo por validación, y fallo técnico inesperado.
-
-## Ejecutar
-
-```shell
-./gradlew testDebugUnitTest
-```
-
-## Siguiente paso
-
-[Validación y publicación](/es/guide/module-publishing): ABI, clean consumer y publicación por tag.
+Para comprobar que otro proyecto puede resolver el artefacto, puedes usar [Maven Local](/es/guide/maven-local) durante el desarrollo o el repositorio de dependencias elegido por tu organización. Una library consumidora valida resolución y compilación; una aplicación de ejemplo también permite probar ejecución, ciclo de vida y UI.

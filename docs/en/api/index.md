@@ -1,20 +1,13 @@
-# API Reference
+# API reference
 
-Reference for the `%LEAF_VERSION%` train and local `%LEAF_WORKFLOW_VERSION%` promotion, organized by artifact. Workflow is an official API without opt-in in the latter; validation uses only Maven Local, not GitHub Packages.
+LEAF %LEAF_VERSION% separates public contracts, execution, and Compose integration into different artifacts.
 
-| Artifact | Package | Contents |
-|---|---|---|
-| [leaf-contracts](/en/api/contracts) | `com.ops.leaf_core.api` | `Module`, `ModuleInfo`, `Action`, `Feature`, `FeatureTransition`, DSLs, and capacity constants |
-| [leaf-core](/en/api/core) | `com.ops.leaf_core.api` | `Leaf.run`, `Leaf.open`, `FeatureSession`, results and failures, `LeafException`, `LeafTelemetry` |
-| [leaf-compose](/en/api/compose) | `com.ops.leaf_core.ui.compose` | `Leaf.rememberLeaf`, `LeafComposeState` |
-| [Workflow](/en/api/workflow) | Contracts, Core and Compose `%LEAF_WORKFLOW_VERSION%` (Maven Local) | Official `Workflow`, steps, `EffectHandler`, session, outcome and Compose holder |
+| Artifact | Responsibility |
+| --- | --- |
+| [leaf-contracts](/en/api/contracts) | defines inputs, outputs, and steps |
+| [leaf-core](/en/api/core) | runs Actions and sessions |
+| [leaf-compose](/en/api/compose) | brings a Workflow session to Compose |
+| [Workflow](/en/api/workflow) | explains a stateful interaction step by step |
+| [leaf-visuals](/en/api/visuals) | provides an optional Material 3 theme |
 
-The three repositories validate their public surface with ABI dumps. The `com.ops.leaf_core.*` packages remain. The old marker exists for compatibility but does not annotate Workflow in the local promotion.
-
-## Separation of responsibilities
-
-| Artifact | Responsibility | Does not |
-|---|---|---|
-| `leaf-contracts` | Declare typed Action, Feature, and Workflow contracts | Execute sessions or know about UI |
-| `leaf-core` | Execute Actions and own Feature/Workflow sessions | Know domain rules or render UI |
-| `leaf-compose` | Observe sessions and expose Compose holders | Create another session, queue, reducer, or handler |
+[Authentication](/en/api/authentication), [Payment Contracts](/en/api/payment-contracts), and [payment modules](/en/api/payments) have their own versions and integration requirements. Review each reference before selecting dependencies for your application.

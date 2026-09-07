@@ -1,7 +1,7 @@
 import { Plugin } from 'vite'
 import fs from 'fs'
 import path from 'path'
-import { LEAF_VERSION, LEAF_WORKFLOW_VERSION } from '../leaf-version'
+import { LEAF_VERSION } from '../leaf-version'
 
 /**
  * Plugin de Vite que expone el contenido raw de los archivos .md
@@ -31,7 +31,6 @@ export function markdownRawPlugin(docsDir: string): Plugin {
           entries[key] = fs
             .readFileSync(file, 'utf-8')
             .replaceAll('%LEAF_VERSION%', LEAF_VERSION)
-            .replaceAll('%LEAF_WORKFLOW_VERSION%', LEAF_WORKFLOW_VERSION)
         }
 
         return `export default ${JSON.stringify(entries)}`

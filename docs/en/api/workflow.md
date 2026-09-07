@@ -1,134 +1,21 @@
-# Workflow API
+# Workflow
 
-Official surface of Contracts, Core and Compose `%LEAF_WORKFLOW_VERSION%`, requiring no opt-in.
+`Workflow<Input, State, Event, Effect, Output>` defines any module that provides UI. It receives starting data, publishes the state to present, accepts events, can request suspending work, and ends with a result. State can represent one screen or indicate which of several internal screens the module must present. Contracts defines these types and Core processes the session in order.
 
-## Distribution and compatibility
+## Step and effect
 
-This version is validated exclusively in Maven Local; it is not published to GitHub Packages. Build the three repositories in order and enable `-Pleaf.useMavenLocal=true` in the consumer. The earlier `%LEAF_VERSION%` line retains its experimental behavior. `ExperimentalLeafWorkflowApi` remains as a compatibility marker for old imports but no longer annotates this surface.
+Whenever a Workflow decides what comes next, it chooses exactly one of these three steps.
 
-## Contracts
+| Decision | Result |
+| --- | --- |
+| `continueWorkflow(state)` | publishes state and accepts another event |
+| `emitEffect(state, effect)` | publishes state and requests one effect |
+| `completeWorkflow(output)` | fixes the single successful outcome |
 
-```kotlin
-interface Workflow<in Input, State, Event, Effect, out Output> {
-    val moduleInfo: ModuleInfo
-    val eventBufferCapacity: Int
-    fun initialize(input: Input): WorkflowStep<State, Effect, Output>
-    fun reduce(state: State, event: Event): WorkflowStep<State, Effect, Output>
-    val effectHandler: EffectHandler<Effect, Event>
-}
+When you choose `Emit`, Core first publishes the state. It then calls `EffectHandler.handle` to do slow work, such as saving or contacting a service. That handler returns an event and Core sends it back to the reducer. While that work is pending, the screen must disable the action that would start another effect. Otherwise Core ends with `WorkflowOutcome.Failed(WorkflowFailureReason.SECOND_EFFECT_WHILE_PENDING)`.
 
-fun <Input, State, Event, Effect, Output> workflow(
-    moduleInfo: ModuleInfo,
-    eventBufferCapacity: Int = 16,
-    initialize: (Input) -> WorkflowStep<State, Effect, Output>,
-    reduce: (State, Event) -> WorkflowStep<State, Effect, Output>,
-    effectHandler: EffectHandler<Effect, Event>,
-): Workflow<Input, State, Event, Effect, Output>
+## How it ends
 
-fun interface EffectHandler<Effect, Event> {
-    suspend fun handle(effect: Effect): Event
-}
-```
+Every flow ends in one of three ways. `WorkflowOutcome.Completed(output)` carries the business result, such as a saved counter. `Failed` reports a technical problem while starting, choosing a next step, running an effect, or requesting two effects at once. `Cancelled` means the screen or its coroutine left the flow before it finished. The app should show these cases differently and call `cancel()` only when it truly leaves an active session.
 
-`eventBufferCapacity` accepts `1..1024`. `initialize` and `reduce` are synchronous. The Core runtime invokes `effectHandler` as a child of the session.
-
-## WorkflowStep
-
-```kotlin
-sealed interface WorkflowStep<out State, out Effect, out Output> {
-    data class Continue<State>(val state: State) :
-        WorkflowStep<State, Nothing, Nothing>
-    data class Emit<State, Effect>(val state: State, val effect: Effect) :
-        WorkflowStep<State, Effect, Nothing>
-    data class Complete<Output>(val output: Output) :
-        WorkflowStep<Nothing, Nothing, Output>
-}
-
-fun <State> continueWorkflow(state: State): WorkflowStep<State, Nothing, Nothing>
-fun <State, Effect> emitEffect(
-    state: State,
-    effect: Effect,
-): WorkflowStep<State, Effect, Nothing>
-fun <Output> completeWorkflow(output: Output): WorkflowStep<Nothing, Nothing, Output>
-```
-
-`Emit` publishes state before the handler starts. Core permits one pending effect; a second `Emit` ends the session without publishing that second step's state.
-
-## WorkflowSession
-
-```kotlin
-enum class WorkflowSendResult {
-    ACCEPTED,
-    REJECTED_OVERFLOW,
-    REJECTED_CLOSED,
-}
-
-enum class WorkflowFailureReason {
-    INITIALIZATION_FAILED,
-    REDUCER_FAILED,
-    EFFECT_FAILED,
-    SECOND_EFFECT_WHILE_PENDING,
-}
-
-sealed interface WorkflowOutcome<out Output> {
-    data class Completed<Output>(val output: Output) : WorkflowOutcome<Output>
-    data class Failed(val reason: WorkflowFailureReason) : WorkflowOutcome<Nothing>
-    data object Cancelled : WorkflowOutcome<Nothing>
-}
-
-interface WorkflowSession<out State, in Event, out Output> {
-    val states: Flow<State>
-    fun send(event: Event): WorkflowSendResult
-    suspend fun awaitOutcome(): WorkflowOutcome<Output>
-    fun cancel()
-}
-```
-
-`send` never suspends. `REJECTED_OVERFLOW` rejects only that event and leaves the session active; `REJECTED_CLOSED` means cancellation or a terminal outcome. `awaitOutcome()` also waits for child-job cleanup. `cancel()` is idempotent.
-
-## Leaf.open
-
-```kotlin
-suspend fun <Input, State, Event, Effect, Output> Leaf.Companion.open(
-    workflow: Workflow<Input, State, Event, Effect, Output>,
-    input: Input,
-): WorkflowSession<State, Event, Output>
-
-suspend fun <Input, State, Event, Effect, Output> Leaf.Companion.open(
-    workflow: Workflow<Input, State, Event, Effect, Output>,
-    input: Input,
-    telemetry: LeafTelemetry,
-): WorkflowSession<State, Event, Output>
-```
-
-Both overloads require a `Job`. The first delegates with `LeafTelemetry.None`. Telemetry is best-effort and payload-free. It uses `STARTED/RUNNING` when opening and a `FINISHED` phase after cleanup; this telemetry phase name is not the `FeatureSessionResult.Finished` removed in LEAF 3.
-
-## Compose
-
-```kotlin
-sealed interface WorkflowSnapshot<out State> {
-    data object Initializing : WorkflowSnapshot<Nothing>
-    data class Active<State>(val state: State) : WorkflowSnapshot<State>
-}
-
-@Stable
-class LeafWorkflowHolder<State, Event, Output> internal constructor() {
-    val snapshot: State<WorkflowSnapshot<State>>
-    val outcome: State<WorkflowOutcome<Output>?>
-    fun send(event: Event): WorkflowSendResult
-    fun cancel()
-}
-
-@Composable
-fun <Input, State, Event, Effect, Output> Leaf.Companion.rememberLeafWorkflowHolder(
-    workflow: Workflow<Input, State, Event, Effect, Output>,
-    input: Input,
-    sessionKey: Any? = input,
-): LeafWorkflowHolder<State, Event, Output>
-```
-
-`snapshot` starts at `Initializing`; initialization that completes directly may retain it while publishing a terminal outcome. `outcome` is `null` until it is fixed once.
-
-Identity uses Workflow reference identity and Compose equality for `sessionKey`. A stable key captures the initial input. Replacement or disposal cancels the session; late callbacks from the old session cannot update the new holder. The holder delegates `send` without queueing or retries and never executes handlers.
-
-See the [Workflow guide](/en/guide/workflow) for full behavior.
+The [Workflow guide](/en/guide/workflow) explains how to start a session, present one or more screens, send events, and handle the final result from the host.

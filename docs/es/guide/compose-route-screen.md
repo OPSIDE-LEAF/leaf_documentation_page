@@ -1,76 +1,31 @@
-# Patrón Route + Screen
+# UI: Route + Screen
 
-Los módulos con UI separan dos composables con responsabilidades distintas:
+Divide la integración en dos partes para facilitar las pruebas. La Route administra el Workflow y su ciclo de vida. Cada Screen recibe valores sencillos y funciones para enviar las interacciones correspondientes.
 
-| Composable | Rol | Conoce |
-|---|---|---|
-| `<Modulo>Route` | **Conector**: abre la Feature con `rememberLeaf`, convierte callbacks en eventos, entrega el resultado terminal a la navegación | Leaf, el módulo |
-| `<Modulo>Screen` | **Vista pura**: recibe estado y callbacks | Solo `State` y lambdas |
-
-## Route: el conector
-
+<!-- kotlin-snippet: compiled: compose-route-screen -->
 ```kotlin
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
 @Composable
-fun LoginRoute(
-    module: LoginModule,
-    input: LoginInput = LoginInput(),
-    onAuthenticated: (LoginResult.Authenticated) -> Unit,
+fun CounterScreen(
+    value: Int,
+    persisting: Boolean,
+    onIncrement: () -> Unit,
+    onSave: () -> Unit,
 ) {
-    val leaf = Leaf.rememberLeaf(feature = module.login, input = input)
-    val result = leaf.result
-
-    LaunchedEffect(result) {
-        if (result is FeatureSessionResult.Completed) {
-            onAuthenticated(result.output as LoginResult.Authenticated)
-        }
-    }
-
-    val state = leaf.state
-    if (state == null) {
-        // Loading
-    } else {
-        LoginScreen(
-            state = state,
-            onEmailChanged = { leaf.send(LoginEvent.EmailChanged(it)) },
-            onPasswordChanged = { leaf.send(LoginEvent.PasswordChanged(it)) },
-            onSubmit = { leaf.send(LoginEvent.Submit) },
-        )
+    Column {
+        Text("Contador: $value")
+        Button(onClick = onIncrement, enabled = !persisting) { Text("+") }
+        Button(onClick = onSave, enabled = !persisting) { Text("Guardar $value") }
     }
 }
 ```
 
-El Route **no navega por sí mismo**: entrega el `Completed` a un callback. La navegación pertenece al host.
+La Route toma `CounterState` y llama a la Screen con `value = state.value` y `persisting = state.persisting`. También decide qué mostrar antes de tener datos (`Initializing`) y procesa el final de la sesión: `Completed`, `Failed` o `Cancelled`.
 
-## Screen: la vista pura
+En un Workflow con varias pantallas, el estado puede indicar cuál corresponde mostrar y la Route selecciona la Screen adecuada. Esas transiciones forman parte de la navegación interna del módulo. Cuando llega un `Output`, la Route lo entrega al host para que decida la navegación externa o cualquier otra respuesta de la aplicación.
 
-```kotlin
-@Composable
-fun LoginScreen(
-    state: LoginState,
-    onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onSubmit: () -> Unit,
-    modifier: Modifier = Modifier,
-)
-```
-
-Sin sesión, sin Leaf, sin efectos: solo estado y callbacks. Esto la hace trivialmente previsualizable y testeable.
-
-## Uso desde el host
-
-```kotlin
-val loginModule = LoginModule(authGateway)
-
-LoginRoute(
-    module = loginModule,
-    onAuthenticated = { result -> navigateToHome(result.userId) },
-)
-```
-
-El host construye el módulo explícitamente (con sus gateways reales) y conserva la decisión de navegación.
-
-## Por qué separar
-
-- La **Screen** se puede desarrollar y previsualizar sin infraestructura.
-- El **Route** concentra el único punto de contacto con Leaf: fácil de auditar (una sesión, una clave `(feature, input)`, un efecto de navegación).
-- El **host** decide navegación e infraestructura sin tocar el módulo.
+La Screen no abre sesiones, no llama puertos y no decide navegación. Sus botones solo envían eventos. Si tu app usa Visuals, aplica el tema alrededor de la composición; el módulo no obliga a usar un tema concreto.

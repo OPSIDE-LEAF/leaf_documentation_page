@@ -1,66 +1,22 @@
-# What is Leaf?
+# Understand Leaf
 
-Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).
+LEAF %LEAF_VERSION% separates module rules from the infrastructure of a Kotlin application. Contracts defines types, Core runs Actions and Workflow sessions, and Compose connects a Workflow to its UI. The module controls its rules and, when it provides UI, its screens and internal navigation. The host app provides network, storage, and other external capabilities; it also decides where to open the module and what to do with its result.
 
-**Leaf** is an ecosystem for cross-platform mobile development built on **Kotlin Multiplatform** and **Compose Multiplatform**. It allows structuring applications as sets of independent, reusable, and decoupled modules that are shared between Android and iOS while preserving native performance.
+## What LEAF is
 
-Its core provides **local and direct** capabilities. Authors expose `Action` or `Feature`; LEAF 3 adds `Workflow` as an official API for synchronous reduction with Core-managed effects. Hosts consume Kotlin references through `Leaf.run`, `Leaf.open`, or the Compose adapters.
+Many applications need the same kinds of capabilities: authentication, payments, forms, validation, search, or data selection. Reimplementing them in every project takes time and forces teams to solve the same errors, tests, and security decisions repeatedly.
 
-```kotlin
-// The Author defines the capability
-val login: Feature<LoginInput, LoginState, LoginEvent, LoginResult>
+LEAF lets a complete capability be encapsulated in a module with a clear contract. After that module is built and tested, it can be integrated into more than one application. The team spends less time repeating known work and can deliver the product-specific features that create value sooner.
 
-// The host executes it in a single statement
-val leaf = Leaf.rememberLeaf(module.login, LoginInput())
-```
+The name LEAF represents this idea. Each module is a reusable **leaf**. The host app is the **trunk** that connects the leaves, provides their infrastructure, and decides how they fit into the product. Together they form the tree: an application composed of independent modules that collaborate through public contracts.
 
-::: tip The primary route is local and direct
-No module registration, payload maps, codecs, or code generation required. Integrating a module means instantiating it and calling it — and if something doesn't fit, you'll see it at compile time.
-:::
+Reuse does not mean trusting a module without checking it. A module should keep its tests, versions, security review, and integration checks. By placing common logic in one location, a correction or improvement can benefit every application that adopts an updated module version.
 
-## The problem it solves
+## Recommended sections
 
-Mobile development faces a structural contradiction:
+1. [Concepts](/en/guide/architecture): learn what each part does and when to choose Action or Workflow.
+2. [Integrate](/en/guide/installation): add the required dependencies and use an Action or Workflow in your app.
+3. [Build](/en/guide/module-contract): define the contract, implement the rules, and test the module.
+4. [Evaluate](/en/project/): review responsibilities and decide whether the architecture fits your product.
 
-| Route | Advantage | Cost |
-|---|---|---|
-| **Traditional native** | Maximum UX quality | Doubles teams, budgets, and timelines (Swift/iOS + Kotlin/Android) |
-| **Hybrid frameworks** (Flutter, React Native) | Reduces costs and timelines | Intermediate abstraction layers that compromise performance and organic integration with each platform |
-
-Leaf operates at the intersection that neither alternative covers: **shared code that produces applications indistinguishable from those developed with native SDKs**. Kotlin Multiplatform introduces no abstraction layers at runtime — shared code compiles to JVM bytecode for Android and to a native framework for iOS.
-
-## Value proposition
-
-Instead of building each application from scratch, projects are assembled from **pre-built, reusable, and independently compilable modules**, distributed as versioned artifacts via GitHub Packages.
-
-Each module:
-
-- Encapsulates its dependencies via constructor and exposes ready-to-use capabilities (`Action`, `Feature`, or opt-in `Workflow`).
-- Is compiled, tested, and published independently (with its own semantic versioning).
-- Models its external dependencies as ports (interfaces) that the host implements.
-- Validates its public surface with ABI validation and a *clean consumer*.
-
-## Who is it for?
-
-- **Teams and agencies** that need to deliver Android + iOS without duplicating codebases.
-- **Startups** looking to reduce time-to-market without compromising the native experience.
-- **Module Authors** who want to distribute reusable capabilities with stable contracts.
-- **KMP developers** looking for a reference modular architecture.
-
-## Quick comparison
-
-| | Native x2 | Flutter / RN | **Leaf (KMP)** |
-|---|---|---|---|
-| Native performance | ✅ | ⚠️ Intermediate layer | ✅ Native compilation |
-| Shared code | ❌ | ✅ | ✅ Logic + UI (Compose MP) |
-| Maintenance | Two codebases | One codebase + native bridges | **One shared codebase** |
-| Versioned reusable modules | Manual | Manual | ✅ Native to the ecosystem |
-| Team duplication | ✅ Required | ❌ | ❌ |
-
-## Next steps
-
-- [Architecture and principles](/en/guide/architecture) — how the ecosystem is built.
-- [Installation](/en/guide/installation) — set up credentials and dependencies.
-- [Your first Action](/en/guide/quickstart-action) — Hello World in 5 minutes.
-- [Workflow](/en/guide/workflow) — reduction, effects, and Core-managed sessions.
-- [Migrate Feature from 2.0.1](/en/guide/feature-migration) — mappings for the breaking change.
+Use an Action for a finite operation that does not require UI. Use a Workflow whenever the module requires UI, whether that UI contains one screen or internal navigation across several screens. See [Action vs Workflow](/en/guide/action-vs-workflow) for the complete differences.

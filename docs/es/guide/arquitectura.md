@@ -1,95 +1,15 @@
-# Arquitectura y principios
+# Arquitectura y responsabilidades
 
-## Principios de diseño
+| Capa | Se encarga de | No se encarga de |
+| --- | --- | --- |
+| Contracts | los tipos y las funciones públicas | sesiones, red o UI |
+| Core | ejecutar Actions y administrar sesiones, eventos, efectos y resultados de Workflow | las reglas de negocio o la UI del módulo |
+| Compose | conectar una sesión de Workflow con UI Compose | las reglas de negocio o la navegación externa de la app |
+| Módulo | las reglas de negocio y, si es Workflow, su UI y navegación interna | infraestructura de la app o navegación fuera del módulo |
+| App host | red, almacenamiento, ciclo de vida, punto de apertura y navegación externa | el reducer o las transiciones internas del módulo |
 
-1. **Ruta local tipada** — Los hosts invocan capabilities directamente con referencias Kotlin tipadas. Los errores de tipo aparecen al compilar.
-2. **Diseño modular** — Los módulos encapsulan dependencias por constructor y exponen capabilities tipadas (`Action`, `Feature` o `Workflow`).
-3. **Cancelación estructurada** — Core administra concurrencia, lifecycle y cleanup. Los consumidores no administran coroutines ni Flows.
-4. **Kotlin Multiplatform** — Lógica compartida compilada nativamente para cada plataforma, sin capas de abstracción en runtime.
-5. **Sin dinámica en Core** — Quedan prohibidos `Map<String, Any?>`, payloads genéricos, codecs, casts no comprobados, registry, instalación e invocación manual en la ruta local.
+La regla principal es que el módulo no dependa de detalles propios de una aplicación. La aplicación usa su API pública y proporciona mediante puertos las capacidades externas que necesita, como backend, SDK, OAuth, almacenamiento o permisos.
 
-::: warning Lo que Leaf NO tiene (por diseño)
-No hay contenedor DI global, no hay registro de módulos, no hay intents ni requests intermediarios, no hay serialización de eventos ni generación de código. La comunicación es directa y tipada.
-:::
+Una Action no proporciona UI. Cualquier módulo que proporcione UI se define como Workflow, incluso si solo tiene una pantalla. El Workflow puede controlar varias pantallas y sus transiciones internas. El host decide desde dónde abrirlo y, cuando recibe su `Output`, determina el siguiente paso de la aplicación.
 
-## Los tres artefactos
-
-El ecosistema separa responsabilidades en tres artefactos publicados de forma independiente:
-
-| Artefacto | Responsabilidad | No hace |
-|---|---|---|
-| `leaf-contracts` | Declara `Module`, `Action`, `Feature` y el protocolo estable de `Workflow` | Ejecutar sesiones o conocer UI |
-| `leaf-core` | Ejecuta Actions y posee sesiones de Feature/Workflow: serialización, efectos, cancelación, resultados y presión | Conocer reglas de dominio o renderizar UI |
-| `leaf-compose` | Observa sesiones de Core y expone holders para Compose | Crear otra sesión, cola, reducer o handler |
-
-```
-┌─────────────────────────────────────────────┐
-│                    Host                     │
-│   (App Android / iOS que ensambla módulos)  │
-└───────────────┬─────────────────────────────┘
-                │ Leaf.run / Leaf.open / rememberLeaf
-┌───────────────▼─────────────┐  ┌────────────────────┐
-│         leaf-core           │  │    leaf-compose    │
-│  (runtime: sesiones, cola,  │◄─┤ (adaptador Compose │
-│  cancelación, telemetría)   │  │  de una sesión)    │
-└───────────────┬─────────────┘  └────────────────────┘
-                │ implementa
-┌───────────────▼─────────────────────────────┐
-│              leaf-contracts                 │
-│  Module · ModuleInfo · Action · Feature ·   │
-│  Workflow · Continue / Emit / Complete      │
-└───────────────▲─────────────────────────────┘
-                │ implementa
-┌───────────────┴─────────────────────────────┐
-│         Módulos de dominio                  │
-│  leaf-login · leaf-*-payments · ...         │
-│  (dominio + gateways + UI opcional)         │
-└─────────────────────────────────────────────┘
-```
-
-## El paradigma Module → Capability → Host
-
-- Un **Module** es un objeto local que implementa `Module`, encapsula sus dependencias (inyectadas por constructor) y publica capabilities como propiedades `val` tipadas.
-- Una **capability** estable es una `Action<Input, Output>` (operación finita) o una `Feature<Input, State, Event, Output>` (interacción con estado). `Workflow<Input, State, Event, Effect, Output>` añade reducción síncrona y efectos runtime-owned como API estable sin opt-in.
-- Un **Host** construye el módulo explícitamente y ejecuta sus capabilities con `Leaf.run`, `Leaf.open`, `Leaf.rememberLeaf` o `rememberLeafWorkflowHolder`. El host conserva la navegación y decide con los resultados de dominio.
-
-Las dependencias externas (APIs, servicios de identidad, pasarelas de pago) se modelan como **ports**: interfaces declaradas dentro del módulo cuya implementación pertenece al host — arquitectura hexagonal (Ports & Adapters).
-
-## Stack tecnológico
-
-| Tecnología | Versión | Uso |
-|---|---|---|
-| Kotlin Multiplatform | `2.3.20` | Lógica de negocio compartida Android/iOS |
-| Compose Multiplatform | `1.10.3` | UI declarativa multiplataforma |
-| Gradle + AGP | `8.14.3` / `8.11.2` | Sistema de compilación |
-| Android SDK | compileSdk 36, minSdk 24 | Target Android (AAR) |
-| iOS | Arm64 + Simulator Arm64 | Framework estático nativo |
-| kotlinx.coroutines | `1.10.2` | Concurrencia estructurada |
-| GitHub Packages | — | Distribución de artefactos versionados |
-| Kotlin Test | — | Testing en `commonTest` |
-| ABI Validation | — | Estabilidad de la superficie pública |
-
-## Organización del código
-
-Cada pieza del ecosistema vive en su propio repositorio:
-
-```
-leaf_contracts/   → Contratos tipados KMP (Module, Action, Feature)
-leaf_core/        → Runtime (Leaf.run, Leaf.open, FeatureSession)
-leaf_compose/     → Adaptador Compose (rememberLeaf)
-leaf_visuals/     → Sistema de diseño (en desarrollo)
-leaf_login/       → Módulo de referencia (Feature + UI)
-leaf_*_payment/   → Actions LOCAL_FAKE de pago y observación
-```
-
-Los paquetes Kotlin públicos son `com.ops.leaf_core.api` (contracts + core) y `com.ops.leaf_core.ui.compose` (compose). Los módulos de dominio nuevos usan `com.opside.leaf.<modulo>`.
-
-::: info Paquetes públicos en 3.0.0
-LEAF 3 conserva `com.ops.leaf_core.api` y `com.ops.leaf_core.ui.compose`. El cambio mayor migra el vocabulario de Feature y añade Workflow; no migra el namespace.
-:::
-
-## Ownership de Workflow
-
-Contracts define reducción síncrona y los steps `Continue`, `Emit` y `Complete`. Core serializa eventos, ejecuta `EffectHandler` como hijo de la sesión y produce un único outcome. Compose refleja esa sesión y delega eventos. El host no ejecuta efectos ni coordina una segunda máquina de estados.
-
-Workflow es oficial sin opt-in en la promoción local `%LEAF_WORKFLOW_VERSION%` de Contracts, Core y Compose. No está publicada en GitHub Packages. Ver [Workflow](/es/guide/workflow).
+Esta separación permite probar las reglas de negocio sin usar servicios reales y evita que el módulo dependa de una arquitectura específica del host. [El contrato de módulo](/es/guide/module-contract) explica qué debe definirse antes de implementar.

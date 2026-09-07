@@ -1,20 +1,13 @@
 # Referencia API
 
-Referencia del tren `%LEAF_VERSION%` y de la promoción local `%LEAF_WORKFLOW_VERSION%`, organizada por artefacto. Workflow es API oficial sin opt-in en esta última; se valida solo con Maven Local, no con GitHub Packages.
+LEAF %LEAF_VERSION% separa los contratos públicos, la ejecución y la integración con Compose en artefactos distintos.
 
-| Artefacto | Paquete | Contenido |
-|---|---|---|
-| [leaf-contracts](/es/api/contracts) | `com.ops.leaf_core.api` | `Module`, `ModuleInfo`, `Action`, `Feature`, `FeatureTransition`, DSLs y constantes de capacidad |
-| [leaf-core](/es/api/core) | `com.ops.leaf_core.api` | `Leaf.run`, `Leaf.open`, `FeatureSession`, resultados y fallos, `LeafException`, `LeafTelemetry` |
-| [leaf-compose](/es/api/compose) | `com.ops.leaf_core.ui.compose` | `Leaf.rememberLeaf`, `LeafComposeState` |
-| [Workflow](/es/api/workflow) | Contracts, Core y Compose `%LEAF_WORKFLOW_VERSION%` (Maven Local) | `Workflow`, steps, `EffectHandler`, sesión, outcome y holder Compose oficiales |
+| Artefacto | Responsabilidad |
+| --- | --- |
+| [leaf-contracts](/es/api/contracts) | define entradas, salidas y pasos |
+| [leaf-core](/es/api/core) | ejecuta acciones y sesiones |
+| [leaf-compose](/es/api/compose) | lleva una sesión Workflow a Compose |
+| [Workflow](/es/api/workflow) | explica una interacción con estado paso a paso |
+| [leaf-visuals](/es/api/visuals) | aporta un tema Material 3 opcional |
 
-Los tres repositorios validan su superficie pública con ABI dumps. Los paquetes `com.ops.leaf_core.*` se conservan. El marcador anterior existe por compatibilidad, pero no anota Workflow en la promoción local.
-
-## Separación de responsabilidades
-
-| Artefacto | Responsabilidad | No hace |
-|---|---|---|
-| `leaf-contracts` | Declarar contratos tipados de Action, Feature y Workflow | Ejecutar sesiones o conocer UI |
-| `leaf-core` | Ejecutar Actions y poseer sesiones de Feature/Workflow | Conocer reglas de dominio o renderizar UI |
-| `leaf-compose` | Observar una sesión y exponer holders Compose | Crear otra sesión, cola, reducer o handler |
+[Authentication](/es/api/authentication), [Payment Contracts](/es/api/payment-contracts) y [módulos de pago](/es/api/payments) tienen versiones y requisitos de integración propios. Consulta cada referencia antes de elegir dependencias para tu aplicación.

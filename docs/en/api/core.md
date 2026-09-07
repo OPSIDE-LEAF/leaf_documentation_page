@@ -1,116 +1,43 @@
-# leaf-core
+# `leaf-core`
 
-Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).
+`leaf-core` %LEAF_VERSION% runs Actions and manages Workflow sessions. The module describes the business rule; Core keeps events in order, runs effects, and stores one final result.
 
-`com.opside-leaf:leaf-core:%LEAF_VERSION%` · package `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-core)
+## Entry points
 
-Ecosystem runtime: executes Actions and owns Feature sessions (event serialization, cancellation, result, backpressure, technical errors). It also executes [Workflow](/en/api/workflow) sessions. It does not know domain rules or render UI.
-
-## Leaf.run
-
+<!-- kotlin-snippet: reference: core-entry -->
 ```kotlin
 class Leaf private constructor() {
     companion object {
         suspend fun <Input, Output> run(
             action: Action<Input, Output>,
             input: Input,
-            telemetry: LeafTelemetry = LeafTelemetry.None
+            telemetry: LeafTelemetry = LeafTelemetry.None,
         ): Output
     }
 }
-```
 
-Executes an Action. On unexpected failure, throws a redacted `LeafException`; `CancellationException` propagates.
-
-## Leaf.open
-
-```kotlin
-suspend fun <Input, State, Event, Output> Leaf.Companion.open(
-    feature: Feature<Input, State, Event, Output>,
+suspend fun <Input, State, Event, Effect, Output> Leaf.Companion.open(
+    workflow: Workflow<Input, State, Event, Effect, Output>,
     input: Input,
-): FeatureSession<State, Event, Output>
+): WorkflowSession<State, Event, Output>
 ```
 
-Creates a `FeatureSession` that is a **child of the current coroutine** (requires `Job` in context).
+Call `Leaf.open` from a coroutine with a `Job`. The session belongs to that coroutine. The overload that receives `LeafTelemetry` only records technical information; it does not change the result.
 
-## FeatureSession
+## Workflow session
 
+<!-- kotlin-snippet: reference: core-session -->
 ```kotlin
-interface FeatureSession<State, Event, Output> {
-    val state: StateFlow<State>
-    val result: StateFlow<FeatureSessionResult<Output>?>
-    val metrics: StateFlow<FeatureSessionMetrics>
-    val isActive: Boolean
-    fun send(event: Event): FeatureSendResult
+interface WorkflowSession<out State, in Event, out Output> {
+    val states: Flow<State>
+    fun send(event: Event): WorkflowSendResult
+    suspend fun awaitOutcome(): WorkflowOutcome<Output>
     fun cancel()
-    fun close()
 }
 ```
 
-`send` never suspends. `cancel()` and `close()` are idempotent. See [full semantics](/en/guide/feature-session).
+`send` answers immediately: `ACCEPTED` when it received the event, `REJECTED_OVERFLOW` when the queue is full, and `REJECTED_CLOSED` when the session already ended. A full queue does not close an active session. `awaitOutcome()` waits for the final result: `Completed(output)`, `Failed(reason)`, or `Cancelled`. Workflow has no public `close()`; use `cancel()` when the app leaves the session.
 
-## FeatureSendResult
+## Feature reference
 
-```kotlin
-enum class FeatureSendResult { ACCEPTED, REJECTED_TERMINATED, REJECTED_OVERFLOW }
-```
-
-## FeatureSessionResult
-
-```kotlin
-sealed interface FeatureSessionResult<out Output> {
-    data class Completed<Output>(val output: Output) : FeatureSessionResult<Output>
-    data object Cancelled : FeatureSessionResult<Nothing>
-    data class Failed(val failure: FeatureTechnicalFailure) : FeatureSessionResult<Nothing>
-}
-```
-
-`result` is `null` while the session is active; afterwards it retains exactly one value.
-
-## FeatureTechnicalFailure
-
-```kotlin
-enum class FeatureTechnicalFailure { INITIALIZATION_FAILED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED }
-```
-
-No payloads or throwable messages.
-
-## FeatureSessionTerminalCause
-
-```kotlin
-enum class FeatureSessionTerminalCause { COMPLETED, CANCELLED, EVENT_QUEUE_OVERFLOW, TRANSITION_FAILED }
-```
-
-## FeatureSessionMetrics
-
-```kotlin
-// StateFlow<FeatureSessionMetrics> in the session
-val eventQueueOverflowCount: Long
-val terminalCause: FeatureSessionTerminalCause?
-```
-
-## LeafException
-
-Redacted technical error. Its constructor is internal and its only additional public property is `moduleInfo`. `LeafOperation` is internal too: it contributes a safe description to the message but consumers cannot read it as a property. The input, state, and original message are never retained.
-
-## LeafTelemetry
-
-```kotlin
-fun interface LeafTelemetry {
-    fun record(event: LeafTelemetryEvent)
-    companion object { val None: LeafTelemetry }
-}
-```
-
-### LeafTelemetryEvent
-
-| Field | Values |
-|---|---|
-| `moduleInfo` | Module identity |
-| `phase` | `STARTED`, `FINISHED` |
-| `duration` | Operation duration |
-| `result` | `RUNNING`, `SUCCEEDED`, `FAILED`, `CANCELLED` |
-
-Best-effort and isolated: no input, state, event, output, throwable, or PII. A hook failure does not alter execution.
-
-`LeafTelemetryPhase.FINISHED` remains the name of a technical phase. It is independent from `FeatureSessionResult.Completed` and `FeatureSessionTerminalCause.COMPLETED`.
+`FeatureSession` keeps `state`, `result`, `metrics`, and `isActive`, and allows `send`, `cancel`, and `close`. In Core, `close()` does the same as cancelling. This API remains as a reference; use the Workflow API to implement new UI.

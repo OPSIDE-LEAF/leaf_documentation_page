@@ -1,32 +1,27 @@
-# Resumen
+# Evaluar la adopción
 
-El presente documento expone el diseño, desarrollo y validación de Leaf, un ecosistema para desarrollo móvil multiplataforma sustentado en una arquitectura modular reutilizable construida sobre Kotlin Multiplatform. El proyecto surge como respuesta a la duplicidad estructural que caracteriza al desarrollo nativo tradicional, donde mantener bases de código independientes para Android e iOS incrementa los costos, los tiempos de entrega y la complejidad de mantenimiento, particularmente para PyMEs y startups de la Zona Metropolitana de Guadalajara.
+LEAF puede encajar si tu organización quiere convertir capacidades comunes en módulos reutilizables sin obligar a todas las aplicaciones a usar la misma red, UI o almacenamiento. La app host conserva esas decisiones y cada proyecto elige cómo integrar, probar y distribuir los módulos.
 
-La propuesta se articula en torno a un Core Orquestador que coordina la integración de módulos funcionales independientes, compilables de forma aislada y distribuibles como repositorios reutilizables. El documento incluye el planteamiento del problema, la justificación, los objetivos general y específicos, la hipótesis de trabajo, el estado del arte, la teoría fundamental, las tecnologías aplicadas, el estudio de viabilidad, los requerimientos funcionales y no funcionales, la metodología seleccionada y el cronograma de actividades. El resultado esperado es un prototipo funcional que demuestre la viabilidad técnica y comercial del framework bajo un modelo open core con componente SaaS.
+Adoptar LEAF no reemplaza las decisiones de producto, backend, seguridad u observabilidad. El Workflow controla la navegación interna de su UI; el host conserva la navegación externa y decide qué ocurre después del resultado.
 
-## Abstract
+## Valor del reúso
 
-This document presents the design, development, and validation of Leaf, a cross-platform mobile development ecosystem based on a reusable modular architecture built on Kotlin Multiplatform. The project addresses the structural duplication inherent to traditional native development, where maintaining independent codebases for Android and iOS increases costs, delivery times, and maintenance complexity, particularly for SMEs and startups in the Guadalajara Metropolitan Area.
+| Sin un módulo reutilizable | Con un módulo LEAF preparado |
+| --- | --- |
+| Cada proyecto vuelve a implementar una capacidad común. | El proyecto integra una capacidad mediante un contrato conocido. |
+| Las mismas reglas y errores se prueban por separado en cada aplicación. | Las reglas se prueban en el módulo y el host comprueba su integración. |
+| Una corrección debe repetirse en varias implementaciones. | La corrección se concentra en el módulo y se distribuye mediante una nueva versión. |
+| El arranque del proyecto dedica tiempo a resolver funciones conocidas. | El equipo puede dedicar antes su tiempo a las funciones propias del producto. |
 
-The proposal is structured around a Core Orchestrator that coordinates the integration of independent functional modules, compilable in isolation and distributable as reusable repositories. The document includes problem statement, justification, general and specific objectives, working hypothesis, state of the art, fundamental theory, applied technologies, feasibility study, functional and non-functional requirements, methodology, and project timeline. The expected outcome is a functional prototype demonstrating the technical and commercial viability of the framework under an open core model with a SaaS component.
+Este reúso puede reducir tiempos de entrega y generar valor antes, pero depende de la calidad del catálogo. Cada módulo debe tener una responsabilidad clara, pruebas suficientes, versiones controladas y revisiones de seguridad acordes con el riesgo que maneja. LEAF facilita la estructura para reutilizarlo; no sustituye esas prácticas.
 
-## Índice
+## Preguntas para el equipo
 
-- [Introducción y justificación](/es/project/introduccion)
-- [Capítulo I — Contextualización de la problemática](/es/project/capitulo-1): planteamiento del problema, propuesta de solución, EDT, objetivos, hipótesis, estudio de viabilidad y hoja de ruta financiera
-- [Capítulo II — Marco teórico](/es/project/capitulo-2): estado del arte, teoría fundamental, tecnologías aplicadas
-- [Capítulo III — Diseño y desarrollo](/es/project/capitulo-3): requerimientos, metodología, cronograma
-- [Capítulo IV — Resultados](/es/project/capitulo-4): análisis de resultados, puesta en marcha, conclusiones
-- [Referencias y anexos](/es/project/referencias)
+| Pregunta | Qué conviene tener claro |
+| --- | --- |
+| ¿Action o Workflow? | Action para una operación sin UI; Workflow para cualquier módulo con UI |
+| ¿Qué aporta la app host? | red, almacenamiento, SDK, OAuth, permisos, punto de apertura y navegación externa |
+| ¿Qué conserva el módulo? | reglas de negocio, resultados y, para un Workflow, UI y navegación interna |
+| ¿Cómo se valida? | pruebas del módulo, una aplicación consumidora y los targets que se pretenden soportar |
 
----
-
-**Centro de Enseñanza Técnica Industrial** · División de Informática y Computación · Plantel Tonalá
-
-**Título**: Leaf — Ecosistema para Desarrollo Móvil Multiplataforma basado en Arquitectura Modular Reutilizable · **Tipo de proyecto**: Aplicación móvil
-
-**Estudiantes**: Mario Armando Razo Valenzuela · Moises Noe Pulido Gutierrez
-
-**Asesor metodológico**: Ing. Rigoberto Ibarra Hernández · **Asesor técnico propuesto**: Ing. Jorge Alberto Chamorro Martínez
-
-Junio 2026
+Empieza con [arquitectura](/es/guide/arquitectura), define [el contrato](/es/guide/module-contract) y selecciona la estrategia de integración, pruebas y distribución que corresponda a tu producto.

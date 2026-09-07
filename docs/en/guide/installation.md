@@ -1,115 +1,34 @@
 # Installation
 
-## Prerequisites
+Add only the dependencies required by each project's responsibility. Your organization can distribute LEAF artifacts through any repository and process it prefers; that choice does not change the module API.
 
-| Requirement | Detail |
-|---|---|
-| Build JDK | 17 (toolchain used by Gradle/CI) |
-| Gradle | 8.14.3 (via wrapper) |
-| Kotlin | 2.3.20 |
-| Android SDK | compileSdk 36, minSdk 24 |
-| Xcode | For iOS targets (Arm64, Simulator Arm64) |
-| GitHub PAT | Classic token with `read:packages` (consume) and `write:packages` (publish) |
+## Dependency required to create a module
 
-## 1. Configure credentials
+To create the public contract of an **Action** or **Workflow** module, you only need `leaf-contracts`. This artifact contains the interfaces and types used by the module to declare its input, output, and, for a Workflow, its state, events, and effects.
 
-LEAF projects configure GitHub Packages as their Maven destination and source; resolving from that registry requires authentication even for reads. Check each version's availability by resolving it. Leaf uses a **dual** credential pattern:
+`leaf-core` and `leaf-compose` are not required to declare that contract. They are normally added by the host application according to how it will run or present the module.
 
-1. **Local development** — `local.properties` (not committed)
-2. **CI/CD** — environment variables `GPR_USER` and `GPR_GIT_KEY`
+| Project | Required dependency |
+| --- | --- |
+| Module that declares an Action or Workflow | `leaf-contracts` |
+| Host that runs Actions or opens Workflow sessions | `leaf-core` |
+| Compose host that presents and observes Workflow UI | `leaf-compose` |
 
-Create `local.properties` in the project root:
+For example, an Android Compose host that runs Actions and presents Workflows can declare all three dependencies:
 
-```properties
-gpr.user=YOUR_GITHUB_USERNAME
-gpr.key=YOUR_PERSONAL_ACCESS_TOKEN
-```
-
-::: danger Never commit credentials
-`local.properties` must always be in `.gitignore`. Never hardcode username or token in versioned files.
-:::
-
-## 2. Configure repositories
-
-In `settings.gradle.kts`:
-
+<!-- kotlin-snippet: gradle: installation-dependencies -->
 ```kotlin
-import java.io.FileInputStream
-
-val localProperties = java.util.Properties()
-val localPropertiesFile = File(rootDir, "local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(FileInputStream(localPropertiesFile))
-}
-
-dependencyResolutionManagement {
-    repositories {
-        if (providers.gradleProperty("leaf.useMavenLocal").orNull == "true") {
-            mavenLocal()
-        }
-        listOf("leaf-contracts", "leaf-core", "leaf-compose", "leaf-login").forEach { repository ->
-            maven {
-                name = "GitHubPackages-$repository"
-                url = uri("https://maven.pkg.github.com/OPSIDE-LEAF/$repository")
-                credentials {
-                    username = localProperties.getProperty("gpr.user") ?: System.getenv("GPR_USER")
-                    password = localProperties.getProperty("gpr.key") ?: System.getenv("GPR_GIT_KEY")
-                }
-                content { includeGroup("com.opside-leaf") }
-            }
-        }
-        google()
-        mavenCentral()
-    }
+dependencies {
+    implementation("com.opside-leaf:leaf-contracts:%LEAF_VERSION%")
+    implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")
+    implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%")
 }
 ```
 
-## 3. Add dependencies
+Do not copy all three coordinates into every project. The reusable module can depend only on Contracts. A host without Compose can use Contracts and Core. Add Compose only to a host that will present a Workflow through that integration.
 
-```kotlin
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            api("com.opside-leaf:leaf-contracts:%LEAF_VERSION%")
-            implementation("com.opside-leaf:leaf-core:%LEAF_VERSION%")    // Only if you need Leaf.run/open
-            implementation("com.opside-leaf:leaf-compose:%LEAF_VERSION%") // Only if you have Compose UI
-        }
-    }
-}
-```
+## Maven Local for testing
 
-| Coordinate | Contents | When you need it |
-|---|---|---|
-| `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` | `Module`, `ModuleInfo`, `Action`, `Feature`, DSLs | Always (as `api` if you expose Leaf types) |
-| `com.opside-leaf:leaf-core:%LEAF_VERSION%` | `Leaf.run`, `Leaf.open`, `FeatureSession` | Hosts that execute capabilities |
-| `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | `Leaf.rememberLeaf` | Hosts with Compose UI |
-| `com.opside-leaf:leaf-login:%LEAF_VERSION%` | Reference module (stable Feature/UI and experimental Workflow/UI) | Optional |
+Maven Local is an option for testing changes before distributing an artifact. It lets you publish a version to the development machine's Maven repository and check it from a test application. It is not a LEAF requirement or a recommendation for distributing dependencies within a company.
 
-::: tip leaf-contracts as an `api` dependency
-If your module exposes Leaf types in its public surface (the usual case), use `api("com.opside-leaf:leaf-contracts:...")` so that your consumers can resolve them.
-:::
-
-::: info JDK 17 and JVM 11 target
-JDK 17 runs Gradle, AGP, and CI jobs. Android artifacts continue to compile with `jvmTarget = JVM_11` and Java 11 bytecode compatibility. These are separate choices.
-:::
-
-## 4. Maven Local (development)
-
-To test artifacts without publishing them, the projects support `mavenLocal()` conditionally via the property `leaf.useMavenLocal=true`:
-
-```shell
-./gradlew publishToMavenLocal -Pleaf.useMavenLocal=true
-./gradlew :consumer:assembleDebug -Pleaf.useMavenLocal=true --refresh-dependencies
-```
-
-## Verify
-
-```shell
-./gradlew build
-```
-
-If dependency resolution fails with 401/403, check that the PAT has `read:packages` and that `local.properties` is in the correct root.
-
-## Next step
-
-Your first module: [Quickstart with Action](/en/guide/quickstart-action).
+If you need that check, see [testing with Maven Local](/en/guide/maven-local). For shared projects, configure the dependency repository and publication rules that suit your organization.

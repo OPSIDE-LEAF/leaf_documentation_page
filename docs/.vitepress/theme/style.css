@@ -512,6 +512,26 @@ button.DocSearch-Button {
   border-color: rgba(160, 203, 56, 0.28);
 }
 
+/* The default VitePress switch assumes both locales use the same filename.
+   Leaf has four translated filenames, so LanguageLink supplies the valid pair. */
+.VPNavBarTranslations,
+.VPNavBarExtra .translations,
+.VPNavScreenTranslations {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .VPNavBar .leaf-language-link:not(.leaf-language-link--mobile) {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .leaf-language-link--mobile {
+    display: none !important;
+  }
+}
+
 /* ============================================
    TRANSICIÓN DE TEMA (sin flash)
    ============================================ */

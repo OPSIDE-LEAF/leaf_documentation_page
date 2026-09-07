@@ -1,50 +1,33 @@
 # Module catalog
 
-This page distinguishes the LEAF 3 train from independent module code observed in the workspace. It describes source surfaces and declared versions; it does not confirm that a coordinate is available from a remote registry.
+This catalog summarizes the documented LEAF base libraries and modules. Each organization can obtain them from its preferred Maven repository and define its own publication process. See [Installation](/en/guide/installation) for the dependencies required by each type of project.
 
-## LEAF 3.0.0 train
+## A starting point for new projects
 
-| Artifact | Coordinate | API in 3.0.0 | Repository |
-|---|---|---|---|
-| leaf-contracts | `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` | Stable Action and Feature; preview Workflow contracts | [leaf-contracts](https://github.com/OPSIDE-LEAF/leaf-contracts) |
-| leaf-core | `com.opside-leaf:leaf-core:%LEAF_VERSION%` | Stable Action/Feature runtime; preview Workflow session | [leaf-core](https://github.com/OPSIDE-LEAF/leaf-core) |
-| leaf-compose | `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | Stable Feature adapter; preview Workflow holder | [leaf-compose](https://github.com/OPSIDE-LEAF/leaf-compose) |
-| leaf-login | `com.opside-leaf:leaf-login:%LEAF_VERSION%` | Stable Feature/UI and opt-in Login Workflow/UI | [leaf-login](https://github.com/OPSIDE-LEAF/leaf-login) |
+The catalog lets teams begin with implemented capabilities instead of rebuilding them for every application. A team can select the modules it needs, connect them to the host, and focus on the rules specific to its product.
 
-The rows above describe the earlier `%LEAF_VERSION%` line. The Contracts, Core and Compose `%LEAF_WORKFLOW_VERSION%` promotion makes Workflow official without opt-in and is available **only in Maven Local**, not in GitHub Packages. Login retains its previous version. See the [Workflow guide](/en/guide/workflow).
+Each entry should represent a reusable capability with its own contract, version, and tests. The catalog can grow independently: an organization can use the available modules, create private modules for its needs, or share new modules without changing the host architecture.
 
-## Independent lines observed
+## Base libraries
 
-These modules are not part of the `3.0.0` release. Their observed builds still declare Contracts/Core `2.0.1` where applicable.
+| Artifact | Documented version | When it is needed |
+| --- | --- | --- |
+| [`leaf-contracts`](/en/api/contracts) | %LEAF_VERSION% | To declare an Action or Workflow. It is the only dependency required to define a module contract. |
+| [`leaf-core`](/en/api/core) | %LEAF_VERSION% | In the host that runs Actions or opens Workflow sessions. |
+| [`leaf-compose`](/en/api/compose) | %LEAF_VERSION% | In a Compose host that presents and observes Workflow UI. |
+| [`leaf-visuals`](/en/api/visuals) | 1.4.0 | When a Compose app wants to use the optional LEAF visual theme. |
+| [Payment Contracts](/en/api/payment-contracts) | 0.1.0 | To share provider-independent payment types such as amounts, orders, and statuses. |
 
-| Module | Declared version | Observed surface | Workspace-backed status |
-|---|---|---|---|
-| Authentication | `0.1.0` | `signIn`, `continueChallenge`, `restoreSession`, `signOut`, and `accessTokens` | Typed KMP implementation with a `LOCAL_FAKE` factory. It no longer uses the legacy registry. |
-| Email | `1.0.0` | `EmailModule.send: Action<EmailInput, EmailResult>` | Multiplatform implementation and native SMTP appear on `origin/main` after fetch; the local checkout is behind. |
-| Catalog | `1.0.0` | `CatalogModule.browse: Feature<...>`, Compose UI, and DSL | The implementation appears on `origin/main` after fetch; the local checkout is two commits behind. |
-| Stripe payment | `0.1.0` | `createOrReplay` and `observe` Actions | `LOCAL_FAKE` PoC; it does not prove a real Stripe integration, SDK, tokenization, or charge. |
-| Mercado Pago payment | `0.1.0` | `createOrReplay` and `observe` Actions | `LOCAL_FAKE` PoC; it does not prove a real Mercado Pago integration, SDK, tokenization, or charge. |
-| LeafVisuals | `1.3.0` | Optional Compose provider, `LeafVisualsMaterialTheme`, and the `thingsLeafVisuals()` brand identity | Published to GitHub Packages in all four KMP variants. |
+## Domain modules
 
-The observed Catalog `origin/main` declares `leaf-visuals:1.3.0`, and that same `1.3.0` line — including the `thingsLeafVisuals()` brand theme — is what LeafVisuals `main` carries and what is published to GitHub Packages. Catalog itself remains unpublished: consuming it still requires Maven Local.
+| Module | Documented version | Form | What it provides | What the host must provide |
+| --- | --- | --- | --- | --- |
+| [Authentication](/en/api/authentication) | 0.2.0 | Actions | Sign-in, challenge continuation, session restoration, and sign-out. | The authentication, storage, and network services required by its implementation. |
+| [Stripe](/en/api/payments) | 0.3.0 | Workflow | UI and states for completing a Stripe payment. | Backend, provider configuration, and SDK presentation when required. |
+| [Mercado Pago](/en/api/payments) | 0.3.0 | Workflow | UI and states for completing a Mercado Pago payment. | Backend, provider configuration, and secure capture of the data required by the SDK. |
 
-::: warning Compatibility across lines
-Authentication, Email, Catalog, and payment modules were not promoted with this train. Before combining them with LEAF 3, migrate their dependency and Feature vocabulary where applicable, then run their consumers. The [Feature migration](/en/guide/feature-migration) covers the renamed API.
-:::
+## How to choose and integrate
 
-## Previous architecture history
+Use an Action when the module provides no UI. Use a Workflow for any module that provides UI, whether it has one screen or internal navigation across several screens. The host decides where to open it and uses its `Output` to determine the next step outside the module.
 
-The dynamic registry belongs to LEAF 1.x. Authentication and Catalog have later typed implementations in the workspace, so they must no longer be listed as legacy modules awaiting migration. The [historical 1.x to 2.0.1 guide](/en/guide/legacy-migration) preserves that context.
-
-## Configured package repositories
-
-Train projects configure one GitHub Packages repository per artifact:
-
-```text
-https://maven.pkg.github.com/OPSIDE-LEAF/leaf-contracts
-https://maven.pkg.github.com/OPSIDE-LEAF/leaf-core
-https://maven.pkg.github.com/OPSIDE-LEAF/leaf-compose
-https://maven.pkg.github.com/OPSIDE-LEAF/leaf-login
-```
-
-The common Group ID is `com.opside-leaf`. Publication configuration is not proof of availability; verify the coordinate in your build.
+The versions in the table are independent because the artifacts do not have to be released at the same time. Before combining versions, check each artifact's API reference and the compatibility rules of the repository from which you obtain it.

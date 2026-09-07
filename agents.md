@@ -4,8 +4,8 @@
 Eres un Desarrollador Frontend Experto especializado en Documentación y DX (Developer Experience).
 
 ## Tarea
-Mantener y extender el sitio de documentación del ecosistema **Leaf**. El sitio **ya está
-construido y publicado**; este documento describe cómo funciona hoy y las reglas para modificarlo.
+Mantener y extender el sitio de documentación del ecosistema **Leaf**. El sitio ya está
+construido; este documento describe cómo funciona hoy y las reglas para modificarlo.
 La fase de inicialización terminó — no vuelvas a montar el proyecto desde cero.
 
 ---
@@ -15,9 +15,9 @@ La fase de inicialización terminó — no vuelvas a montar el proyecto desde ce
 | Aspecto | Valor |
 |---------|-------|
 | Stack | VitePress (Vue 3) + TypeScript |
-| Versión LEAF documentada | Declarada en `docs/.vitepress/leaf-version.ts` (hoy `3.0.0`) |
+| Versión LEAF documentada | Declarada en `docs/.vitepress/leaf-version.ts` (hoy `3.1.0`) |
 | Idiomas | Español (`/es/`) e Inglés (`/en/`) |
-| Secciones | `guide/` (guía), `api/` (referencia API), `project/` (memoria del proyecto) |
+| Secciones | `guide/` (guía), `api/` (referencia API), `project/` (adopción) |
 | Scripts | `npm run docs:dev`, `docs:build`, `docs:preview` |
 | Despliegue | `server/static-server.mjs` bajo PM2 |
 
@@ -65,18 +65,24 @@ docs/
 │   │   └── en.ts                   # Locale inglés
 │   ├── plugins/
 │   │   └── markdownRaw.ts          # Módulo virtual con el .md crudo de cada página
+│   ├── scripts/
+│   │   ├── check-parity.mjs         # Paridad, rutas, HTML y páginas retiradas
+│   │   ├── check-api-surface.mjs    # Matriz opcional contra fuentes LEAF configuradas
+│   │   └── check-kotlin-snippets.mjs # Markdown Kotlin <-> fixture compilable
+│   ├── kotlin-snippets/             # Proyecto Android interno, sólo para validar ejemplos
 │   └── theme/
 │       ├── index.ts                # Slots del layout + registro de componentes globales
 │       ├── style.css               # Paleta LEAF y overrides del tema
 │       └── components/
-│           ├── Card.vue            # Tarjeta individual (title, details?, icon?, link?)
+│           ├── Card.vue            # Tarjeta individual (title, description, icon?, link?)
 │           ├── CardGrid.vue        # Grilla de tarjetas (title, items)
-│           └── CopyMarkdown.vue    # Botón "Copiar como Markdown"
+│           ├── CopyMarkdown.vue    # Botón "Copiar como Markdown"
+│           └── LanguageLink.vue    # Enlace a la página equivalente del otro idioma
 ├── es/                             # Contenido español → /es/
 │   ├── index.md                    # Home (layout: home + CardGrid)
 │   ├── guide/                      # Guía: conceptos, host, author, ecosistema
 │   ├── api/                        # Referencia API por artefacto
-│   └── project/                    # Memoria académica del proyecto
+│   └── project/                    # Adopción de la documentación
 ├── en/                             # Contenido inglés → /en/ (misma estructura)
 ├── index.md                        # Redirección raíz → /es/
 └── public/
@@ -89,13 +95,13 @@ docs/
 `export const LEAF_VERSION` es la **única** fuente de verdad de la versión. Se propaga por dos vías:
 
 1. **`__LEAF_VERSION__`** — definido en `vite.define`, se usa en `theme/index.ts` para pintar el
-   badge `v3.0.0` junto al logo (slot `nav-bar-title-after`).
+   badge de la versión declarada junto al logo (slot `nav-bar-title-after`).
 2. **`%LEAF_VERSION%`** — placeholder textual sustituido por una regla de `markdown-it`
    (`md.core.ruler.after('normalize', …)`) en **todas** las páginas `.md`: prosa, tablas y bloques
    de código. Al operar dentro del renderer, también entra al índice de búsqueda local.
 
 > **Regla:** nunca escribas un número de versión de LEAF a mano en un `.md`. Usa `%LEAF_VERSION%`.
-> Publicar un tren nuevo debe ser editar **una sola línea** en `leaf-version.ts`.
+> Actualizar la versión documentada debe requerir editar **una sola línea** en `leaf-version.ts`.
 
 El plugin `markdownRaw.ts` aplica la misma sustitución, para que el botón "Copiar como Markdown"
 entregue la versión resuelta y no el placeholder.
@@ -107,6 +113,7 @@ entregue la versión resuelta y no el placeholder.
 | `Card` | Global (`enhanceApp`) | Tarjeta suelta dentro de cualquier `.md` |
 | `CardGrid` | Global (`enhanceApp`) | `<CardGrid title="…" :items="itemsArray" />` — la home define los arrays en su frontmatter/script |
 | `CopyMarkdown` | Slot `doc-before` | Automático en todas las páginas; no se invoca a mano |
+| `LanguageLink` | Slots de navegación | Lleva a la página equivalente del otro idioma |
 
 ### Botón "Copiar como Markdown"
 
@@ -166,6 +173,12 @@ sidebar: {
 - Español: `/es/`, `/es/guide/`, `/es/api/`, `/es/project/`
 - Inglés: `/en/`, `/en/guide/`, `/en/api/`, `/en/project/`
 - Raíz (`/`): redirige a `/es/`
+
+`LanguageLink.vue` reemplaza el selector predeterminado de VitePress porque cuatro pares cambian
+de slug: `arquitectura`/`architecture`, `glosario`/`glossary`,
+`errores-telemetria`/`errors-telemetry` y `catalogo`/`catalog`. Conserva la página equivalente,
+pero no el ancla: los títulos también se traducen y ese fragmento podría no existir en el otro
+idioma.
 
 ### Cómo agregar un nuevo idioma
 
@@ -258,7 +271,7 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
 Ojo con los nombres de archivo: el inglés **traduce el slug** cuando el español lo tiene traducido
 (`arquitectura.md` → `architecture.md`, `glosario.md` → `glossary.md`,
 `errores-telemetria.md` → `errors-telemetry.md`). Los slugs ya en inglés se mantienen idénticos
-(`module-setup.md`, `catalog-reference.md`).
+(`module-setup.md`, `module-contract.md`).
 
 ### Agregar una sección completa nueva
 
@@ -273,30 +286,50 @@ Ojo con los nombres de archivo: el inglés **traduce el slug** cuando el españo
 
 ## Documentar un módulo LEAF nuevo
 
-Los módulos del ecosistema siguen un patrón fijo de tres toques:
+Los módulos del ecosistema se documentan por contrato, no como recetas de integración implícita:
 
-1. **Página de referencia** `docs/{lang}/guide/{modulo}-reference.md`, en el grupo **Ecosistema**
-   del sidebar. Modelos a seguir: `login-reference` (módulo de referencia),
-   `email-reference` (Action) y `catalog-reference` (Feature con UI).
-2. **Fila en el catálogo** `docs/{lang}/guide/catalogo.md` / `catalog.md`: coordenada Maven con
-   `%LEAF_VERSION%` cuando el módulo sigue el tren estable, o su versión propia cuando versiona
-   aparte, más el enlace al repositorio.
-3. **Roadmap** `docs/{lang}/guide/roadmap.md` si el módulo aún no es estable.
+1. **Referencia API** `docs/{lang}/api/{modulo}.md`: API pública, responsabilidades y ejemplos.
+2. **Fila en el catálogo** `docs/{lang}/guide/catalogo.md` / `catalog.md`: versión documentada,
+   forma de integración y responsabilidades del módulo y del host.
+3. **Guía de contrato** cuando sea un patrón general: datos requeridos u opcionales, capacidades
+   del host, lifecycle y outcomes.
 
-> **Regla de veracidad:** el catálogo describe lo que está **publicado**, no lo que existe en
-> local. Si un módulo no está en GitHub Packages, dilo explícitamente en su fila en vez de
-> insinuar disponibilidad. Cuando una versión local y una publicada difieran, la documentación no
-> debe afirmar compatibilidad entre ambas.
+> **Regla pública:** Maven Local es solo una opción para probar artefactos. No es un requisito de
+> LEAF ni una estrategia de distribución. No incluyas rutas personales, topologías privadas de
+> repositorios ni procesos propios de una organización.
 
 ---
 
 ## Paridad entre idiomas
 
-Cada página debe existir en **todos** los idiomas, con la misma jerarquía de headings y secciones;
-solo cambia el texto. Antes de dar por cerrada una tarea, compara:
+Cada página debe existir en **todos** los idiomas, con la misma jerarquía de headings, bloques de
+código, coordenadas Maven y destinos del sidebar; solo cambia el texto. Antes de cerrar una tarea,
+ejecuta desde la raíz del sitio:
 
-```bash
-diff <(cd docs/es && find . -name '*.md' | sort) <(cd docs/en && find . -name '*.md' | sort)
+```powershell
+node docs/.vitepress/scripts/check-parity.mjs
+node docs/.vitepress/scripts/check-kotlin-snippets.mjs
+```
+
+La matriz opcional contra fuentes requiere que `LEAF_SOURCE_ROOT` apunte a un directorio que
+contenga los repositorios fuente necesarios:
+
+```powershell
+$env:LEAF_SOURCE_ROOT = '<ruta-a-las-fuentes-leaf>'
+node docs/.vitepress/scripts/check-api-surface.mjs
+```
+
+Los fences Kotlin llevan una clasificación invisible para el lector:
+
+- `compiled`: ejemplo completo que debe coincidir con su fuente en
+  `docs/.vitepress/kotlin-snippets/src/main/kotlin/` y compilar en el fixture Android.
+- `reference`: firma o extracto de API validado contra la fuente, no un programa aislado.
+- `gradle`: declaración de dependencias usada por la guía de instalación.
+
+Para compilar el fixture, usa una instalación o wrapper de Gradle compatible y un Android SDK:
+
+```powershell
+gradle -p docs/.vitepress/kotlin-snippets :compileDebugKotlin
 ```
 
 ---
@@ -310,7 +343,9 @@ diff <(cd docs/es && find . -name '*.md' | sort) <(cd docs/en && find . -name '*
 - [ ] Repetir para TODOS los idiomas soportados (es, en)
 - [ ] (Sección nueva) Carpeta + index.md + constante de sidebar + nav en cada idioma
 - [ ] (Sección nueva) Crear docs/public/images/{sección}/ si lleva imágenes
-- [ ] (Módulo nuevo) Página *-reference + fila en el catálogo + roadmap si aplica
+- [ ] (Módulo nuevo) Referencia API + fila en el catálogo de módulos
+- [ ] (Módulo con UI) Workflow con input/state/event/effect/output y ownership explícito
+- [ ] (Prueba con Maven Local, si aplica) productor, coordenadas y consumidor configurados de forma genérica
 - [ ] Verificar los links internos entre páginas
 - [ ] Ejecutar npm run docs:build (falla ante links muertos) y npm run docs:dev para revisar
 ```
