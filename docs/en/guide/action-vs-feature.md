@@ -1,6 +1,8 @@
 # Action vs Feature
 
-The stable capabilities of a module are `Action` and `Feature`. LEAF 3 also includes `Workflow` as an [experimental preview](/en/guide/workflow). The choice depends on the **interaction**, not on the UI layer that consumes it.
+Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).
+
+The stable capabilities of a module are `Action` and `Feature`. LEAF 3 also includes `Workflow` as an [official API in Maven Local](/en/guide/workflow). The choice depends on the **interaction**, not on the UI layer that consumes it.
 
 ## Selection criteria
 
@@ -9,7 +11,7 @@ The stable capabilities of a module are `Action` and `Feature`. LEAF 3 also incl
 | Do I only need to execute a capability and get a response? | `Action` |
 | Can the person edit, correct, and continue while seeing state? | `Feature` |
 | Should the operation navigate/terminate with a domain result? | `completeFeature(output)` in a `Feature` |
-| Should Core execute suspending effects and return them as events? | `Workflow` (opt-in preview) |
+| Should Core execute suspending effects and return them as events? | `Workflow` (official API) |
 
 **`Action<Input, Output>`** -- finite operation: receives an input, executes, and returns an output. It does not offer observable interactive state. Examples: process a payment, send an email, authenticate without an interactive form.
 

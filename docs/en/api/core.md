@@ -1,8 +1,10 @@
 # leaf-core
 
+Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).
+
 `com.opside-leaf:leaf-core:%LEAF_VERSION%` · package `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-core)
 
-Ecosystem runtime: executes Actions and owns Feature sessions (event serialization, cancellation, result, backpressure, technical errors). It also executes [experimental Workflow](/en/api/workflow) sessions. It does not know domain rules or render UI.
+Ecosystem runtime: executes Actions and owns Feature sessions (event serialization, cancellation, result, backpressure, technical errors). It also executes [Workflow](/en/api/workflow) sessions. It does not know domain rules or render UI.
 
 ## Leaf.run
 

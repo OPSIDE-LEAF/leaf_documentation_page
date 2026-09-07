@@ -1,15 +1,15 @@
 # API Reference
 
-Reference for the public surface of the `%LEAF_VERSION%` train, organized by artifact. Action and Feature are stable; Workflow is included as an opt-in preview.
+Reference for the `%LEAF_VERSION%` train and local `%LEAF_WORKFLOW_VERSION%` promotion, organized by artifact. Workflow is an official API without opt-in in the latter; validation uses only Maven Local, not GitHub Packages.
 
 | Artifact | Package | Contents |
 |---|---|---|
 | [leaf-contracts](/en/api/contracts) | `com.ops.leaf_core.api` | `Module`, `ModuleInfo`, `Action`, `Feature`, `FeatureTransition`, DSLs, and capacity constants |
 | [leaf-core](/en/api/core) | `com.ops.leaf_core.api` | `Leaf.run`, `Leaf.open`, `FeatureSession`, results and failures, `LeafException`, `LeafTelemetry` |
 | [leaf-compose](/en/api/compose) | `com.ops.leaf_core.ui.compose` | `Leaf.rememberLeaf`, `LeafComposeState` |
-| [Workflow preview](/en/api/workflow) | Contracts, Core, and Compose | `Workflow`, steps, `EffectHandler`, session, outcome, and Compose holder; all experimental |
+| [Workflow](/en/api/workflow) | Contracts, Core and Compose `%LEAF_WORKFLOW_VERSION%` (Maven Local) | Official `Workflow`, steps, `EffectHandler`, session, outcome and Compose holder |
 
-The three repositories validate their public surface with ABI dumps. The historical `com.ops.leaf_core.*` packages remain in `3.0.0`; this release does not migrate the namespace. Workflow's experimental marker remains part of its contract.
+The three repositories validate their public surface with ABI dumps. The `com.ops.leaf_core.*` packages remain. The old marker exists for compatibility but does not annotate Workflow in the local promotion.
 
 ## Separation of responsibilities
 

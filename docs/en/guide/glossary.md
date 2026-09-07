@@ -1,14 +1,16 @@
 # Glossary
 
+Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).
+
 | Term | Definition |
 |---|---|
 | **Module** | A local object that implements the `Module` interface, encapsulates its dependencies via constructor, and exposes typed capabilities. It is not a DI container and does not require registration. |
 | **ModuleInfo** | Stable identity of a module: `ModuleInfo(id, version)`. Used in telemetry and errors. `id` and `version` cannot be blank. |
-| **Capability** | A typed `val` property within a module: an `Action`, a `Feature`, or the `Workflow` preview. |
+| **Capability** | A typed `val` property within a module: an `Action`, a `Feature`, or `Workflow`. |
 | **Action** | `Action<Input, Output>` — a finite, typed, and cancellable operation: receives an input, executes, and returns an output. No observable state. |
 | **Feature** | `Feature<Input, State, Event, Output>` — an interaction with observable state, user events, and a single terminal result. |
 | **Transition** | A Feature's response to an event: `continueFeature(state)` publishes state without completing; `completeFeature(output)` produces the terminal result exactly once. |
-| **Workflow** | Experimental preview with synchronous reduction and suspending effects managed by Core. |
+| **Workflow** | Official API with synchronous reduction and suspending effects managed by Core. |
 | **WorkflowStep** | Synchronous `Continue`, `Emit`, or `Complete` decision produced by `initialize` or `reduce`. |
 | **Host** | An application (Android/iOS) or component that constructs modules, executes their capabilities, and retains navigation. |
 | **FeatureSession** | A session owned by Core, created by `Leaf.open`: exposes `state`, `result`, and `metrics` as `StateFlow`, plus `send`, `cancel`, and `close`. |

@@ -1,29 +1,14 @@
-# Workflow API (preview)
+# Workflow API
 
-Workflow spans `leaf-contracts`, `leaf-core`, and `leaf-compose` `3.0.0`. Every surface on this page requires `@OptIn(ExperimentalLeafWorkflowApi::class)` and may change even while the rest of the train follows stable semantic versioning.
+Official surface of Contracts, Core and Compose `%LEAF_WORKFLOW_VERSION%`, requiring no opt-in.
 
-## Opt-in
+## Distribution and compatibility
 
-```kotlin
-@RequiresOptIn(
-    message = "LEAF Workflow is experimental and may change incompatibly.",
-    level = RequiresOptIn.Level.ERROR,
-)
-@Retention(AnnotationRetention.BINARY)
-@Target(
-    AnnotationTarget.CLASS,
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.PROPERTY,
-    AnnotationTarget.CONSTRUCTOR,
-    AnnotationTarget.TYPEALIAS,
-)
-annotation class ExperimentalLeafWorkflowApi
-```
+This version is validated exclusively in Maven Local; it is not published to GitHub Packages. Build the three repositories in order and enable `-Pleaf.useMavenLocal=true` in the consumer. The earlier `%LEAF_VERSION%` line retains its experimental behavior. `ExperimentalLeafWorkflowApi` remains as a compatibility marker for old imports but no longer annotates this surface.
 
 ## Contracts
 
 ```kotlin
-@ExperimentalLeafWorkflowApi
 interface Workflow<in Input, State, Event, Effect, out Output> {
     val moduleInfo: ModuleInfo
     val eventBufferCapacity: Int
@@ -32,7 +17,6 @@ interface Workflow<in Input, State, Event, Effect, out Output> {
     val effectHandler: EffectHandler<Effect, Event>
 }
 
-@ExperimentalLeafWorkflowApi
 fun <Input, State, Event, Effect, Output> workflow(
     moduleInfo: ModuleInfo,
     eventBufferCapacity: Int = 16,
@@ -41,7 +25,6 @@ fun <Input, State, Event, Effect, Output> workflow(
     effectHandler: EffectHandler<Effect, Event>,
 ): Workflow<Input, State, Event, Effect, Output>
 
-@ExperimentalLeafWorkflowApi
 fun interface EffectHandler<Effect, Event> {
     suspend fun handle(effect: Effect): Event
 }
@@ -52,7 +35,6 @@ fun interface EffectHandler<Effect, Event> {
 ## WorkflowStep
 
 ```kotlin
-@ExperimentalLeafWorkflowApi
 sealed interface WorkflowStep<out State, out Effect, out Output> {
     data class Continue<State>(val state: State) :
         WorkflowStep<State, Nothing, Nothing>

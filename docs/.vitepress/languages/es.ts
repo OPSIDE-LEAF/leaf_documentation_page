@@ -17,7 +17,7 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Module y ModuleInfo', link: '/es/guide/modules' },
       { text: 'Action vs Feature', link: '/es/guide/action-vs-feature' },
       { text: 'FeatureSession', link: '/es/guide/feature-session' },
-      { text: 'Workflow (preview)', link: '/es/guide/workflow' },
+      { text: 'Workflow', link: '/es/guide/workflow' },
       { text: 'Migrar Feature 2 a 3', link: '/es/guide/feature-migration' },
       { text: 'Errores, telemetría y privacidad', link: '/es/guide/errores-telemetria' },
     ],
@@ -68,7 +68,7 @@ const apiSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'leaf-contracts', link: '/es/api/contracts' },
       { text: 'leaf-core', link: '/es/api/core' },
       { text: 'leaf-compose', link: '/es/api/compose' },
-      { text: 'Workflow (preview)', link: '/es/api/workflow' },
+      { text: 'Workflow', link: '/es/api/workflow' },
     ],
   },
 ]

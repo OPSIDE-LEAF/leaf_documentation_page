@@ -1,9 +1,9 @@
-# Workflow: preview experimental en LEAF 3
+# Workflow: API oficial
 
-`Workflow<Input, State, Event, Effect, Output>` modela una interacción donde la reducción de estado es síncrona y Core ejecuta los efectos suspendidos. Está incluida en los artefactos `3.0.0`, pero su API continúa protegida por `@ExperimentalLeafWorkflowApi`: requiere opt-in y puede cambiar en versiones posteriores.
+`Workflow<Input, State, Event, Effect, Output>` modela una interacción donde la reducción de estado es síncrona y Core ejecuta los efectos suspendidos. Es API oficial sin opt-in en Contracts, Core y Compose `%LEAF_WORKFLOW_VERSION%`.
 
-::: warning Preview provisional
-El número estable del tren no estabiliza Workflow. Agrega `@OptIn(ExperimentalLeafWorkflowApi::class)` en cada frontera de uso y evita exponer esta API desde contratos que prometan estabilidad sin controlar su migración.
+::: info Distribución local
+Esta versión se valida y distribuye únicamente con Maven Local. No está publicada en GitHub Packages. Construye Contracts, Core y Compose en ese orden con `publishToMavenLocal` y usa `-Pleaf.useMavenLocal=true`. El marcador anterior se conserva para compatibilidad, pero ninguna superficie Workflow lo requiere.
 :::
 
 ## Cuándo usarla
@@ -41,7 +41,6 @@ Los helpers equivalentes son `continueWorkflow`, `emitEffect` y `completeWorkflo
 El Author entrega un `EffectHandler<Effect, Event>`. Core lo invoca como hijo de la sesión y reintroduce su resultado en el reducer serial:
 
 ```kotlin
-@OptIn(ExperimentalLeafWorkflowApi::class)
 val checkout = workflow<CheckoutInput, CheckoutState, CheckoutEvent, CheckoutEffect, CheckoutOutput>(
     moduleInfo = info,
     initialize = { input ->
@@ -76,7 +75,6 @@ La primera versión admite un efecto activo. Un segundo `Emit` mientras el anter
 ## Abrir y cerrar una sesión
 
 ```kotlin
-@OptIn(ExperimentalLeafWorkflowApi::class)
 suspend fun runCheckout(
     workflow: Workflow<CheckoutInput, CheckoutState, CheckoutEvent, CheckoutEffect, CheckoutOutput>,
 ) {
@@ -109,7 +107,6 @@ El overflow de Workflow no es terminal. El carril interno que devuelve eventos d
 ## Compose e identidad de sesión
 
 ```kotlin
-@OptIn(ExperimentalLeafWorkflowApi::class)
 @Composable
 fun CheckoutRoute(module: CheckoutModule, orderId: String) {
     val workflow = remember(module) { module.createCheckoutWorkflow() }

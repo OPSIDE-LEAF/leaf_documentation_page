@@ -55,4 +55,4 @@ Exclude documentation explicitly marked as historical LEAF 2.0.1 and immutable e
 
 You do not need to turn a `Feature` into a `Workflow` to migrate to LEAF 3. Use `Workflow` when the runtime must own suspending effects that return as events. Renaming Feature does not change its suspending reducer or terminal overflow policy.
 
-Workflow remains an [experimental preview](/en/guide/workflow) and requires opt-in even within the `3.0.0` train.
+Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).

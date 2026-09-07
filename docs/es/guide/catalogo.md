@@ -11,7 +11,7 @@ Esta página distingue el tren LEAF 3 del código de módulos independientes obs
 | leaf-compose | `com.opside-leaf:leaf-compose:%LEAF_VERSION%` | Adapter estable de Feature; holder Workflow en preview | [leaf-compose](https://github.com/OPSIDE-LEAF/leaf-compose) |
 | leaf-login | `com.opside-leaf:leaf-login:%LEAF_VERSION%` | Feature/UI estable y Login Workflow/UI con opt-in | [leaf-login](https://github.com/OPSIDE-LEAF/leaf-login) |
 
-Workflow conserva `@ExperimentalLeafWorkflowApi` aunque viaje dentro del tren estable. Consulta la [guía de Workflow](/es/guide/workflow).
+Las filas anteriores describen la línea anterior `%LEAF_VERSION%`. La promoción de Contracts, Core y Compose `%LEAF_WORKFLOW_VERSION%` convierte Workflow en API oficial sin opt-in y está disponible **solo en Maven Local**, no en GitHub Packages. Login conserva su versión anterior. Consulta la [guía de Workflow](/es/guide/workflow).
 
 ## Líneas independientes observadas
 

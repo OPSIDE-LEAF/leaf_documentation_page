@@ -1,6 +1,8 @@
 # Action vs Feature
 
-Las capabilities estables de un módulo son `Action` y `Feature`. LEAF 3 también incluye `Workflow` como [preview experimental](/es/guide/workflow). La elección depende de la **interacción**, no de la capa de UI que la consuma.
+Workflow es oficial sin opt-in en la promoción local `%LEAF_WORKFLOW_VERSION%` de Contracts, Core y Compose. No está publicada en GitHub Packages. Ver [Workflow](/es/guide/workflow).
+
+Las capabilities estables de un módulo son `Action` y `Feature`. LEAF 3 también incluye `Workflow` como [API oficial en Maven Local](/es/guide/workflow). La elección depende de la **interacción**, no de la capa de UI que la consuma.
 
 ## Criterios de elección
 
@@ -9,7 +11,7 @@ Las capabilities estables de un módulo son `Action` y `Feature`. LEAF 3 tambié
 | ¿Solo necesito ejecutar una capability y obtener una respuesta? | `Action` |
 | ¿La persona puede editar, corregir y continuar mientras ve estado? | `Feature` |
 | ¿La operación debe navegar/terminar con un resultado de dominio? | `completeFeature(output)` en una `Feature` |
-| ¿Core debe ejecutar efectos suspendidos y regresarlos como eventos? | `Workflow` (preview con opt-in) |
+| ¿Core debe ejecutar efectos suspendidos y regresarlos como eventos? | `Workflow` (API oficial) |
 
 **`Action<Input, Output>`** — operación finita: recibe un input, se ejecuta y devuelve un output. No ofrece estado interactivo observable. Ejemplos: procesar un pago, enviar un email, autenticar sin formulario interactivo.
 

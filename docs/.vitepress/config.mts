@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { esLocale, esSearchConfig, enLocale, enSearchConfig } from './languages'
 import { markdownRawPlugin } from './plugins/markdownRaw'
-import { LEAF_VERSION } from './leaf-version'
+import { LEAF_VERSION, LEAF_WORKFLOW_VERSION } from './leaf-version'
 import { fileURLToPath, URL } from 'node:url'
 
 const docsDir = fileURLToPath(new URL('../', import.meta.url))
@@ -21,9 +21,8 @@ export default defineConfig({
     // del renderer de markdown-it también aplica al índice de búsqueda local.
     config(md) {
       md.core.ruler.after('normalize', 'leaf-version', (state) => {
-        if (state.src.includes('%LEAF_VERSION%')) {
-          state.src = state.src.replaceAll('%LEAF_VERSION%', LEAF_VERSION)
-        }
+        state.src = state.src.replaceAll('%LEAF_VERSION%', LEAF_VERSION)
+          .replaceAll('%LEAF_WORKFLOW_VERSION%', LEAF_WORKFLOW_VERSION)
       })
     },
   },

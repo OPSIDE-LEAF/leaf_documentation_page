@@ -4,7 +4,7 @@
 
 Contracts, Core, Compose y Login forman el release coordinado `3.0.0`. Action y Feature son superficies estables. El cambio mayor de Feature está descrito en la [guía de migración](/es/guide/feature-migration).
 
-Workflow se incluye en los artefactos del tren como **preview provisional**. Conserva `@ExperimentalLeafWorkflowApi`, requiere opt-in y no adquiere una promesa estable por compartir el número `3.0.0`. Consulta su [guía](/es/guide/workflow) y [referencia](/es/api/workflow).
+Workflow es API oficial sin opt-in en Contracts, Core y Compose `%LEAF_WORKFLOW_VERSION%`. Esta promoción se prueba exclusivamente con Maven Local y no se publica en GitHub Packages hasta nuevo aviso. Consulta su [guía](/es/guide/workflow) y [referencia](/es/api/workflow).
 
 Los paquetes Kotlin públicos continúan en `com.ops.leaf_core.api` y `com.ops.leaf_core.ui.compose`; `3.0.0` no realiza una migración de namespace.
 

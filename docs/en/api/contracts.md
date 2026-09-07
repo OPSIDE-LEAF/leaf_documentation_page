@@ -1,8 +1,10 @@
 # leaf-contracts
 
+Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).
+
 `com.opside-leaf:leaf-contracts:%LEAF_VERSION%` · package `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-contracts)
 
-Declares the typed contracts of the ecosystem. It does not execute sessions or know about UI. The stable surface includes Action and Feature; Workflow is documented separately as an [experimental preview](/en/api/workflow).
+Declares the typed contracts of the ecosystem. It does not execute sessions or know about UI. The stable surface includes Action and Feature; Workflow is documented separately as an [official API in Maven Local](/en/api/workflow).
 
 ## Module
 

@@ -1,8 +1,10 @@
 # What is Leaf?
 
+Workflow is official without opt-in in the local `%LEAF_WORKFLOW_VERSION%` Contracts, Core and Compose promotion. It is not published to GitHub Packages. See [Workflow](/en/guide/workflow).
+
 **Leaf** is an ecosystem for cross-platform mobile development built on **Kotlin Multiplatform** and **Compose Multiplatform**. It allows structuring applications as sets of independent, reusable, and decoupled modules that are shared between Android and iOS while preserving native performance.
 
-Its core provides **local and direct** capabilities. Authors expose `Action` or `Feature`; LEAF 3 adds `Workflow` as an experimental preview for synchronous reduction with Core-managed effects. Hosts consume Kotlin references through `Leaf.run`, `Leaf.open`, or the Compose adapters.
+Its core provides **local and direct** capabilities. Authors expose `Action` or `Feature`; LEAF 3 adds `Workflow` as an official API for synchronous reduction with Core-managed effects. Hosts consume Kotlin references through `Leaf.run`, `Leaf.open`, or the Compose adapters.
 
 ```kotlin
 // The Author defines the capability
@@ -60,5 +62,5 @@ Each module:
 - [Architecture and principles](/en/guide/architecture) — how the ecosystem is built.
 - [Installation](/en/guide/installation) — set up credentials and dependencies.
 - [Your first Action](/en/guide/quickstart-action) — Hello World in 5 minutes.
-- [Workflow preview](/en/guide/workflow) — reduction, effects, and Core-managed sessions.
+- [Workflow](/en/guide/workflow) — reduction, effects, and Core-managed sessions.
 - [Migrate Feature from 2.0.1](/en/guide/feature-migration) — mappings for the breaking change.

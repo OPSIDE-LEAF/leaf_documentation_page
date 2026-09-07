@@ -1,8 +1,10 @@
 # leaf-core
 
+Workflow es oficial sin opt-in en la promoción local `%LEAF_WORKFLOW_VERSION%` de Contracts, Core y Compose. No está publicada en GitHub Packages. Ver [Workflow](/es/guide/workflow).
+
 `com.opside-leaf:leaf-core:%LEAF_VERSION%` · paquete `com.ops.leaf_core.api` · [repo](https://github.com/OPSIDE-LEAF/leaf-core)
 
-Runtime del ecosistema: ejecuta Actions y posee las sesiones de Features (serialización de eventos, cancelación, resultado, presión, errores técnicos). También ejecuta las sesiones de [Workflow experimental](/es/api/workflow). No conoce reglas de dominio ni renderiza UI.
+Runtime del ecosistema: ejecuta Actions y posee las sesiones de Features (serialización de eventos, cancelación, resultado, presión, errores técnicos). También ejecuta las sesiones de [Workflow](/es/api/workflow). No conoce reglas de dominio ni renderiza UI.
 
 ## Leaf.run
 

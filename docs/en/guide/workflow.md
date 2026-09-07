@@ -1,9 +1,9 @@
-# Workflow: experimental preview in LEAF 3
+# Workflow: official API
 
-`Workflow<Input, State, Event, Effect, Output>` models an interaction where state reduction is synchronous and Core executes suspending effects. It is included in the `3.0.0` artifacts, but its API remains guarded by `@ExperimentalLeafWorkflowApi`: it requires opt-in and may change in later versions.
+`Workflow<Input, State, Event, Effect, Output>` models an interaction where state reduction is synchronous and Core executes suspending effects. It is an official API requiring no opt-in in Contracts, Core and Compose `%LEAF_WORKFLOW_VERSION%`.
 
-::: warning Provisional preview
-The stable train version does not stabilize Workflow. Add `@OptIn(ExperimentalLeafWorkflowApi::class)` at every usage boundary and avoid exposing this API from contracts that promise stability unless you control their migration.
+::: info Local distribution
+This version is validated and distributed only through Maven Local. It is not published to GitHub Packages. Build Contracts, Core and Compose in that order with `publishToMavenLocal` and use `-Pleaf.useMavenLocal=true`. The old marker remains for compatibility, but no Workflow surface requires it.
 :::
 
 ## When to use it
@@ -41,7 +41,6 @@ The matching helpers are `continueWorkflow`, `emitEffect`, and `completeWorkflow
 The Author provides an `EffectHandler<Effect, Event>`. Core invokes it as a child of the session and feeds its result back into the serial reducer:
 
 ```kotlin
-@OptIn(ExperimentalLeafWorkflowApi::class)
 val checkout = workflow<CheckoutInput, CheckoutState, CheckoutEvent, CheckoutEffect, CheckoutOutput>(
     moduleInfo = info,
     initialize = { input ->
@@ -76,7 +75,6 @@ The first version allows one active effect. A second `Emit` while the previous e
 ## Opening and closing a session
 
 ```kotlin
-@OptIn(ExperimentalLeafWorkflowApi::class)
 suspend fun runCheckout(
     workflow: Workflow<CheckoutInput, CheckoutState, CheckoutEvent, CheckoutEffect, CheckoutOutput>,
 ) {
@@ -109,7 +107,6 @@ Workflow overflow is non-terminal. The internal lane that returns handler events
 ## Compose and session identity
 
 ```kotlin
-@OptIn(ExperimentalLeafWorkflowApi::class)
 @Composable
 fun CheckoutRoute(module: CheckoutModule, orderId: String) {
     val workflow = remember(module) { module.createCheckoutWorkflow() }
