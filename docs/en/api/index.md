@@ -10,4 +10,13 @@ LEAF %LEAF_VERSION% separates public contracts, execution, and Compose integrati
 | [Workflow](/en/api/workflow) | explains a stateful interaction step by step |
 | [leaf-visuals](/en/api/visuals) | provides an optional Material 3 theme |
 
-[Authentication](/en/api/authentication), [Payment Contracts](/en/api/payment-contracts), and [payment modules](/en/api/payments) have their own versions and integration requirements. Review each reference before selecting dependencies for your application.
+## Modules with independent versions
+
+| Module or artifact | Documented version | Responsibility |
+| --- | --- | --- |
+| [Login](/en/api/login) | 3.0.1 | provides a reference login Feature and experimental Workflow |
+| [Authentication](/en/api/authentication) | 0.2.0 | provides Actions and optional adapters for authentication |
+| [Payment Contracts](/en/api/payment-contracts) | 0.1.0 | defines provider-independent payment types |
+| [Payment modules](/en/api/payments) | 0.3.0 | implement Workflow checkouts for Stripe and Mercado Pago |
+
+These versions and their integration requirements are independent of the base LEAF release train. Review each reference before selecting dependencies for your application.

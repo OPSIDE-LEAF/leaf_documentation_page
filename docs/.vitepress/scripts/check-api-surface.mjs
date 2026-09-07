@@ -124,7 +124,34 @@ bothLocales('api/authentication.md', [
   'val signOut: Action<SignOutRequest, SignOutOutcome>',
 ])
 
-verify('Payment contracts source', source('leaf-payment-contracts', 'src/commonMain/kotlin/com/ops/leaf_payment_contracts/PaymentContracts.kt'), [
+verify('Login module source', source('leaf-modules', 'leaf-login', 'src/commonMain/kotlin/com/opside/leaf/login/LoginModule.kt'), [
+  'class LoginModule(',
+  'val login = feature<LoginInput, LoginState, LoginEvent, LoginResult>(',
+  'const val VERSION = "3.0.1"',
+])
+verify('Login route source', source('leaf-modules', 'leaf-login', 'src/commonMain/kotlin/com/opside/leaf/login/ui/LoginRoute.kt'), [
+  'fun LoginRoute(',
+  'onAuthenticated: (LoginResult.Authenticated) -> Unit,',
+])
+verify('Login Workflow source', source('leaf-modules', 'leaf-login', 'src/commonMain/kotlin/com/opside/leaf/login/LoginWorkflow.kt'), [
+  'sealed interface LoginWorkflowOutput',
+  'fun LoginModule.createLoginWorkflow(',
+])
+verify('Login Workflow UI source', source('leaf-modules', 'leaf-login', 'src/commonMain/kotlin/com/opside/leaf/login/ui/workflow/LoginWorkflowScreen.kt'), [
+  'fun LoginWorkflowScreen(',
+])
+bothLocales('api/login.md', [
+  'com.opside-leaf:leaf-login:3.0.1',
+  'LoginModule',
+  'AuthGateway',
+  'LoginRoute',
+  'createLoginWorkflow',
+  'LoginWorkflowScreen',
+  'LEAF Contracts/Core/Compose 3.0.0',
+  'leaf-visuals 1.3.0',
+])
+
+verify('Payment contracts source', source('leaf-modules', 'leaf-payment-contracts', 'src/commonMain/kotlin/com/ops/leaf_payment_contracts/PaymentContracts.kt'), [
   'class Money private constructor(',
   'fun of(minorUnits: Long, currency: String): Money',
   'value class OrderId private constructor',
@@ -135,6 +162,12 @@ bothLocales('api/payment-contracts.md', [
   'import com.ops.leaf_payment_contracts.OrderId',
   'import com.ops.leaf_payment_contracts.PaymentOperationId',
   'Money.of(minorUnits = 1_250, currency = "MXN")',
+])
+bothLocales('api/payments.md', [
+  '0.3.0',
+  'CheckoutEvent',
+  'CheckoutOutput',
+  'CheckoutPaymentResult',
 ])
 
 bothLocales('guide/maven-local.md', [

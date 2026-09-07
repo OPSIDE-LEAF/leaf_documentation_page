@@ -1,6 +1,6 @@
 # Módulos de pago
 
-Los módulos de Stripe y Mercado Pago 0.3 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y la relación con Authentication cuando la necesite.
+Los módulos de Stripe y Mercado Pago 0.3.0 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y la relación con Authentication cuando la necesite.
 
 ## Límite público
 

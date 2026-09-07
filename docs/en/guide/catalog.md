@@ -22,9 +22,22 @@ Each entry should represent a reusable capability with its own contract, version
 
 | Module | Documented version | Form | What it provides | What the host must provide |
 | --- | --- | --- | --- | --- |
+| [Login](/en/api/login) | 3.0.1 | Feature; experimental Workflow | A reference form and flow for authenticating a person. | `AuthGateway`, navigation, and secure credential handling. |
 | [Authentication](/en/api/authentication) | 0.2.0 | Actions | Sign-in, challenge continuation, session restoration, and sign-out. | The authentication, storage, and network services required by its implementation. |
 | [Stripe](/en/api/payments) | 0.3.0 | Workflow | UI and states for completing a Stripe payment. | Backend, provider configuration, and SDK presentation when required. |
 | [Mercado Pago](/en/api/payments) | 0.3.0 | Workflow | UI and states for completing a Mercado Pago payment. | Backend, provider configuration, and secure capture of the data required by the SDK. |
+
+## Verified source releases
+
+| Module or artifact | Source tag | Revision |
+| --- | --- | --- |
+| [Login](/en/api/login) | [`v3.0.1`](https://github.com/OPSIDE-LEAF/leaf-login/tree/v3.0.1) | [`ad5f8be`](https://github.com/OPSIDE-LEAF/leaf-login/commit/ad5f8be) |
+| [Authentication](/en/api/authentication) | [`v0.2.0`](https://github.com/OPSIDE-LEAF/leaf_authentication/tree/v0.2.0) | [`5f3acda`](https://github.com/OPSIDE-LEAF/leaf_authentication/commit/5f3acda) |
+| [Payment Contracts](/en/api/payment-contracts) | [`v0.1.0`](https://github.com/OPSIDE-LEAF/leaf-payment-contracts/tree/v0.1.0) | [`b1147d0`](https://github.com/OPSIDE-LEAF/leaf-payment-contracts/commit/b1147d0) |
+| [Stripe](/en/api/payments) | [`v0.3.0`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v0.3.0) | [`ee451fa`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/ee451fa) |
+| [Mercado Pago](/en/api/payments) | [`v0.3.0`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v0.3.0) | [`6ad99c3`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/6ad99c3) |
+
+A source tag fixes the code for a release. It does not by itself prove that the artifact is available from every Maven repository; check the repository configured by your organization before consuming it.
 
 ## How to choose and integrate
 

@@ -1,6 +1,6 @@
 # Payment modules
 
-The Stripe and Mercado Pago 0.3 modules implement checkout as a Workflow. The UI sends events, the module publishes states, and the Workflow ends with a typed result. The application must configure the provider, its backend, the corresponding SDK, and any required connection to Authentication.
+The Stripe and Mercado Pago 0.3.0 modules implement checkout as a Workflow. The UI sends events, the module publishes states, and the Workflow ends with a typed result. The application must configure the provider, its backend, the corresponding SDK, and any required connection to Authentication.
 
 ## Public boundary
 

@@ -41,6 +41,7 @@ const apiSidebar: DefaultTheme.SidebarItem[] = [
     { text: 'leaf-compose', link: '/en/api/compose' },
     { text: 'Workflow', link: '/en/api/workflow' },
     { text: 'leaf-visuals', link: '/en/api/visuals' },
+    { text: 'Login', link: '/en/api/login' },
     { text: 'Authentication', link: '/en/api/authentication' },
     { text: 'Payment Contracts', link: '/en/api/payment-contracts' },
     { text: 'Payment modules', link: '/en/api/payments' },

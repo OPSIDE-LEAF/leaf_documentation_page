@@ -1,5 +1,14 @@
 # Registro de cambios — Sitio de documentación Leaf
 
+## Releases fuente de módulos — 2026-09-07
+
+- Registra las entregas fuente verificadas de Login `v3.0.1` (`ad5f8be`), Authentication `v0.2.0` (`5f3acda`), Payment Contracts `v0.1.0` (`b1147d0`), Stripe `v0.3.0` (`ee451fa`) y Mercado Pago `v0.3.0` (`6ad99c3`).
+- Añade una referencia API bilingüe de Login que distingue la Feature estable del Workflow experimental, la responsabilidad de `AuthGateway` y las reglas de manejo de passwords.
+- Incorpora Login a los índices, sidebars y catálogos; fija la versión documentada de ambos módulos de pago en `0.3.0`.
+- Aclara que un tag identifica una entrega de código fuente, pero no acredita disponibilidad en todos los repositorios Maven.
+- Amplía la matriz de superficie pública con Login y corrige la ruta fuente de Payment Contracts a `leaf-modules/leaf-payment-contracts`.
+- Conserva sin cambios la versión central del tren base declarada en `docs/.vitepress/leaf-version.ts`.
+
 ## LEAF 3.0.0 — 2026-09-05
 
 - Actualiza la versión única del sitio a `3.0.0` y documenta el cambio incompatible de Feature: `Continue` / `Complete`, `continueFeature` / `completeFeature`, `Completed` / `COMPLETED`.
