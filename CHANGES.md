@@ -1,5 +1,14 @@
 # Registro de cambios — Sitio de documentación Leaf
 
+## LEAF 3.1.0 y releases fuente de módulos — 2026-09-07
+
+- Fija el tren base LEAF 3.1.0 en Contracts (`d864df4`), Core (`97c683d`) y Compose (`b69b479`), con tags fuente `v3.1.0`.
+- Registra Visuals `v1.4.0` (`8031846`) y Login `v3.1.0` (`edd0bf0`), compatibles con LEAF 3.1.0.
+- Incorpora Catalog `v1.1.1` (`414ef99`) y Email `v1.1.1` (`232e521`) al catálogo público.
+- Actualiza los Workflows de pago a Stripe `v0.4.0` (`8eea56e`) y Mercado Pago `v0.4.1` (`fc97be2`).
+- Presenta Workflow como la capability oficial de LEAF 3 para módulos con UI y conserva el opt-in de Kotlin donde la API publicada aún lo exige.
+- Los tags identifican releases de código fuente; los artefactos de esta entrega continúan validados mediante Maven Local y no implican una publicación en GitHub Packages.
+
 ## Releases fuente de módulos — 2026-09-07
 
 - Registra las entregas fuente verificadas de Login `v3.0.1` (`ad5f8be`), Authentication `v0.2.0` (`5f3acda`), Payment Contracts `v0.1.0` (`b1147d0`), Stripe `v0.3.0` (`ee451fa`) y Mercado Pago `v0.3.0` (`6ad99c3`).

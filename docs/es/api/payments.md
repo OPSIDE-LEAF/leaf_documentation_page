@@ -1,6 +1,13 @@
 # Módulos de pago
 
-Los módulos de Stripe y Mercado Pago 0.3.0 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y la relación con Authentication cuando la necesite.
+Stripe 0.4.0 y Mercado Pago 0.4.1 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y la relación con Authentication cuando la necesite.
+
+## Entregas fuente
+
+- Stripe: tag [`v0.4.0`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v0.4.0), revisión [`8eea56e`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/8eea56e).
+- Mercado Pago: tag [`v0.4.1`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v0.4.1), revisión [`fc97be2`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/fc97be2).
+
+Ambos módulos declaran compatibilidad con LEAF 3.1.0 y leaf-visuals 1.4.0. Los tags identifican el código fuente; no acreditan una publicación Maven remota.
 
 ## Límite público
 

@@ -1,6 +1,13 @@
 # Payment modules
 
-The Stripe and Mercado Pago 0.3.0 modules implement checkout as a Workflow. The UI sends events, the module publishes states, and the Workflow ends with a typed result. The application must configure the provider, its backend, the corresponding SDK, and any required connection to Authentication.
+Stripe 0.4.0 and Mercado Pago 0.4.1 implement checkout as a Workflow. The UI sends events, the module publishes states, and the Workflow ends with a typed result. The application must configure the provider, its backend, the corresponding SDK, and any required connection to Authentication.
+
+## Source releases
+
+- Stripe: tag [`v0.4.0`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v0.4.0), revision [`8eea56e`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/8eea56e).
+- Mercado Pago: tag [`v0.4.1`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v0.4.1), revision [`fc97be2`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/fc97be2).
+
+Both modules declare compatibility with LEAF 3.1.0 and leaf-visuals 1.4.0. The tags identify source code; they do not prove a remote Maven publication.
 
 ## Public boundary
 
