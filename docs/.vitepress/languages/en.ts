@@ -9,6 +9,7 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
     { text: 'Action vs Workflow', link: '/en/guide/action-vs-workflow' },
     { text: 'Workflow', link: '/en/guide/workflow' },
     { text: 'Errors and telemetry', link: '/en/guide/errors-telemetry' },
+    { text: 'Adoption', link: '/en/guide/adoption' },
   ] },
   { text: 'Use LEAF in an app', items: [
     { text: 'Installation', link: '/en/guide/installation' },
@@ -33,6 +34,18 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
   ] },
 ]
 
+const projectSidebar: DefaultTheme.SidebarItem[] = [
+  { text: 'The project', items: [
+    { text: 'Summary and abstract', link: '/en/project/' },
+    { text: 'Introduction and justification', link: '/en/project/introduction' },
+    { text: 'Ch. I — Framing the problem', link: '/en/project/chapter-1' },
+    { text: 'Ch. II — Theoretical framework', link: '/en/project/chapter-2' },
+    { text: 'Ch. III — Design and development', link: '/en/project/chapter-3' },
+    { text: 'Ch. IV — Results', link: '/en/project/chapter-4' },
+    { text: 'References and appendices', link: '/en/project/references' },
+  ] },
+]
+
 const apiSidebar: DefaultTheme.SidebarItem[] = [
   { text: 'API reference', items: [
     { text: 'Overview', link: '/en/api/' },
@@ -48,9 +61,6 @@ const apiSidebar: DefaultTheme.SidebarItem[] = [
   ] },
 ]
 
-const projectSidebar: DefaultTheme.SidebarItem[] = [
-  { text: 'Adoption', items: [{ text: 'Evaluate Leaf', link: '/en/project/' }] },
-]
 
 export const enLocale = {
   label: 'English',
@@ -62,7 +72,7 @@ export const enLocale = {
       { text: 'Home', link: '/en/' },
       { text: 'Guide', link: '/en/guide/' },
       { text: 'API', link: '/en/api/' },
-      { text: 'Adoption', link: '/en/project/' },
+      { text: 'Project', link: '/en/project/' },
     ],
     sidebar: { '/en/guide/': guideSidebar, '/en/api/': apiSidebar, '/en/project/': projectSidebar },
     outline: { level: [2, 3] as [number, number], label: 'On this page' },

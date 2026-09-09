@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 860" width="1200" height="860" font-family="Inter, 'DejaVu Sans', Arial, sans-serif">
+  <defs>
+    <linearGradient id="gLeaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#095637"/>
+      <stop offset="1" stop-color="#3E8E3F"/>
+    </linearGradient>
+    <linearGradient id="gTrunk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16543a"/>
+      <stop offset="1" stop-color="#0f3a29"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="860" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="600" y="50" text-anchor="middle" font-size="30" font-weight="bold" fill="#0f2e22">LEAF: the tree metaphor</text>
+  <text x="600" y="84" text-anchor="middle" font-size="18" fill="#475569">Each module is a leaf; the host app is the trunk; together they form the tree.</text>
+
+  <!-- Outline: the whole = the application -->
+  <rect x="130" y="110" width="940" height="630" rx="28" fill="none" stroke="#A0CB38" stroke-width="2.5" stroke-dasharray="10 8" opacity="0.65"/>
+  <rect x="160" y="97" width="218" height="26" rx="13" fill="#ffffff"/>
+  <text x="269" y="115" text-anchor="middle" font-size="15" font-weight="bold" fill="#3d5a12">the application · the tree</text>
+
+  <!-- Branches (public contracts) -->
+  <g fill="none" stroke="#6E7F63" stroke-width="5" stroke-linecap="round">
+    <path d="M600,470 Q495,406 250,402"/>
+    <path d="M600,470 Q520,339 335,268"/>
+    <path d="M600,470 Q567,297 490,185"/>
+    <path d="M600,470 Q634,297 715,185"/>
+    <path d="M600,470 Q680,339 868,268"/>
+    <path d="M600,470 Q705,406 952,402"/>
+  </g>
+
+  <!-- Leaves = modules -->
+  <g transform="translate(490,185) rotate(-4)">
+    <path d="M-95,0 C -50,-52 50,-52 95,0 C 50,52 -50,52 -95,0 Z" fill="url(#gLeaf)"/>
+    <path d="M-86,0 L-56,0 M56,0 L86,0" stroke="#ffffff" stroke-width="2.5" opacity="0.5"/>
+  </g>
+  <text x="490" y="192" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">Email</text>
+
+  <g transform="translate(715,185) rotate(4)">
+    <path d="M-95,0 C -50,-52 50,-52 95,0 C 50,52 -50,52 -95,0 Z" fill="url(#gLeaf)"/>
+    <path d="M-86,0 L-56,0 M56,0 L86,0" stroke="#ffffff" stroke-width="2.5" opacity="0.5"/>
+  </g>
+  <text x="715" y="192" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">Visuals</text>
+
+  <g transform="translate(335,268) rotate(-8)">
+    <path d="M-95,0 C -50,-52 50,-52 95,0 C 50,52 -50,52 -95,0 Z" fill="url(#gLeaf)"/>
+    <path d="M-86,0 L-56,0 M56,0 L86,0" stroke="#ffffff" stroke-width="2.5" opacity="0.5"/>
+  </g>
+  <text x="335" y="275" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">Catalog</text>
+
+  <g transform="translate(868,268) rotate(8)">
+    <path d="M-95,0 C -50,-52 50,-52 95,0 C 50,52 -50,52 -95,0 Z" fill="url(#gLeaf)"/>
+    <path d="M-86,0 L-56,0 M56,0 L86,0" stroke="#ffffff" stroke-width="2.5" opacity="0.5"/>
+  </g>
+  <text x="868" y="275" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">Payments</text>
+
+  <g transform="translate(250,402) rotate(-12)">
+    <path d="M-95,0 C -50,-52 50,-52 95,0 C 50,52 -50,52 -95,0 Z" fill="url(#gLeaf)"/>
+    <path d="M-86,0 L-56,0 M56,0 L86,0" stroke="#ffffff" stroke-width="2.5" opacity="0.5"/>
+  </g>
+  <text x="250" y="409" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">Login</text>
+
+  <g transform="translate(952,402) rotate(12)">
+    <path d="M-108,0 C -57,-54 57,-54 108,0 C 57,54 -57,54 -108,0 Z" fill="url(#gLeaf)"/>
+    <path d="M-99,0 L-73,0 M73,0 L99,0" stroke="#ffffff" stroke-width="2.5" opacity="0.5"/>
+  </g>
+  <text x="952" y="409" text-anchor="middle" font-size="17" font-weight="bold" fill="#ffffff">Authentication</text>
+
+  <!-- Ground -->
+  <ellipse cx="600" cy="718" rx="185" ry="16" fill="#E4EDE6"/>
+
+  <!-- Trunk = host app -->
+  <rect x="490" y="462" width="220" height="250" rx="18" fill="url(#gTrunk)"/>
+  <text x="600" y="516" text-anchor="middle" font-size="26" font-weight="bold" fill="#ffffff">Host App</text>
+  <text x="600" y="546" text-anchor="middle" font-size="16" font-style="italic" fill="#C7E6B8">the trunk</text>
+  <line x1="522" y1="566" x2="678" y2="566" stroke="#ffffff" stroke-width="1.5" opacity="0.35"/>
+  <text x="600" y="600" text-anchor="middle" font-size="16" fill="#E7F2E9">infrastructure</text>
+  <text x="600" y="628" text-anchor="middle" font-size="16" fill="#E7F2E9">connection</text>
+  <text x="600" y="656" text-anchor="middle" font-size="16" fill="#E7F2E9">composition</text>
+
+  <!-- Legend -->
+  <g transform="translate(175,800) scale(0.18)">
+    <path d="M-95,0 C -50,-52 50,-52 95,0 C 50,52 -50,52 -95,0 Z" fill="url(#gLeaf)"/>
+  </g>
+  <text x="205" y="806" font-size="17" fill="#334155">Leaf = reusable module</text>
+
+  <rect x="482" y="787" width="26" height="26" rx="6" fill="url(#gTrunk)"/>
+  <text x="520" y="806" font-size="17" fill="#334155">Trunk = host app</text>
+
+  <path d="M790,808 Q812,782 836,796" fill="none" stroke="#6E7F63" stroke-width="5" stroke-linecap="round"/>
+  <text x="852" y="806" font-size="17" fill="#334155">Branch = public contract</text>
+</svg>

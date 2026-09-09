@@ -520,6 +520,48 @@ button.DocSearch-Button {
   display: none !important;
 }
 
+/* Colocación en la barra de navegación.
+
+   `nav-bar-content-after` inserta el enlace al final del contenedor flex, así
+   que queda detrás de los enlaces sociales y del menú "…". El orden explícito
+   lo devuelve al lugar donde VitePress pone su propio selector de idioma:
+   después del menú y antes del interruptor de tema. */
+.VPNavBar .content-body > .VPNavBarSearch {
+  order: 1;
+}
+
+.VPNavBar .content-body > .VPNavBarMenu {
+  order: 2;
+}
+
+.VPNavBar .content-body > .leaf-language-link {
+  order: 3;
+}
+
+.VPNavBar .content-body > .VPNavBarAppearance {
+  order: 4;
+}
+
+.VPNavBar .content-body > .VPNavBarSocialLinks {
+  order: 5;
+}
+
+.VPNavBar .content-body > .VPNavBarExtra {
+  order: 6;
+}
+
+.VPNavBar .content-body > .VPNavBarHamburger {
+  order: 7;
+}
+
+/* Mismo espaciado interno que `.VPNavBarMenuLink` y que el botón de `VPFlyout`,
+   para que el enlace no quede pegado al menú "…" entre 768px y 1280px. */
+.VPNavBar .leaf-language-link:not(.leaf-language-link--mobile) {
+  padding: 0 12px;
+  line-height: var(--vp-nav-height);
+  transition: color 0.25s;
+}
+
 @media (max-width: 767px) {
   .VPNavBar .leaf-language-link:not(.leaf-language-link--mobile) {
     display: none;
@@ -530,6 +572,32 @@ button.DocSearch-Button {
   .leaf-language-link--mobile {
     display: none !important;
   }
+}
+
+/* Menú móvil: `nav-screen-content-after` también deja el enlace hasta el final,
+   debajo de los enlaces sociales. El contenedor es un bloque, así que se pasa a
+   columna flex para poder ordenarlo donde VitePress coloca `.translations`.
+   Los márgenes de VitePress dependen de la adyacencia en el DOM y no del orden
+   visual, por lo que la separación entre bloques se mantiene igual. */
+.VPNavScreen .container {
+  display: flex;
+  flex-direction: column;
+}
+
+.VPNavScreen .container > .menu {
+  order: 1;
+}
+
+.VPNavScreen .container > .leaf-language-link--mobile {
+  order: 2;
+}
+
+.VPNavScreen .container > .appearance {
+  order: 3;
+}
+
+.VPNavScreen .container > .social-links {
+  order: 4;
 }
 
 /* ============================================

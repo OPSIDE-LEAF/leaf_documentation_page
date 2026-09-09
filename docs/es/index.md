@@ -1,8 +1,11 @@
 ---
 layout: home
 hero:
-  name: Leaf
-  tagline: Módulos Kotlin Multiplatform reutilizables para construir productos más rápido sin empezar desde cero.
+  image:
+    light: /logo-full-light.png
+    dark: /logo-full-dark.png
+    alt: Leaf
+  tagline: Ecosistema de módulos reutilizables para construir productos más rápido, sin empezar desde cero.
   actions:
     - theme: brand
       text: Comprender Leaf
@@ -10,6 +13,16 @@ hero:
     - theme: alt
       text: Referencia API
       link: /es/api/
+
+features:
+  - title: Lanza más rápido
+    details: Un equipo construye para Android e iOS al mismo tiempo. Menos costo, más velocidad.
+  - title: Calidad que se siente
+    details: Tus usuarios no notarán la diferencia con una app hecha a medida. Misma experiencia, fracción del costo.
+  - title: No reinventes la rueda
+    details: Login, pagos, catálogo — capacidades listas para usar. Cada proyecto nuevo aprovecha lo que ya funciona.
+  - title: Evoluciona sin reconstruir
+    details: Agrega o cambia funcionalidades sin empezar de nuevo. Tu producto crece contigo.
 ---
 
 <script setup>
@@ -26,7 +39,7 @@ const build = [
 const evaluate = [
   { title: 'Arquitectura', description: 'Entiende qué hace el módulo, qué hace Core y qué conserva tu aplicación.', link: '/es/guide/arquitectura' },
   { title: 'Catálogo de módulos', description: 'Encuentra capacidades reutilizables para integrarlas sin volver a construirlas desde cero.', link: '/es/guide/catalogo' },
-  { title: 'Adopción', description: 'Evalúa cómo el reúso puede reducir tiempos de entrega y concentrar el trabajo en tu producto.', link: '/es/project/' },
+  { title: 'Adopción', description: 'Evalúa cómo el reúso puede reducir tiempos de entrega y concentrar el trabajo en tu producto.', link: '/es/guide/adopcion' },
 ]
 </script>
 

@@ -1,27 +1,26 @@
-# Evaluate adoption
+# Summary
 
-LEAF can fit when an organization wants to turn common capabilities into reusable modules without forcing every application to use the same network, UI, or storage. The host app keeps those decisions, and each project chooses how to integrate, test, and distribute modules.
+This document presents the design, development, and validation of Leaf, a cross-platform mobile development ecosystem based on a reusable modular architecture built on Kotlin Multiplatform. The project addresses the structural duplication inherent to traditional native development, where maintaining independent codebases for Android and iOS increases costs, delivery times, and maintenance complexity, particularly for SMEs and startups in the Guadalajara Metropolitan Area.
 
-Adopting LEAF does not replace product, backend, security, or observability decisions. A Workflow controls the internal navigation of its UI; the host keeps external navigation and decides what happens after the result.
+The proposal is structured around a Core Orchestrator that coordinates the integration of independent functional modules, compilable in isolation and distributable as reusable repositories. The document includes problem statement, justification, general and specific objectives, working hypothesis, state of the art, fundamental theory, applied technologies, feasibility study, functional and non-functional requirements, methodology, and project timeline. The expected outcome is a functional prototype demonstrating the technical and commercial viability of the framework under an open core model with a SaaS component.
 
-## Value from reuse
+## Contents
 
-| Without a reusable module | With a prepared LEAF module |
-| --- | --- |
-| Each project implements a common capability again. | The project integrates a capability through a known contract. |
-| The same rules and errors are tested separately in every application. | Rules are tested in the module and the host checks its integration. |
-| A correction must be repeated across several implementations. | The correction is centralized in the module and distributed through a new version. |
-| Project startup spends time solving known functions. | The team can focus sooner on product-specific features. |
+- [Introduction and justification](/en/project/introduction)
+- [Chapter I — Framing the problem](/en/project/chapter-1): problem statement, proposed solution, WBS, objectives, hypothesis, feasibility study, and financial roadmap
+- [Chapter II — Theoretical framework](/en/project/chapter-2): state of the art, fundamental theory, applied technologies
+- [Chapter III — Design and development](/en/project/chapter-3): requirements, methodology, timeline
+- [Chapter IV — Results](/en/project/chapter-4): analysis of results, deployment, conclusions
+- [References and appendices](/en/project/references)
 
-This reuse can shorten delivery time and create value sooner, but it depends on the quality of the catalog. Each module needs one clear responsibility, sufficient tests, controlled versions, and security reviews that match its risk. LEAF provides the structure for reuse; it does not replace those practices.
+---
 
-## Questions for the team
+**Centro de Enseñanza Técnica Industrial** · Division of Informatics and Computing · Tonalá Campus
 
-| Question | What is useful to make clear |
-| --- | --- |
-| Action or Workflow? | Action for an operation without UI; Workflow for any module with UI |
-| What does the host app supply? | network, storage, SDKs, OAuth, permissions, launch point, and external navigation |
-| What does the module keep? | business rules, results, and, for a Workflow, UI and internal navigation |
-| How is it checked? | module tests, a consuming application, and the targets the project intends to support |
+**Title**: Leaf — A Cross-Platform Mobile Development Ecosystem Based on a Reusable Modular Architecture · **Project type**: Mobile application
 
-Start with [architecture](/en/guide/architecture), define [the contract](/en/guide/module-contract), and select the integration, testing, and distribution strategy that fits your product.
+**Students**: Mario Armando Razo Valenzuela · Moises Noe Pulido Gutierrez
+
+**Methodology advisor**: Ing. Rigoberto Ibarra Hernández · **Proposed technical advisor**: Ing. Jorge Alberto Chamorro Martínez
+
+June 2026

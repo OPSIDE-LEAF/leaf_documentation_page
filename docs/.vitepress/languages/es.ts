@@ -9,6 +9,7 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
     { text: 'Action vs Workflow', link: '/es/guide/action-vs-workflow' },
     { text: 'Workflow', link: '/es/guide/workflow' },
     { text: 'Errores y telemetría', link: '/es/guide/errores-telemetria' },
+    { text: 'Adopción', link: '/es/guide/adopcion' },
   ] },
   { text: 'Usar LEAF en una app', items: [
     { text: 'Instalación', link: '/es/guide/installation' },
@@ -33,6 +34,18 @@ const guideSidebar: DefaultTheme.SidebarItem[] = [
   ] },
 ]
 
+const projectSidebar: DefaultTheme.SidebarItem[] = [
+  { text: 'El proyecto', items: [
+    { text: 'Resumen y abstract', link: '/es/project/' },
+    { text: 'Introducción y justificación', link: '/es/project/introduccion' },
+    { text: 'Cap. I — Contextualización', link: '/es/project/capitulo-1' },
+    { text: 'Cap. II — Marco teórico', link: '/es/project/capitulo-2' },
+    { text: 'Cap. III — Diseño y desarrollo', link: '/es/project/capitulo-3' },
+    { text: 'Cap. IV — Resultados', link: '/es/project/capitulo-4' },
+    { text: 'Referencias y anexos', link: '/es/project/referencias' },
+  ] },
+]
+
 const apiSidebar: DefaultTheme.SidebarItem[] = [
   { text: 'Referencia API', items: [
     { text: 'Visión general', link: '/es/api/' },
@@ -48,9 +61,6 @@ const apiSidebar: DefaultTheme.SidebarItem[] = [
   ] },
 ]
 
-const projectSidebar: DefaultTheme.SidebarItem[] = [
-  { text: 'Adopción', items: [{ text: 'Evaluar Leaf', link: '/es/project/' }] },
-]
 
 export const esLocale = {
   label: 'Español',
@@ -62,7 +72,7 @@ export const esLocale = {
       { text: 'Inicio', link: '/es/' },
       { text: 'Guía', link: '/es/guide/' },
       { text: 'API', link: '/es/api/' },
-      { text: 'Adopción', link: '/es/project/' },
+      { text: 'Proyecto', link: '/es/project/' },
     ],
     sidebar: { '/es/guide/': guideSidebar, '/es/api/': apiSidebar, '/es/project/': projectSidebar },
     outline: { level: [2, 3] as [number, number], label: 'En esta página' },
