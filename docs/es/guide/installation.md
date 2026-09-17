@@ -27,6 +27,40 @@ dependencies {
 
 No copies las tres coordenadas en todos los proyectos. El módulo reutilizable puede depender solo de Contracts. Un host sin Compose puede usar Contracts y Core. Agrega Compose únicamente al host que vaya a presentar un Workflow con esa integración.
 
+## Configurar el repositorio
+
+Los artefactos de LEAF se publican en GitHub Packages. Gradle necesita el registro Maven de la organización para resolverlos:
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/OPSIDE-LEAF/leaf_contracts")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orNull
+                    ?: System.getenv("GPR_USER")
+                password = providers.gradleProperty("gpr.key").orNull
+                    ?: System.getenv("GPR_KEY")
+            }
+        }
+    }
+}
+```
+
+GitHub Packages requiere autenticación incluso para leer. Crea un token personal (classic) con el permiso `read:packages` y configúralo de una de estas formas:
+
+| Método | Configuración |
+| --- | --- |
+| Propiedades de Gradle | `gpr.user` y `gpr.key` en `~/.gradle/gradle.properties` |
+| Variables de entorno | `GPR_USER` y `GPR_KEY` |
+
+::: warning No incluyas credenciales en el repositorio
+Nunca pongas el token directamente en `settings.gradle.kts` ni en archivos que se suban al control de versiones.
+:::
+
 ## Maven Local para pruebas
 
 Maven Local es una opción para probar cambios antes de distribuir un artefacto. Permite publicar una versión en el repositorio Maven de la máquina de desarrollo y comprobarla desde una aplicación de prueba. No es un requisito de LEAF ni una recomendación para distribuir dependencias dentro de una empresa.

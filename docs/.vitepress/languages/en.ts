@@ -57,6 +57,8 @@ const apiSidebar: DefaultTheme.SidebarItem[] = [
     { text: 'Login', link: '/en/api/login' },
     { text: 'Authentication', link: '/en/api/authentication' },
     { text: 'Payment Contracts', link: '/en/api/payment-contracts' },
+    { text: 'Catalog', link: '/en/api/catalog' },
+    { text: 'Email', link: '/en/api/email' },
     { text: 'Payment modules', link: '/en/api/payments' },
   ] },
 ]

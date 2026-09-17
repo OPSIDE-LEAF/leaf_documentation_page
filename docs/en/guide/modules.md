@@ -2,6 +2,10 @@
 
 A module encapsulates one complete capability required by an application. It can handle authentication, payments, validation, forms, or another function that commonly appears in several projects. Instead of implementing that logic again, an application integrates the module through its public contract.
 
+::: tip Key principle
+A module exposes **what it does**, never **how it does it**. The host provides infrastructure; the module provides the capability.
+:::
+
 ## Why reuse modules
 
 Common capabilities are good candidates for modules because they usually require the same rules, error cases, and security measures across different applications. Solving them once makes the work reusable and prevents every team from starting at zero.
@@ -14,11 +18,35 @@ LEAF supports this reuse through small, explicit contracts. A module with one cl
 
 Each LEAF module works as a **leaf** ready to be connected to an application. The host works as the **trunk**: it constructs modules, supplies network, storage, SDKs, and other external capabilities, and decides how they relate within the product. Together they form a tree without forcing every leaf to depend on the others.
 
+| Role | Responsibility | Example |
+| --- | --- | --- |
+| **Leaf** (module) | Domain logic, rules, internal UI | `AuthenticationModule`, `CatalogModule` |
+| **Trunk** (host) | Infrastructure, navigation, assembly | The app that constructs modules and connects their results |
+| **Port** | Contract between leaf and trunk | `TokenVault`, `CatalogGateway`, `EmailGateway` |
+
 Modularization does not mean turning every small function into a separate project. Extract a capability when it has a complete responsibility, a stable contract, and a realistic chance of being reused. This lets the catalog grow with useful modules instead of fragments that are difficult to integrate.
 
 ## What makes a module trustworthy
 
-A reusable module should include tests for its rules, error cases, and security boundaries. It also needs a versioned contract and integration tests from a consuming application. Modules with UI should test their states, events, internal navigation, and results. Modules that handle sensitive data should also review data exposure, dependencies, and permissions.
+A reusable module should include tests for its rules, error cases, and security boundaries. It also needs a versioned contract and integration tests from a consuming application.
+
+::: details Checklist by module type
+
+**No UI (Action)**
+- Unit tests for rules and error cases
+- Versioned contract with `ModuleInfo`
+- Integration tests from a consumer
+
+**With UI (Workflow)**
+- All of the above, plus:
+- States, events, internal navigation, and outputs tested
+- Compose lifecycle verification
+
+**With sensitive data**
+- All of the above, plus:
+- Data exposure and permissions review
+- Dependency audit
+:::
 
 No software can guarantee the complete absence of bugs or vulnerabilities. The goal is to reduce that risk by centralizing common logic, testing it repeatedly, and correcting it in one module. Applications receive those improvements when they adopt the corrected version.
 
@@ -44,8 +72,34 @@ class QuoteModule(
 }
 ```
 
+::: info How is `ModuleInfo` used?
+`ModuleInfo` does not participate in domain logic. Its function is to identify the origin of a technical error (`LeafException`) or a telemetry event (`LeafTelemetryEvent`), so the host can know which module and version produced the data without exposing internal payloads.
+:::
+
 ## Module boundaries
 
 The constructor declares the external capabilities required by the module. The host provides them; the module must not obtain global services or require a particular network, storage, or permissions technology.
 
+| The module needs… | The host provides… |
+| --- | --- |
+| Network access | An `HttpClient` or a typed backend |
+| Secure storage | A `TokenVault` or another port implementation |
+| Native SDK | A `Gateway` that wraps the platform SDK |
+| Visual identity | `LeafVisuals` via `ProvideLeafVisuals` |
+
 If the module provides no UI, expose an Action. If it provides any UI, expose a Workflow and define its states, events, effects, and output in the contract. The Workflow can control one or more screens and its internal navigation. The host controls where the module opens and what happens outside it after receiving the output.
+
+## Ecosystem modules
+
+These are the modules published in the LEAF ecosystem:
+
+| Module | Type | Description |
+| --- | --- | --- |
+| `AuthenticationModule` | Action | Sign-in, session restore, sign-out, and access-token lending |
+| `LoginModule` | Feature + Workflow | Login flow with form validation |
+| `EmailModule` | Action | Email delivery via SMTP on Android and iOS |
+| `CatalogModule` | Feature | Paginated catalog with search, filters, detail, and host actions |
+| `MercadoPagoPaymentModule` | Action | Payment creation and observation with MercadoPago |
+| `MercadoPagoCheckoutModule` | Workflow | Card checkout with tokenization and visual flow |
+| `StripePaymentModule` | Action | Payment creation and observation with Stripe |
+| `StripeCheckoutModule` | Workflow | Checkout with Stripe's native PaymentSheet |

@@ -1,6 +1,6 @@
 # Authentication
 
-Authentication 0.2.0 provides Actions for signing in, continuing a challenge, restoring a session, and signing out. The app provides its backend connection, token storage, and OAuth presentation when required.
+Authentication 1.0.0 provides Actions for signing in, continuing a challenge, restoring a session, and signing out. The app provides its backend connection, token storage, and OAuth presentation when required.
 
 ## Main API
 

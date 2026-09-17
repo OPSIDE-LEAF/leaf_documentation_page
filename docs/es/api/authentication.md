@@ -1,6 +1,6 @@
 # Authentication
 
-Authentication 0.2.0 ofrece Actions para iniciar sesión, continuar un reto, recuperar una sesión y cerrar sesión. La app proporciona la conexión con su backend, el almacenamiento de tokens y, cuando aplica, la presentación de OAuth.
+Authentication 1.0.0 ofrece Actions para iniciar sesión, continuar un reto, recuperar una sesión y cerrar sesión. La app proporciona la conexión con su backend, el almacenamiento de tokens y, cuando aplica, la presentación de OAuth.
 
 ## API principal
 

@@ -2,6 +2,10 @@
 
 Un módulo encapsula una capacidad concreta y completa que una aplicación necesita. Puede resolver autenticación, pagos, validaciones, formularios u otra función que normalmente aparecería en varios proyectos. En lugar de volver a implementar esa lógica, una aplicación integra el módulo mediante su contrato público.
 
+::: tip Principio clave
+Un módulo expone **qué hace**, nunca **cómo lo hace**. El host proporciona la infraestructura; el módulo proporciona la capacidad.
+:::
+
 ## Por qué reutilizar módulos
 
 Las capacidades comunes son buenas candidatas para convertirse en módulos porque suelen requerir las mismas reglas, casos de error y medidas de seguridad en distintas aplicaciones. Resolverlas una vez permite reutilizar el trabajo y evita que cada equipo comience desde cero.
@@ -14,11 +18,35 @@ LEAF facilita este reúso mediante contratos pequeños y explícitos. Un módulo
 
 Cada módulo LEAF funciona como una **hoja** lista para conectarse a una aplicación. El host funciona como el **tronco**: construye los módulos, proporciona red, almacenamiento, SDK y otras capacidades externas, y decide cómo se relacionan dentro del producto. El conjunto forma un árbol sin obligar a todas las hojas a depender entre sí.
 
+| Rol | Responsabilidad | Ejemplo |
+| --- | --- | --- |
+| **Hoja** (módulo) | Lógica de dominio, reglas, UI interna | `AuthenticationModule`, `CatalogModule` |
+| **Tronco** (host) | Infraestructura, navegación, ensamble | La app que construye módulos y conecta sus resultados |
+| **Puerto** (port) | Contrato entre hoja y tronco | `TokenVault`, `CatalogGateway`, `EmailGateway` |
+
 Modularizar no consiste en convertir cada función pequeña en un proyecto separado. Conviene extraer una capacidad cuando tiene una responsabilidad completa, un contrato estable y una posibilidad real de reutilizarse. Así el catálogo puede crecer con módulos útiles y no con fragmentos difíciles de integrar.
 
 ## Qué hace confiable a un módulo
 
-Un módulo reutilizable debe incluir pruebas de sus reglas, casos de error y límites de seguridad. También necesita un contrato versionado y pruebas de integración desde una aplicación consumidora. Para módulos con UI, deben probarse sus estados, eventos, navegación interna y resultados. Para módulos que manejan datos sensibles, también deben revisarse la exposición de datos, las dependencias y los permisos.
+Un módulo reutilizable debe incluir pruebas de sus reglas, casos de error y límites de seguridad. También necesita un contrato versionado y pruebas de integración desde una aplicación consumidora.
+
+::: details Checklist por tipo de módulo
+
+**Sin UI (Action)**
+- Pruebas unitarias de reglas y casos de error
+- Contrato versionado con `ModuleInfo`
+- Pruebas de integración desde un consumidor
+
+**Con UI (Workflow)**
+- Todo lo anterior, más:
+- Estados, eventos, navegación interna y outputs probados
+- Verificación de ciclo de vida Compose
+
+**Con datos sensibles**
+- Todo lo anterior, más:
+- Revisión de exposición de datos y permisos
+- Auditoría de dependencias
+:::
 
 Ningún software puede garantizar la ausencia total de bugs o vulnerabilidades. El objetivo es reducir ese riesgo al concentrar la lógica común, probarla de forma repetible y corregirla en un único módulo. Las aplicaciones reciben esas mejoras cuando actualizan a la versión corregida.
 
@@ -44,8 +72,34 @@ class QuoteModule(
 }
 ```
 
+::: info ¿Cómo se usa `ModuleInfo`?
+`ModuleInfo` no participa en la lógica de dominio. Su función es identificar el origen de un error técnico (`LeafException`) o un evento de telemetría (`LeafTelemetryEvent`), de modo que el host pueda saber qué módulo y versión produjeron el dato sin exponer payloads internos.
+:::
+
 ## Límites del módulo
 
 El constructor declara las capacidades externas que necesita el módulo. El host las proporciona; el módulo no debe obtener servicios globales ni imponer una tecnología de red, almacenamiento o permisos.
 
+| El módulo necesita… | El host proporciona… |
+| --- | --- |
+| Acceso a red | Un `HttpClient` o un backend tipado |
+| Almacenamiento seguro | Un `TokenVault` u otra implementación de puerto |
+| SDK nativo | Un `Gateway` que encapsula el SDK de plataforma |
+| Identidad visual | `LeafVisuals` a través de `ProvideLeafVisuals` |
+
 Si el módulo no proporciona UI, expón una Action. Si proporciona cualquier UI, expón un Workflow y define en el contrato sus estados, eventos, efectos y output. El Workflow puede controlar una o varias pantallas y su navegación interna. El host controla dónde se abre el módulo y qué ocurre fuera de él cuando recibe el output.
+
+## Módulos del ecosistema
+
+Estos son los módulos publicados en el ecosistema LEAF:
+
+| Módulo | Tipo | Descripción |
+| --- | --- | --- |
+| `AuthenticationModule` | Action | Sign-in, restauración de sesión, sign-out y préstamo de access token |
+| `LoginModule` | Feature + Workflow | Flujo de login con validación de formulario |
+| `EmailModule` | Action | Envío de email por SMTP en Android e iOS |
+| `CatalogModule` | Feature | Catálogo paginado con búsqueda, filtros, detalle y acciones del host |
+| `MercadoPagoPaymentModule` | Action | Creación y observación de pagos con MercadoPago |
+| `MercadoPagoCheckoutModule` | Workflow | Checkout con tarjeta, tokenización y flujo visual |
+| `StripePaymentModule` | Action | Creación y observación de pagos con Stripe |
+| `StripeCheckoutModule` | Workflow | Checkout con PaymentSheet nativo de Stripe |
