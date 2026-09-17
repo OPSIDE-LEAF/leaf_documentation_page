@@ -10,6 +10,16 @@ Declared compatibility is LEAF Contracts/Core/Compose 3.1.0; integration with le
 
 Login has a version independent of the base LEAF release train. Before integrating it, check its compatibility requirements and confirm that the artifact is available from the Maven repository configured by your organization.
 
+## Dependency
+
+```kotlin
+dependencies {
+    implementation("com.opside-leaf:leaf-login:3.1.0")
+}
+```
+
+Login declares `leaf-contracts`, `leaf-core`, and `leaf-compose` as transitive dependencies. `leaf-visuals` is an internal implementation dependency; the host does not need to declare it separately.
+
 ## Public surface
 
 | API | Responsibility |
@@ -22,6 +32,89 @@ Login has a version independent of the base LEAF release train. Before integrati
 ## Host responsibilities
 
 The application implements `AuthGateway`, maps expected responses to the module's results, and decides what happens after successful authentication. It also controls transport, persistence, telemetry, the optional visual theme, and navigation outside Login.
+
+## Usage
+
+### Implement AuthGateway
+
+The application provides the authentication transport by implementing `AuthGateway`:
+
+```kotlin
+import com.opside.leaf.login.gateway.AuthGateway
+import com.opside.leaf.login.gateway.AuthResponse
+
+class MyAuthGateway(private val api: MyApi) : AuthGateway {
+    override suspend fun authenticate(
+        email: String,
+        password: String,
+    ): AuthResponse = try {
+        val userId = api.login(email, password)
+        AuthResponse.Success(userId)
+    } catch (e: InvalidCredentialsException) {
+        AuthResponse.InvalidCredentials
+    } catch (e: Exception) {
+        AuthResponse.Unavailable()
+    }
+}
+```
+
+`AuthResponse` has three variants:
+
+| Variant | Meaning |
+| --- | --- |
+| `Success(userId)` | Authentication succeeded |
+| `InvalidCredentials` | Wrong email or password |
+| `Unavailable(retryAfterMilliseconds?)` | Service is not available |
+
+### Feature path (stable)
+
+`LoginRoute` connects the Feature to Compose. The host only receives the final result:
+
+```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.opside.leaf.login.LoginModule
+import com.opside.leaf.login.domain.LoginInput
+import com.opside.leaf.login.ui.LoginRoute
+
+@Composable
+fun MyLoginScreen(onLoggedIn: (String) -> Unit) {
+    val module = remember { LoginModule(MyAuthGateway(api)) }
+    LoginRoute(
+        module = module,
+        input = LoginInput(initialEmail = ""),
+        onAuthenticated = { result -> onLoggedIn(result.userId) },
+    )
+}
+```
+
+### Workflow path
+
+`LoginWorkflowScreen` uses the Workflow with separate password handling and authentication effect:
+
+```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.opside.leaf.login.LoginModule
+import com.opside.leaf.login.LoginWorkflowInput
+import com.opside.leaf.login.ui.workflow.LoginWorkflowScreen
+
+@Composable
+fun MyLoginWorkflowScreen(
+    onLoggedIn: () -> Unit,
+    onBack: () -> Unit,
+) {
+    val module = remember { LoginModule(MyAuthGateway(api)) }
+    LoginWorkflowScreen(
+        module = module,
+        input = LoginWorkflowInput(initialEmail = ""),
+        onAuthenticated = onLoggedIn,
+        onCancelled = onBack,
+    )
+}
+```
+
+Both paths coexist in the same artifact. The host decides which one to present.
 
 ## Feature and Workflow
 
