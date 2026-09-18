@@ -44,20 +44,141 @@ interface CatalogGateway {
 
 Solo `getPage` es obligatorio. Los métodos opcionales tienen implementaciones por defecto que devuelven listas vacías o lanzan `NotImplementedError`.
 
-## Configuración por DSL
+## Modelo de datos
 
-El módulo se configura en `CatalogModule.create`:
+`CatalogItem` es un tipo fijo, no genérico. El host mapea sus objetos de dominio (películas, productos, partes) a `CatalogItem` en la implementación del gateway:
 
 ```kotlin
-val catalog = CatalogModule.create(gateway) {
-    layout { adaptive(minWidth = 160) }
-    search { placeholder = "Buscar productos…" }
+data class CatalogItem(
+    val id: String,
+    val title: String,
+    val subtitle: String? = null,
+    val imageUrl: String? = null,
+    val price: CatalogPrice? = null,
+    val badges: List<CatalogBadge> = emptyList(),
+    val metadata: Map<String, String> = emptyMap(),
+)
+```
+
+`metadata` es un mapa libre para datos que no tienen campo propio (categoría, ubicación, atributos de filtro). Los filtros del gateway usan las claves de `metadata` para filtrar items.
+
+### PageRequest y CatalogPage
+
+El gateway recibe un `PageRequest` con la búsqueda, filtros, página y orden actuales. Devuelve un `CatalogPage` con los items de esa página:
+
+```kotlin
+data class PageRequest(
+    val query: String = "",
+    val filters: Map<String, String> = emptyMap(),
+    val page: Int = 0,
+    val pageSize: Int = 20,
+    val sort: String? = null,
+)
+
+data class CatalogPage(
+    val items: List<CatalogItem>,
+    val totalCount: Int? = null,
+    val hasMore: Boolean = false,
+)
+```
+
+### CatalogDetail
+
+Cuando el usuario selecciona un item y el slot `detail` está habilitado, el módulo llama a `getDetail(itemId)`. El host devuelve la información completa:
+
+```kotlin
+data class CatalogDetail(
+    val item: CatalogItem,
+    val description: String = "",
+    val images: List<String> = emptyList(),
+    val attributes: Map<String, String> = emptyMap(),
+)
+```
+
+`images` se combina con `CatalogItem.imageUrl` en el carrusel. `attributes` son pares clave/valor para la ficha técnica (especificaciones, dimensiones).
+
+### CatalogOutputEvent y acciones del host
+
+`CatalogOutputEvent` es una **interfaz abierta** (no `sealed`). El host define sus propios tipos de acción extendiéndola:
+
+```kotlin
+import com.opside.leaf.catalog.domain.CatalogOutputEvent
+
+sealed interface MovieAction : CatalogOutputEvent {
+    data class Select(val movieId: String) : MovieAction
+    data class AddToFavorites(val movieId: String) : MovieAction
+}
+```
+
+Cuando el usuario ejecuta una acción, el Feature termina con `CatalogResult.ActionPerformed(event)` donde `event` es la instancia del tipo que definiste. El módulo nunca inspecciona el tipo concreto; solo lo transporta.
+
+## Uso
+
+### Implementar el Gateway
+
+El host mapea su modelo de dominio a `CatalogItem` dentro del gateway:
+
+```kotlin
+import com.opside.leaf.catalog.domain.CatalogItem
+import com.opside.leaf.catalog.domain.CatalogPage
+import com.opside.leaf.catalog.domain.CatalogDetail
+import com.opside.leaf.catalog.domain.PageRequest
+import com.opside.leaf.catalog.gateway.CatalogGateway
+
+class MovieCatalogGateway(private val api: MovieApi) : CatalogGateway {
+
+    override suspend fun getPage(request: PageRequest): CatalogPage {
+        val response = api.searchMovies(
+            query = request.query,
+            page = request.page,
+            pageSize = request.pageSize,
+        )
+        return CatalogPage(
+            items = response.movies.map { it.toCatalogItem() },
+            totalCount = response.total,
+            hasMore = response.hasNextPage,
+        )
+    }
+
+    override suspend fun getDetail(itemId: String): CatalogDetail {
+        val movie = api.getMovie(itemId)
+        return CatalogDetail(
+            item = movie.toCatalogItem(),
+            description = movie.synopsis,
+            images = movie.stills,
+            attributes = mapOf(
+                "Director" to movie.director,
+                "Año" to movie.year.toString(),
+                "Duración" to "${movie.durationMinutes} min",
+            ),
+        )
+    }
+}
+
+private fun Movie.toCatalogItem() = CatalogItem(
+    id = id,
+    title = title,
+    subtitle = "$year · $director",
+    imageUrl = posterUrl,
+    metadata = mapOf("genre" to genre),
+)
+```
+
+### Configurar el módulo
+
+El módulo se configura con un DSL en `CatalogModule.create`:
+
+```kotlin
+import com.opside.leaf.catalog.CatalogModule
+
+val catalog = CatalogModule.create(MovieCatalogGateway(api)) {
+    layout { grid(columns = 2) }
+    search { placeholder = "Buscar películas…" }
     pagination { pageSize = 20; infinite = true }
-    filters { chip() }
-    sort { enabled = true }
     detail { enabled = true; imageCarousel = true }
     actions {
-        primary("Agregar") { item -> AddToCart(item.id) }
+        primary("Ver") { item -> MovieAction.Select(item.id) }
+        secondary("Favorito") { item -> MovieAction.AddToFavorites(item.id) }
     }
 }
 ```
@@ -76,6 +197,44 @@ val catalog = CatalogModule.create(gateway) {
 | `actions { }` | `primary(label, handler)`, `secondary(label, handler)` |
 :::
 
+### Presentar con Compose
+
+```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.opside.leaf.catalog.CatalogModule
+import com.opside.leaf.catalog.domain.CatalogInput
+import com.opside.leaf.catalog.domain.CatalogResult
+import com.opside.leaf.catalog.ui.CatalogRoute
+
+@Composable
+fun MovieCatalogScreen(
+    onMovieSelected: (String) -> Unit,
+) {
+    val catalog = remember { createMovieCatalog() }
+    CatalogRoute(
+        module = catalog,
+        input = CatalogInput(),
+        imageLoader = { url, desc, mod -> AsyncImage(url, desc, mod) },
+        onResult = { result ->
+            when (result) {
+                is CatalogResult.ActionPerformed -> {
+                    when (val action = result.event as MovieAction) {
+                        is MovieAction.Select -> onMovieSelected(action.movieId)
+                        is MovieAction.AddToFavorites -> { /* ... */ }
+                    }
+                }
+                CatalogResult.Dismissed -> { /* sesión cerrada */ }
+            }
+        },
+    )
+}
+```
+
+El host proporciona `imageLoader` para renderizar imágenes remotas (Coil, Kamel, etc.). El módulo no incluye dependencia de imágenes; cuando no se proporciona, muestra un placeholder con monograma.
+
+`CatalogRoute` también acepta `visuals` (tema visual, por defecto el de LEAF), `darkTheme`, `strings` (localización) y `telemetry` (observabilidad).
+
 ## Feature
 
 El Feature usa `CatalogInput`, `CatalogState`, `CatalogEvent` y `CatalogResult`.
@@ -89,31 +248,8 @@ El Feature usa `CatalogInput`, `CatalogState`, `CatalogEvent` y `CatalogResult`.
 | `LoadMore` | Solicita la siguiente página y la agrega |
 | `FilterChanged(id, value)` | Activa o limpia un filtro, recarga desde página 0 |
 | `SortChanged(sortId)` | Cambia el orden, recarga desde página 0 |
+| `ClearFilters` | Limpia todos los filtros activos y recarga desde página 0 |
 | `ItemSelected(itemId)` | Navega al detalle del item |
 | `BackToList` | Regresa a la lista desde el detalle |
-| `ClearFilters` | Limpia todos los filtros activos y recarga desde página 0 |
 | `Retry` | Reintenta la carga actual tras un error, conservando query/filtros/orden |
 | `ItemAction(label, item)` | Invoca una acción del host sobre un item |
-
-**Resultados terminales:**
-
-| Resultado | Significado |
-| --- | --- |
-| `ActionPerformed(event)` | Una acción del host se ejecutó; `event` es el `CatalogOutputEvent` del host |
-| `Dismissed` | La sesión se cerró sin acción |
-
-## Compose
-
-```kotlin
-CatalogRoute(
-    module = catalog,
-    input = CatalogInput(),
-    visuals = thingsLeafVisuals(),   // opcional
-    imageLoader = { url, desc, mod -> AsyncImage(url, desc, mod) },
-    strings = CatalogStrings(),       // localización
-    telemetry = CatalogTelemetry(),   // observabilidad
-    onResult = { result -> /* ... */ },
-)
-```
-
-El host proporciona `imageLoader` para renderizar imágenes remotas. El módulo no incluye dependencia de imágenes; cuando no se proporciona, muestra un placeholder con monograma.
