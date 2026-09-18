@@ -38,6 +38,24 @@ fun interface EffectHandler<Effect, Event> {
 }
 ```
 
-A Workflow answers with one of three steps: `Continue` to show a new state, `Emit` to request work, or `Complete` to finish. Create them with `continueWorkflow`, `emitEffect`, and `completeWorkflow`. `initialize` and `reduce` choose a step immediately; they do not wait for a network call or database. `eventBufferCapacity` must be between 1 and `MAX_FEATURE_EVENT_CAPACITY`.
+A Workflow answers with one of three steps. `initialize` and `reduce` choose a step immediately; they do not wait for a network call or database.
+
+| Decision | Result |
+| --- | --- |
+| `continueWorkflow(state)` | publishes state and accepts another event |
+| `emitEffect(state, effect)` | publishes state and requests one effect |
+| `completeWorkflow(output)` | fixes the single successful outcome |
+
+When you choose `Emit`, Core first publishes the state. It then calls `EffectHandler.handle` to do slow work (saving, calling a service). That handler returns an event and Core sends it back to the reducer. While that work is pending, the screen must disable the action that would start another effect. If a second effect is attempted, Core ends with `WorkflowOutcome.Failed`.
+
+### How a Workflow ends
+
+| Outcome | Meaning |
+| --- | --- |
+| `Completed(output)` | Delivers the business result |
+| `Failed(reason)` | Technical problem while starting, reducing, running an effect, or double effect |
+| `Cancelled` | The screen or its coroutine left the flow before it finished |
+
+`eventBufferCapacity` must be between 1 and `MAX_FEATURE_EVENT_CAPACITY`. The [Workflow guide](/en/guide/workflow) explains how to start a session, present screens, send events, and handle the final result.
 
 Contracts also includes `Feature<Input, State, Event, Output>` as an older API. Its reducer returns `FeatureTransition`. Use `Workflow` for new modules that require UI.

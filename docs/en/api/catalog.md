@@ -8,6 +8,16 @@ The artifact is `com.opside-leaf:leaf-catalog:1.1.1`. Its source code correspond
 
 Declared compatibility is LEAF Contracts/Core/Compose 3.1.0; integration with leaf-visuals 1.4.0 is optional.
 
+## Dependency
+
+```kotlin
+dependencies {
+    implementation("com.opside-leaf:leaf-catalog:1.1.1")
+}
+```
+
+Catalog declares `leaf-contracts` and `leaf-visuals` as transitive dependencies (`api`). `leaf-compose` is an internal implementation dependency; the host does not need to declare it separately.
+
 ## Public surface
 
 | API | Responsibility |
@@ -81,6 +91,8 @@ The Feature uses `CatalogInput`, `CatalogState`, `CatalogEvent`, and `CatalogRes
 | `SortChanged(sortId)` | Changes sort order, reloads from page 0 |
 | `ItemSelected(itemId)` | Navigates to item detail |
 | `BackToList` | Returns to list from detail |
+| `ClearFilters` | Clears all active filters and reloads from page 0 |
+| `Retry` | Retries the current load after an error, keeping query/filters/sort |
 | `ItemAction(label, item)` | Invokes a host action on an item |
 
 **Terminal results:**

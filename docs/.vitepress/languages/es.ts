@@ -49,17 +49,21 @@ const projectSidebar: DefaultTheme.SidebarItem[] = [
 const apiSidebar: DefaultTheme.SidebarItem[] = [
   { text: 'Referencia API', items: [
     { text: 'Visión general', link: '/es/api/' },
+  ] },
+  { text: 'Plataforma LEAF', items: [
     { text: 'leaf-contracts', link: '/es/api/contracts' },
     { text: 'leaf-core', link: '/es/api/core' },
     { text: 'leaf-compose', link: '/es/api/compose' },
-    { text: 'Workflow', link: '/es/api/workflow' },
     { text: 'leaf-visuals', link: '/es/api/visuals' },
+    { text: 'Payment Contracts', link: '/es/api/payment-contracts' },
+  ] },
+  { text: 'Módulos', items: [
     { text: 'Login', link: '/es/api/login' },
     { text: 'Authentication', link: '/es/api/authentication' },
-    { text: 'Payment Contracts', link: '/es/api/payment-contracts' },
     { text: 'Catalog', link: '/es/api/catalog' },
     { text: 'Email', link: '/es/api/email' },
-    { text: 'Módulos de pago', link: '/es/api/payments' },
+    { text: 'Stripe', link: '/es/api/stripe' },
+    { text: 'Mercado Pago', link: '/es/api/mercado-pago' },
   ] },
 ]
 

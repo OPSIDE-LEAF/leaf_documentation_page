@@ -8,6 +8,16 @@ El artefacto es `com.opside-leaf:leaf-email:1.1.1`. Su código fuente correspond
 
 La compatibilidad declarada es LEAF Contracts/Core 3.1.0.
 
+## Dependencia
+
+```kotlin
+dependencies {
+    implementation("com.opside-leaf:leaf-email:1.1.1")
+}
+```
+
+Email declara `leaf-contracts` como dependencia transitiva. `leaf-core` es una dependencia de implementación interna; el host necesita declarar `leaf-core` solo si ejecuta otras Actions fuera de este módulo.
+
 ## Superficie pública
 
 | API | Responsabilidad |
@@ -16,6 +26,10 @@ La compatibilidad declarada es LEAF Contracts/Core 3.1.0.
 | `EmailConfig` | Configuración SMTP: host, puerto, credenciales y remitente |
 | `EmailInput` | Destinatario, asunto, cuerpo y flag HTML |
 | `EmailResult` | Resultado: `Sent` o `Rejected(reason)` |
+
+## Responsabilidades del host
+
+La aplicación proporciona `EmailConfig` con las credenciales SMTP y el remitente. El host decide cuándo enviar, construye el `EmailInput` y maneja el resultado. El módulo no retiene configuración ni estado entre envíos.
 
 ## Uso
 
