@@ -1,10 +1,10 @@
 # Login
 
-Login 3.1.1 es un módulo Kotlin Multiplatform para inicio de sesión y registro de usuarios. Expone dos Features (`login` y `register`) con UI Compose, un Workflow con manejo separado del password, y conserva la autenticación real y la navegación bajo control de la aplicación host.
+Login 3.2.0 es un módulo Kotlin Multiplatform para inicio de sesión y registro de usuarios. Expone dos Features (`login` y `register`) con UI Compose, un Workflow con manejo separado del password, y conserva la autenticación real y la navegación bajo control de la aplicación host. El host puede personalizar el texto y los elementos visibles de cada pantalla mediante `LoginContent` / `RegisterContent`.
 
 ## Entrega y compatibilidad
 
-El artefacto es `com.opside-leaf:leaf-login:3.1.1`. Su código fuente corresponde al tag [`v3.1.1`](https://github.com/OPSIDE-LEAF/leaf_login/tree/v3.1.1), revisión [`a562cec`](https://github.com/OPSIDE-LEAF/leaf_login/commit/a562cec).
+El artefacto es `com.opside-leaf:leaf-login:3.2.0`. Su código fuente corresponde al tag [`v3.2.0`](https://github.com/OPSIDE-LEAF/leaf_login/tree/v3.2.0), revisión [`e56fca8`](https://github.com/OPSIDE-LEAF/leaf_login/commit/e56fca8).
 
 La compatibilidad declarada es LEAF Contracts/Core/Compose 3.1.0; la integración con leaf-visuals 1.4.0 es opcional.
 
@@ -14,7 +14,7 @@ Login mantiene una versión independiente del tren base de LEAF. Antes de integr
 
 ```kotlin
 dependencies {
-    implementation("com.opside-leaf:leaf-login:3.1.1")
+    implementation("com.opside-leaf:leaf-login:3.2.0")
 }
 ```
 
@@ -28,11 +28,12 @@ Login declara `leaf-contracts`, `leaf-core` y `leaf-compose` como dependencias t
 | `AuthGateway` | Port que la aplicación implementa para autenticar y registrar usuarios. |
 | `LoginRoute` / `LoginScreen` | Conectan la Feature de login con Compose; la navegación terminal pertenece al host. |
 | `RegisterRoute` / `RegisterScreen` | Conectan la Feature de registro con Compose; la navegación terminal pertenece al host. |
+| `LoginContent` / `RegisterContent` | Configuran el texto y la presencia de los elementos de cada pantalla, sin tocar el estilo visual. |
 | `createLoginWorkflow` / `LoginWorkflowScreen` | Exponen el Workflow de referencia para login; la API Kotlin publicada aún requiere opt-in explícito. |
 
 ## Responsabilidades del host
 
-La aplicación implementa `AuthGateway` (tanto `authenticate` como `register`), traduce las respuestas esperadas a los resultados del módulo y decide qué ocurre después de una autenticación o registro exitoso. También controla el transporte, la persistencia, la telemetría, el tema visual opcional y la navegación entre login y registro.
+La aplicación implementa `AuthGateway` (tanto `authenticate` como `register`), traduce las respuestas esperadas a los resultados del módulo y decide qué ocurre después de una autenticación o registro exitoso. También controla el transporte, la persistencia, la telemetría, el tema visual opcional, el contenido de las pantallas (texto y elementos visibles) y la navegación entre login y registro.
 
 ## Uso
 
@@ -172,6 +173,85 @@ fun MyLoginWorkflowScreen(
 ```
 
 Las tres rutas coexisten en el mismo artefacto. El host decide cuál presentar y controla la navegación entre login y registro.
+
+## Personalización de contenido
+
+`LoginRoute` y `RegisterRoute` aceptan un parámetro `content` que controla **qué elementos aparecen y qué dicen**, sin tocar el estilo visual. Cada campo tiene un valor por defecto que reproduce la pantalla estándar, así que solo defines lo que quieres cambiar.
+
+La regla es simple: los elementos opcionales son `String?` y pasar `null` los oculta; los labels de campos y el botón son `String` no nulos que puedes renombrar pero no quitar; la barra de acento decorativa se controla con el `Boolean` `showAccentBar`.
+
+::: code-group
+
+```kotlin [LoginContent]
+data class LoginContent(
+    val showAccentBar: Boolean = true,
+    val title: String = "Inicia sesión",
+    val subtitle: String? = "Ingresa tus datos para continuar.",
+    val badge: String? = "CREDENCIALES",
+    val cardTitle: String? = "Tu cuenta",
+    val cardSubtitle: String? = "Un acceso claro, privado y bajo tu control.",
+    val emailLabel: String = "Correo electrónico",
+    val passwordLabel: String = "Contraseña",
+    val submitLabel: String = "Continuar",
+    val registerPrompt: String = "¿No tienes cuenta? ",
+    val registerLink: String = "Crear cuenta",
+)
+```
+
+```kotlin [RegisterContent]
+data class RegisterContent(
+    val showAccentBar: Boolean = true,
+    val title: String = "Crear cuenta",
+    val subtitle: String? = "Completa tus datos para registrarte.",
+    val badge: String? = "REGISTRO",
+    val cardTitle: String? = "Tu nueva cuenta",
+    val cardSubtitle: String? = "Un acceso claro, privado y bajo tu control.",
+    val nameLabel: String = "Nombre completo",
+    val emailLabel: String = "Correo electrónico",
+    val passwordLabel: String = "Contraseña",
+    val confirmPasswordLabel: String = "Confirmar contraseña",
+    val submitLabel: String = "Crear cuenta",
+    val loginPrompt: String = "¿Ya tienes cuenta? ",
+    val loginLink: String = "Iniciar sesión",
+)
+```
+
+:::
+
+Los campos `String?` (`subtitle`, `badge`, `cardTitle`, `cardSubtitle`) se ocultan con `null`; `showAccentBar = false` oculta la barra decorativa superior; el resto son labels que solo se renombran. La fila de navegación cruzada (`registerPrompt` / `registerLink`, `loginPrompt` / `loginLink`) solo aparece cuando entregas el callback correspondiente (`onRegisterRequested` / `onLoginRequested`).
+
+```kotlin
+import com.opside.leaf.login.ui.LoginContent
+import com.opside.leaf.login.ui.LoginRoute
+
+// Sin el chip "CREDENCIALES", con título y botón propios
+LoginRoute(
+    module = module,
+    content = LoginContent(
+        badge = null,
+        title = "Bienvenido de vuelta",
+        submitLabel = "Entrar",
+    ),
+    onAuthenticated = { result -> onLoggedIn(result.userId) },
+)
+
+// Versión mínima: solo campos y botón
+LoginRoute(
+    module = module,
+    content = LoginContent(
+        showAccentBar = false,
+        subtitle = null,
+        badge = null,
+        cardTitle = null,
+        cardSubtitle = null,
+    ),
+    onAuthenticated = { result -> onLoggedIn(result.userId) },
+)
+```
+
+::: info
+`content` solo cambia el texto y la presencia de los elementos. No expone slots de composables ni permite reestilizar: para cambiar colores, formas o tipografía usa el parámetro `visuals` con un `LeafVisuals`.
+:::
 
 ## Feature y Workflow
 
