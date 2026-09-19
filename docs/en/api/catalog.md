@@ -1,10 +1,10 @@
 # Catalog
 
-Catalog 1.1.1 is a Kotlin Multiplatform module that provides a paginated catalog with search, filters, sorting, detail, and configurable actions. It exposes a Feature that the host connects to its data source through `CatalogGateway`.
+Catalog 1.1.2 is a Kotlin Multiplatform module that provides a paginated catalog with search, filters, sorting, detail, and configurable actions. It exposes a Feature that the host connects to its data source through `CatalogGateway`.
 
 ## Release and compatibility
 
-The artifact is `com.opside-leaf:leaf-catalog:1.1.1`. Its source code corresponds to tag [`v1.1.1`](https://github.com/OPSIDE-LEAF/leaf_catalog/tree/v1.1.1), revision [`414ef99`](https://github.com/OPSIDE-LEAF/leaf_catalog/commit/414ef99).
+The artifact is `com.opside-leaf:leaf-catalog:1.1.2`. Its source code corresponds to tag [`v1.1.2`](https://github.com/OPSIDE-LEAF/leaf_catalog/tree/v1.1.2), revision [`68b0636`](https://github.com/OPSIDE-LEAF/leaf_catalog/commit/68b0636).
 
 Declared compatibility is LEAF Contracts/Core/Compose 3.1.0; integration with leaf-visuals 1.4.0 is optional.
 
@@ -12,7 +12,7 @@ Declared compatibility is LEAF Contracts/Core/Compose 3.1.0; integration with le
 
 ```kotlin
 dependencies {
-    implementation("com.opside-leaf:leaf-catalog:1.1.1")
+    implementation("com.opside-leaf:leaf-catalog:1.1.2")
 }
 ```
 
