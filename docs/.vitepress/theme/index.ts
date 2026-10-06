@@ -8,12 +8,14 @@ import CardGrid from './components/CardGrid.vue'
 import Card from './components/Card.vue'
 import CopyMarkdown from './components/CopyMarkdown.vue'
 import LanguageLink from './components/LanguageLink.vue'
+import LeafSplash from './components/LeafSplash.vue'
 
 export default {
   extends: DefaultTheme,
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
+      'layout-top': () => h(LeafSplash),
       'doc-before': () => h(CopyMarkdown),
       'nav-bar-title-after': () =>
         h('span', { class: 'leaf-version-badge' }, `v${__LEAF_VERSION__}`),

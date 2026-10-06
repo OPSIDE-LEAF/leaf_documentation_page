@@ -77,7 +77,8 @@ docs/
 │           ├── Card.vue            # Tarjeta individual (title, description, icon?, link?)
 │           ├── CardGrid.vue        # Grilla de tarjetas (title, items)
 │           ├── CopyMarkdown.vue    # Botón "Copiar como Markdown"
-│           └── LanguageLink.vue    # Enlace a la página equivalente del otro idioma
+│           ├── LanguageLink.vue    # Enlace a la página equivalente del otro idioma
+│           └── LeafSplash.vue      # Pantalla de entrada con el logo animado
 ├── es/                             # Contenido español → /es/
 │   ├── index.md                    # Home (layout: home + CardGrid)
 │   ├── guide/                      # Guía: conceptos, host, author, ecosistema
@@ -114,6 +115,7 @@ entregue la versión resuelta y no el placeholder.
 | `CardGrid` | Global (`enhanceApp`) | `<CardGrid title="…" :items="itemsArray" />` — la home define los arrays en su frontmatter/script |
 | `CopyMarkdown` | Slot `doc-before` | Automático en todas las páginas; no se invoca a mano |
 | `LanguageLink` | Slots de navegación | Lleva a la página equivalente del otro idioma |
+| `LeafSplash` | Slot `layout-top` | Pantalla de entrada con el logo completo animado (`public/leaf-logo-full-animated-{light,dark}.svg`). Sale en el HTML estático, aparece al abrir o recargar el sitio (no al navegar), se desvanece a los 3.2 s y se salta con clic, Esc, Enter o espacio |
 
 ### Botón "Copiar como Markdown"
 
