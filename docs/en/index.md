@@ -25,8 +25,6 @@ features:
     details: "Generating an 11,013-line app with AI on top of LEAF cost ~US$266 in tokens. Without LEAF it needs 4,182 more lines and ~US$367, 38% more. In another app the gap reached 255%."
 ---
 
-<p class="leaf-results-note">Figures from LEAF's validation (October 2026) on apps built with the ecosystem. Values marked ~ are estimates with an explicit method; AI cost is computed at about US$0.02 per generated line.</p>
-
 <script setup>
 const integrate = [
   { title: 'Maven Local', description: 'Use it optionally to test an artifact during development.', link: '/en/guide/maven-local' },

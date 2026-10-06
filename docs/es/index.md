@@ -25,8 +25,6 @@ features:
     details: "Generar con IA una app de 11,013 líneas sobre LEAF costó ~US$266 en tokens. Sin LEAF habría que escribir 4,182 líneas más y costaría ~US$367, un 38 % más. En otra app la diferencia llegó a 255 %."
 ---
 
-<p class="leaf-results-note">Cifras de la validación de LEAF (octubre de 2026) en apps construidas con el ecosistema. Las marcadas con ~ son estimaciones con un método explícito; el costo con IA se calcula a unos US$0.02 por línea generada.</p>
-
 <script setup>
 const integrate = [
   { title: 'Maven Local', description: 'Úsalo de forma opcional para probar un artefacto durante el desarrollo.', link: '/es/guide/maven-local' },
