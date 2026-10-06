@@ -15,15 +15,17 @@ hero:
       link: /es/api/
 
 features:
-  - title: Lanza más rápido
-    details: Un equipo construye para Android e iOS al mismo tiempo. Menos costo, más velocidad.
-  - title: Calidad que se siente
-    details: Tus usuarios no notarán la diferencia con una app hecha a medida. Misma experiencia, fracción del costo.
-  - title: No reinventes la rueda
-    details: Login, pagos, catálogo — capacidades listas para usar. Cada proyecto nuevo aprovecha lo que ya funciona.
-  - title: Evoluciona sin reconstruir
-    details: Agrega o cambia funcionalidades sin empezar de nuevo. Tu producto crece contigo.
+  - title: <span class="leaf-stat">~1,680 h</span>Lanza más rápido
+    details: "Horas de desarrollo ahorradas en apps reales: unas 10,500 líneas que no hubo que programar a mano, cerca de 10 meses-persona."
+  - title: <span class="leaf-stat">94.6–100 %</span>Calidad comprobada
+    details: "Cobertura de pruebas del núcleo de LEAF. Si baja de 70 %, el proyecto no compila. Cada módulo se publica con su propia versión y valida su API pública en cada compilación."
+  - title: <span class="leaf-stat">~17×</span>No reinventes la rueda
+    details: "Una app completa, con acceso, catálogo, carrito, pago y recibo, solo escribió 390 líneas propias para conectarlo todo: unas 17 líneas de LEAF por cada línea suya."
+  - title: <span class="leaf-stat">~US$101</span>Menos gasto en IA
+    details: "Generar con IA una app de 11,013 líneas sobre LEAF costó ~US$266 en tokens. Sin LEAF habría que escribir 4,182 líneas más y costaría ~US$367, un 38 % más. En otra app la diferencia llegó a 255 %."
 ---
+
+<p class="leaf-results-note">Cifras de la validación de LEAF (octubre de 2026) en apps construidas con el ecosistema. Las marcadas con ~ son estimaciones con un método explícito; el costo con IA se calcula a unos US$0.02 por línea generada.</p>
 
 <script setup>
 const integrate = [

@@ -15,15 +15,17 @@ hero:
       link: /en/api/
 
 features:
-  - title: Launch faster
-    details: One team builds for Android and iOS at the same time. Less cost, more speed.
-  - title: Quality you can feel
-    details: Your users won't tell the difference from a custom-built app. Same experience, a fraction of the cost.
-  - title: Don't reinvent the wheel
-    details: Login, payments, catalog — ready-to-use capabilities. Every new project leverages what already works.
-  - title: Evolve without rebuilding
-    details: Add or change features without starting over. Your product grows with you.
+  - title: <span class="leaf-stat">~1,680 h</span>Launch faster
+    details: "Developer hours saved on real apps: about 10,500 lines nobody had to write by hand, close to 10 person-months."
+  - title: <span class="leaf-stat">94.6–100%</span>Proven quality
+    details: "Test coverage of the LEAF core. If it drops below 70%, the project won't build. Each module ships with its own version and checks its public API on every build."
+  - title: <span class="leaf-stat">~17×</span>Don't reinvent the wheel
+    details: "A complete app with sign-in, catalog, cart, payment and receipt wrote only 390 lines of its own to connect it all: about 17 lines of LEAF for every line it wrote."
+  - title: <span class="leaf-stat">~US$101</span>Lower AI spend
+    details: "Generating an 11,013-line app with AI on top of LEAF cost ~US$266 in tokens. Without LEAF it needs 4,182 more lines and ~US$367, 38% more. In another app the gap reached 255%."
 ---
+
+<p class="leaf-results-note">Figures from LEAF's validation (October 2026) on apps built with the ecosystem. Values marked ~ are estimates with an explicit method; AI cost is computed at about US$0.02 per generated line.</p>
 
 <script setup>
 const integrate = [

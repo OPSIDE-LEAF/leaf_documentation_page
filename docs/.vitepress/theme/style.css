@@ -688,3 +688,23 @@ html:not(.dark) .dark-only {
   margin-top: -8px;
   margin-bottom: 16px;
 }
+
+/* Home: cada tarjeta abre con la cifra que la respalda (resultados de la validación). */
+.VPFeature .leaf-stat {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--vp-c-brand-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.leaf-results-note {
+  max-width: 1152px;
+  margin: 4px auto 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
+}
