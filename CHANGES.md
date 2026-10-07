@@ -1,5 +1,21 @@
 # Registro de cambios — Sitio de documentación Leaf
 
+## Pagos 2.0.0 y 2.0.1 sin Authentication — 2026-10-06
+
+- **Versiones:** actualiza Stripe y Mercado Pago a `v2.0.1` (Stripe `10a1af7`, Mercado Pago `88760f0`) en sus referencias API, la página de pagos, el índice de la API y el catálogo.
+- **Cambio incompatible de 2.0.0:** los módulos de pago ya no dependen de `leaf-authentication`. Las factories de sandbox reciben el token mediante `MercadoPagoAccessTokenProvider` / `StripeAccessTokenProvider`; la página incluye el adaptador para Authentication.
+- **Novedades de 2.0.1:** también publica `leaf-mp-payment-checkout-ui` y `leaf-mp-payment-android-ui`, y las vistas SwiftUI de `apple-ui` reciben `accessTokens`.
+- **Límite en iOS:** en 2.0.1, Swift no puede prestar un token a esas vistas, porque el framework no exporta `CharArray`. Para cobros autenticados en iOS, la página remite a `init(module:…)` con un backend propio.
+- **Referencias reordenadas según `api-module-format.md`:** primero el backend, luego el módulo y la factory de sandbox. Agrega las UI listas a la superficie pública.
+- **Correcciones de precisión:**
+  - las reglas de `baseUrl`;
+  - el uso de `observeCheckoutOperation` con la factory de pruebas;
+  - la redacción del request de envío;
+  - los campos de tarjeta de sandbox;
+  - el carácter de solo pruebas de los artefactos.
+- **Dependencias por plataforma:** la sección de dependencias muestra pestañas para Android, Kotlin Multiplatform e iOS (Swift Package). También aclara que `PaymentSheet`, el formulario oficial de Stripe, existe en las dos plataformas.
+- **Verificación:** los snippets Kotlin se compilaron contra los artefactos 2.0.1, y los Swift, incluida la declaración del paquete local, contra `apple-ui`.
+
 ## LEAF 3.1.0 y releases fuente de módulos — 2026-09-07
 
 - Fija el tren base LEAF 3.1.0 en Contracts (`d864df4`), Core (`97c683d`) y Compose (`b69b479`), con tags fuente `v3.1.0`.

@@ -1,16 +1,16 @@
 # Módulos de pago
 
-Stripe 1.0.0 y Mercado Pago 1.0.0 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y la relación con Authentication cuando la necesite.
+Stripe 2.0.1 y Mercado Pago 2.0.1 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y, cuando la necesite, la conexión con su sesión mediante el Port del token de cada módulo. Ninguno depende de Authentication.
 
 ## Entregas fuente
 
-- Stripe: tag [`v1.0.0`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v1.0.0), revisión [`4c19562`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/4c19562).
-- Mercado Pago: tag [`v1.0.0`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v1.0.0), revisión [`7d7efb2`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/7d7efb2).
+- Stripe: tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v2.0.1), revisión [`10a1af7`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/10a1af7).
+- Mercado Pago: tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.1), revisión [`88760f0`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/88760f0).
 
-Ambos módulos declaran compatibilidad con LEAF 3.1.0 y leaf-visuals 1.4.0. Ambos están publicados en GitHub Packages.
+Ambos módulos declaran compatibilidad con LEAF 3.1.0 y leaf-visuals 1.4.0. Ambos publican en GitHub Packages el módulo, `checkout-ui` y `android-ui`.
 
 ## Límite público
 
 Los dos módulos usan `CheckoutEvent` para las acciones de la UI, `CheckoutOutput` para el resultado final y `CheckoutPaymentResult` para el resultado del pago. Cuando un pago termina, llega como `CheckoutOutput.Payment`. Para Stripe, la app proporciona el acceso a su backend y la presentación de `PaymentSheet`. Para Mercado Pago, la app proporciona por separado el backend y la captura de tarjeta. Las credenciales, los callbacks y la configuración del proveedor permanecen en la aplicación o en sus adaptadores.
 
-Antes de usar cualquiera de los módulos en producción, prueba el flujo completo con el entorno de pruebas del proveedor. Incluye la UI, el backend, los callbacks, la autenticación si aplica y el manejo de resultados fallidos o cancelados.
+Los dos módulos están pensados para entornos de prueba (sandbox). Prueba el flujo completo con el entorno de pruebas del proveedor. Incluye la UI, el backend, los callbacks, la autenticación si aplica y el manejo de resultados fallidos o cancelados.

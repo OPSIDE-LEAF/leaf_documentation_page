@@ -18,7 +18,7 @@ LEAF %LEAF_VERSION% separa los contratos públicos, la ejecución y la integraci
 | [Authentication](/es/api/authentication) | 1.0.0 | proporciona Actions para autenticación, sesiones y tokens |
 | [Catalog](/es/api/catalog) | 1.1.1 | proporciona catálogo, búsqueda y detalle como Feature reutilizable |
 | [Email](/es/api/email) | 1.1.1 | proporciona una Action autónoma de envío SMTP |
-| [Stripe](/es/api/stripe) | 1.0.0 | implementa un checkout de pagos con Stripe |
-| [Mercado Pago](/es/api/mercado-pago) | 1.0.0 | implementa un checkout de pagos con Mercado Pago |
+| [Stripe](/es/api/stripe) | 2.0.1 | implementa un checkout de pagos con Stripe |
+| [Mercado Pago](/es/api/mercado-pago) | 2.0.1 | implementa un checkout de pagos con Mercado Pago |
 
 Estas versiones y sus requisitos de integración son independientes del tren base de LEAF. Consulta cada referencia antes de elegir dependencias para tu aplicación.
