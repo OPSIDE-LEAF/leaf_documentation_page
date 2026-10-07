@@ -1,16 +1,17 @@
 # Mercado Pago
 
-Mercado Pago 2.0.1 es un módulo Kotlin Multiplatform que implementa un checkout de pagos con Mercado Pago. Expone Actions para obtener la configuración, enviar un pago con tarjeta tokenizada y observar su estado. La app proporciona el backend, así como la captura y la tokenización de la tarjeta. El módulo no depende de ningún módulo de autenticación.
+Mercado Pago 2.0.2 es un módulo Kotlin Multiplatform que implementa un checkout de pagos con Mercado Pago. Expone Actions para obtener la configuración, enviar un pago con tarjeta tokenizada y observar su estado. La app proporciona el backend, así como la captura y la tokenización de la tarjeta. El módulo no depende de ningún módulo de autenticación.
 
 ## Entrega y compatibilidad
 
-El artefacto es `com.opside-leaf:leaf-mp-payment:2.0.1`. Su código fuente corresponde al tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.1), revisión [`88760f0`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/88760f0).
+El artefacto es `com.opside-leaf:leaf-mp-payment:2.0.2`. Su código fuente corresponde al tag [`v2.0.2`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.2), revisión [`d882569`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/d882569).
 
 Mercado Pago mantiene una versión independiente del tren base de LEAF. La compatibilidad declarada es LEAF Contracts 3.1.0. Usa `leaf-payment-contracts` 0.1.0 para los tipos compartidos de pago. La integración con leaf-visuals 1.4.0 es opcional: llega con `leaf-mp-payment-checkout-ui` y `leaf-mp-payment-android-ui`, y el módulo base no la usa.
 
 ::: info Cambios en 2.0
 - **2.0.0:** el módulo ya no depende de `leaf-authentication`. Las factories de sandbox reciben el token mediante `MercadoPagoAccessTokenProvider`, un Port propio del módulo. Si tu app usaba la 1.0.0 con Authentication, envuelve el `ValidAccessTokenProvider` de Authentication como se muestra en [Implementar el Port del token](#implementar-el-port-del-token).
 - **2.0.1:** `leaf-mp-payment-checkout-ui` y `leaf-mp-payment-android-ui` también se publican en GitHub Packages. En iOS, `MercadoPagoPaymentView(backendURL:accessTokens:…)` recibe el Port del token.
+- **2.0.2:** no cambia la API. La variante Android de la raíz se publica como `leaf-mp-payment-android` (antes `leaf_mp_payment-android`) y los `ModuleInfo` reportan la versión real del artefacto.
 :::
 
 ## Dependencia
@@ -21,9 +22,9 @@ Mercado Pago es Kotlin Multiplatform: la coordenada `leaf-mp-payment` sirve para
 
 ```kotlin [Android]
 dependencies {
-    implementation("com.opside-leaf:leaf-mp-payment:2.0.1")
+    implementation("com.opside-leaf:leaf-mp-payment:2.0.2")
     // Opcional: hoja de pago lista
-    implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.1")
+    implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.2")
 }
 ```
 
@@ -31,11 +32,11 @@ dependencies {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.opside-leaf:leaf-mp-payment:2.0.1")
+            implementation("com.opside-leaf:leaf-mp-payment:2.0.2")
         }
         androidMain.dependencies {
             // Opcional: hoja de pago lista para Android
-            implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.1")
+            implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.2")
         }
     }
 }
@@ -61,7 +62,7 @@ Mercado Pago declara `leaf-contracts` y `leaf-payment-contracts` como dependenci
 La hoja de pago existe en Android y en iOS:
 
 - **Android:** `leaf-mp-payment-android-ui` es opcional, incluye `leaf-mp-payment-checkout-ui` y usa el SDK Core Methods de Mercado Pago. Si lo usas, declara también el repositorio Maven de Mercado Pago, `https://artifacts.mercadolibre.com/repository/android-releases`.
-- **iOS:** el paquete Swift `apple-ui` usa el SDK Core Methods de Mercado Pago para iOS (`sdk-ios` 1.0.0). No se distribuye por Maven: clona el repositorio en el tag `v2.0.1` y genera su XCFramework con `./gradlew :checkout-ui:stageForSwiftPackage` antes de agregar el paquete.
+- **iOS:** el paquete Swift `apple-ui` usa el SDK Core Methods de Mercado Pago para iOS (`sdk-ios` 1.0.0). No se distribuye por Maven: clona el repositorio en el tag `v2.0.2` y genera su XCFramework con `./gradlew :checkout-ui:stageForSwiftPackage` antes de agregar el paquete.
 
 ## Superficie pública
 
@@ -165,7 +166,7 @@ fun sandboxCheckout(auth: AuthenticationModule): MercadoPagoCheckoutModule =
 
 `baseUrl` es `http://127.0.0.1:8080` por defecto. Debe ser un origen HTTPS, o HTTP solo con los hosts locales `127.0.0.1`, `localhost` o `10.0.2.2`, sin path, query, fragmento ni credenciales.
 
-En iOS, `MercadoPagoPaymentView(backendURL:accessTokens:…)` recibe un provider que implementa el protocolo que exporta `LeafMpPaymentUI`. Para Swift, un provider creado en otro framework Kotlin es un tipo distinto. Además, el framework no exporta `CharArray`, así que en 2.0.1 Swift no puede prestar un token: solo puede responder `NoSession`, `Expired` o `Unavailable`. La app iOS de prueba usa este provider:
+En iOS, `MercadoPagoPaymentView(backendURL:accessTokens:…)` recibe un provider que implementa el protocolo que exporta `LeafMpPaymentUI`. Para Swift, un provider creado en otro framework Kotlin es un tipo distinto. Además, el framework no exporta `CharArray`, así que en 2.0.x Swift no puede prestar un token: solo puede responder `NoSession`, `Expired` o `Unavailable`. La app iOS de prueba usa este provider:
 
 ```swift
 import LeafMercadoPagoPaymentUI
@@ -282,5 +283,5 @@ Si el Port del token devuelve `NoSession` o `Expired`, la factory de pruebas no 
 La factory de pruebas usa el motor OkHttp de Ktor en Android y el motor Darwin en iOS. La factory con backend propio no crea ningún cliente HTTP.
 
 ::: warning Solo entornos de prueba
-Los artefactos 2.0.1 están pensados para sandbox: la clave pública se crea con `MercadoPagoPublicKey.test()`, la hoja de Android usa campos de tarjeta de sandbox y las factories de pruebas apuntan al backend sandbox de LEAF. Prueba el flujo completo con el entorno sandbox de Mercado Pago: captura de tarjeta, tokenización, backend, callbacks, autenticación y manejo de resultados fallidos o cancelados.
+Los artefactos 2.0.x están pensados para sandbox: la clave pública se crea con `MercadoPagoPublicKey.test()`, la hoja de Android usa campos de tarjeta de sandbox y las factories de pruebas apuntan al backend sandbox de LEAF. Prueba el flujo completo con el entorno sandbox de Mercado Pago: captura de tarjeta, tokenización, backend, callbacks, autenticación y manejo de resultados fallidos o cancelados.
 :::

@@ -1,12 +1,16 @@
 # Login
 
-Login 3.2.0 is a Kotlin Multiplatform module for sign-in and user registration. It exposes two Features (`login` and `register`) with Compose UI, a Workflow with separate password handling, and keeps real authentication and navigation under the host application's control. The host can customize the copy and visible elements of each screen through `LoginContent` / `RegisterContent`.
+Login 4.0.1 is a Kotlin Multiplatform module for sign-in and user registration. It exposes two Workflows (`login` and `register`) with Compose UI, an alternative Workflow with separate password handling, and keeps real authentication and navigation under the host application's control. The host can customize the copy and visible elements of each screen through `LoginContent` / `RegisterContent`.
 
 ## Release and compatibility
 
-The artifact is `com.opside-leaf:leaf-login:3.2.0`. Its source corresponds to tag [`v3.2.0`](https://github.com/OPSIDE-LEAF/leaf_login/tree/v3.2.0), revision [`e56fca8`](https://github.com/OPSIDE-LEAF/leaf_login/commit/e56fca8).
+The artifact is `com.opside-leaf:leaf-login:4.0.1`. Its source corresponds to tag [`v4.0.1`](https://github.com/OPSIDE-LEAF/leaf-login/tree/v4.0.1), revision [`6b59110`](https://github.com/OPSIDE-LEAF/leaf-login/commit/6b59110).
 
 Declared compatibility is LEAF Contracts/Core/Compose 3.1.0; integration with leaf-visuals 1.4.0 is optional.
+
+::: info Changes in 4.0
+`LoginModule.login` and `LoginModule.register` moved from `Feature`, being deprecated in LEAF, to `Workflow`. It is a breaking change: both properties change type, `LoginEvent`/`RegisterEvent` gain result events (an exhaustive `when` breaks), and the states gain `isSubmitting` (their binary signature changes). `LoginRoute` and `RegisterRoute` keep their signatures. An unexpected gateway exception, including its own timeout since 4.0.1, no longer ends the session; it is shown as service unavailable.
+:::
 
 Login has a version independent of the base LEAF release train. Before integrating it, check its compatibility requirements and confirm that the artifact is available from the Maven repository configured by your organization.
 
@@ -14,22 +18,22 @@ Login has a version independent of the base LEAF release train. Before integrati
 
 ```kotlin
 dependencies {
-    implementation("com.opside-leaf:leaf-login:3.2.0")
+    implementation("com.opside-leaf:leaf-login:4.0.1")
 }
 ```
 
-Login declares `leaf-contracts`, `leaf-core`, and `leaf-compose` as transitive dependencies. `leaf-visuals` is an internal implementation dependency; the host does not need to declare it separately.
+Login declares `leaf-contracts`, `leaf-core`, `leaf-compose`, and `leaf-visuals` as transitive dependencies (`api`); the host does not need to declare them separately.
 
 ## Public surface
 
 | API | Responsibility |
 | --- | --- |
-| `LoginModule` | Exposes the `login` and `register` Features and the Workflow factory. |
+| `LoginModule` | Exposes the `login` and `register` Workflows and the alternative Workflow factory. |
 | `AuthGateway` | Port implemented by the application to authenticate and register users. |
-| `LoginRoute` / `LoginScreen` | Connect the login Feature to Compose; terminal navigation belongs to the host. |
-| `RegisterRoute` / `RegisterScreen` | Connect the registration Feature to Compose; terminal navigation belongs to the host. |
+| `LoginRoute` / `LoginScreen` | Connect the login Workflow to Compose; terminal navigation belongs to the host. |
+| `RegisterRoute` / `RegisterScreen` | Connect the registration Workflow to Compose; terminal navigation belongs to the host. |
 | `LoginContent` / `RegisterContent` | Configure the copy and element presence of each screen, without touching visual style. |
-| `createLoginWorkflow` / `LoginWorkflowScreen` | Expose the reference Workflow for login; the published Kotlin API still requires explicit opt-in. |
+| `createLoginWorkflow` / `LoginWorkflowScreen` | Expose an alternative login Workflow with a redacted password, timeout, and retry; no opt-in required. |
 
 ## Host responsibilities
 
@@ -90,9 +94,9 @@ class MyAuthGateway(private val api: MyApi) : AuthGateway {
 | `EmailAlreadyExists` | An account with that email already exists |
 | `Unavailable(retryAfterMilliseconds?)` | Service is not available |
 
-### Feature path — Login (stable)
+### Login path
 
-`LoginRoute` connects the login Feature to Compose. The host only receives the final result:
+`LoginRoute` connects the login Workflow to Compose. The host only receives the final result:
 
 ```kotlin
 import androidx.compose.runtime.Composable
@@ -118,9 +122,9 @@ fun MyLoginScreen(
 
 The `onRegisterRequested` parameter is optional. When `null`, the "Create account" link is hidden.
 
-### Feature path — Registration (stable)
+### Registration path
 
-`RegisterRoute` connects the registration Feature to Compose:
+`RegisterRoute` connects the registration Workflow to Compose:
 
 ```kotlin
 import androidx.compose.runtime.Composable
@@ -146,9 +150,9 @@ fun MyRegisterScreen(
 
 The `onLoginRequested` parameter is optional. When `null`, the "Already have an account" link is hidden.
 
-### Workflow path
+### Alternative login path
 
-`LoginWorkflowScreen` uses the Workflow with separate password handling and authentication effect:
+`LoginWorkflowScreen` uses the alternative Workflow, with separate password handling, timeout, and retry:
 
 ```kotlin
 import androidx.compose.runtime.Composable
@@ -253,14 +257,16 @@ LoginRoute(
 `content` only changes the copy and element presence. It exposes no composable slots and no restyling: to change colors, shapes, or typography use the `visuals` parameter with a `LeafVisuals`.
 :::
 
-## Feature and Workflow
+## Workflows
 
-The login Feature uses `LoginInput`, `LoginState`, `LoginEvent`, and `LoginResult`. `LoginRoute` observes its result and delivers `LoginResult.Authenticated` to the host callback.
+The login Workflow uses `LoginInput`, `LoginState`, `LoginEvent`, `LoginEffect`, and `LoginResult`. It validates in the synchronous reducer; the `AuthGateway` call runs as a `LoginEffect` that Core executes, and `LoginState.isSubmitting` shows a submission in flight: a second `Submit` is ignored and `LoginScreen` disables its fields and button and shows a progress indicator. `LoginRoute` observes its result and delivers `LoginResult.Authenticated` to the host callback.
 
-The registration Feature uses `RegisterInput`, `RegisterState`, `RegisterEvent`, and `RegisterResult`. `RegisterRoute` observes its result and delivers `RegisterResult.Registered` to the host callback. It validates name, email, password (minimum 8 characters), and password confirmation before submitting to the gateway.
+The registration Workflow uses `RegisterInput`, `RegisterState`, `RegisterEvent`, `RegisterEffect`, and `RegisterResult`. `RegisterRoute` observes its result and delivers `RegisterResult.Registered` to the host callback. It validates name, email, password (minimum 8 characters), and password confirmation before submitting to the gateway.
 
-The Workflow keeps the password out of `LoginWorkflowState` through `LoginPassword`, emits the authentication effect, and completes with `LoginWorkflowOutput.Authenticated` or `LoginWorkflowOutput.Cancelled`. Recoverable failures return to an editable state; the application remains responsible for the Gateway and subsequent actions.
+In both, an unexpected gateway exception is shown as "El servicio no está disponible" and the session stays open for a retry. Only the module creates the result events (`AuthenticationFinished`, `RegistrationFinished`) and the effects.
+
+The alternative Workflow keeps the password out of `LoginWorkflowState` through `LoginPassword`, emits the authentication effect, and completes with `LoginWorkflowOutput.Authenticated` or `LoginWorkflowOutput.Cancelled`. Recoverable failures return to an editable state; the application remains responsible for the Gateway and subsequent actions.
 
 ## Security
 
-Do not log, persist, or send passwords to telemetry. The Feature path retains the password during the session to process the form, so the host must not serialize its state. The Workflow path redacts `LoginPassword` when converted to text, and the UI clears its copy when it completes or leaves composition.
+Do not log, persist, or send passwords to telemetry. `LoginRoute` and `RegisterRoute` keep the password in state during the session to process the form, so the host must not serialize their state; the states, the password events, and the effects redact the password in `toString`. The alternative path redacts `LoginPassword` when converted to text, and the UI clears its copy when it completes or leaves composition.

@@ -1,5 +1,20 @@
 # Registro de cambios — Sitio de documentación Leaf
 
+## Pagos 2.0.2 y Email 1.1.2 — 2026-10-07
+
+- **Versiones:** actualiza Mercado Pago (`d882569`) y Stripe (`d0f4c24`) a `v2.0.2`, y Email a `v1.1.2` (`15f9d8e`), en sus referencias API, la página de pagos, el índice de la API y el catálogo.
+- **Mercado Pago 2.0.2:** la variante Android de la raíz se publica como `leaf-mp-payment-android` (antes `leaf_mp_payment-android`) y los `ModuleInfo` reportan la versión real.
+- **Stripe 2.0.2 y Email 1.1.2:** los `ModuleInfo` reportan la versión real del artefacto.
+- Ninguna de las tres cambia la API; las limitaciones de iOS y de sandbox ahora se describen para 2.0.x.
+
+## Catalog 2.0.1 y Login 4.0.1 sobre Workflow — 2026-10-07
+
+- **Versiones:** actualiza Catalog a `v2.0.1` (`30ccd16`) y Login a `v4.0.1` (`6b59110`) en sus referencias API, el índice de la API, el catálogo y la guía de módulos. 2.0.0 (`8ebfd8b`) y 4.0.0 (`73c7b65`) introdujeron Workflow; las versiones de parche corrigen timeouts del gateway, paginación tras error y la UI de envío.
+- **Cambio incompatible:** `CatalogModule.browse`, `LoginModule.login` y `LoginModule.register` pasan de `Feature` a `Workflow`; los eventos suman resultados internos y los estados suman campos. `CatalogRoute`, `LoginRoute` y `RegisterRoute` conservan su firma.
+- **Catalog:** la sesión carga la primera página al abrirse, sin `LoadInitial` del host; se corrige la descripción de `Retry` (recarga la página 0 y las definiciones). La página explica `CatalogEffect`, los nuevos campos de carga de `CatalogState` y cómo espera una búsqueda que llega con una carga en curso (`reloadPending`).
+- **Login:** las rutas de login y registro ya no se presentan como "Feature estable"; se corrige que `leaf-visuals` es dependencia `api`. El Workflow con password redactado queda como ruta alternativa, y una excepción del gateway se muestra como servicio no disponible.
+- **Glosario:** `rememberLeaf`, `LeafComposeState` y `FeatureSession` se marcan como API heredada en depreciación. La deprecación formal en Contracts, Core y Compose 3.2.0 sigue en revisión y no está publicada.
+
 ## Pagos 2.0.0 y 2.0.1 sin Authentication — 2026-10-06
 
 - **Versiones:** actualiza Stripe y Mercado Pago a `v2.0.1` (Stripe `10a1af7`, Mercado Pago `88760f0`) en sus referencias API, la página de pagos, el índice de la API y el catálogo.

@@ -1,11 +1,11 @@
 # Módulos de pago
 
-Stripe 2.0.1 y Mercado Pago 2.0.1 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y, cuando la necesite, la conexión con su sesión mediante el Port del token de cada módulo. Ninguno depende de Authentication.
+Stripe 2.0.2 y Mercado Pago 2.0.2 implementan un checkout como Workflow. La UI envía eventos, el módulo publica estados y el Workflow termina con un resultado tipado. La aplicación debe configurar el proveedor, su backend, el SDK correspondiente y, cuando la necesite, la conexión con su sesión mediante el Port del token de cada módulo. Ninguno depende de Authentication.
 
 ## Entregas fuente
 
-- Stripe: tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v2.0.1), revisión [`10a1af7`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/10a1af7).
-- Mercado Pago: tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.1), revisión [`88760f0`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/88760f0).
+- Stripe: tag [`v2.0.2`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v2.0.2), revisión [`d0f4c24`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/d0f4c24).
+- Mercado Pago: tag [`v2.0.2`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.2), revisión [`d882569`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/d882569).
 
 Ambos módulos declaran compatibilidad con LEAF 3.1.0 y leaf-visuals 1.4.0. Ambos publican en GitHub Packages el módulo, `checkout-ui` y `android-ui`.
 

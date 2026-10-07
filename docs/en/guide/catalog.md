@@ -22,12 +22,12 @@ Each entry should represent a reusable capability with its own contract, version
 
 | Module | Documented version | Form | What it provides | What the host must provide |
 | --- | --- | --- | --- | --- |
-| [Login](/en/api/login) | 3.1.0 | Workflow; compatible Feature | A reference form and flow for authenticating a person. | `AuthGateway`, navigation, and secure credential handling. |
+| [Login](/en/api/login) | 4.0.1 | Workflow | A reference form and flow for authenticating a person. | `AuthGateway`, navigation, and secure credential handling. |
 | [Authentication](/en/api/authentication) | 1.0.0 | Actions | Sign-in, challenge continuation, session restoration, and sign-out. | The authentication, storage, and network services required by its implementation. |
-| [Catalog](https://github.com/OPSIDE-LEAF/leaf_catalog) | 1.1.1 | Feature | Configurable catalog, search, detail, and actions. | `CatalogGateway`, data, external navigation, and business actions. |
-| [Email](https://github.com/OPSIDE-LEAF/leaf_email) | 1.1.1 | Action | Autonomous email delivery on Android and iOS. | SMTP configuration, sender, and recipients. |
-| [Stripe](/en/api/stripe) | 2.0.1 | Workflow | UI and states for completing a Stripe payment. | Backend, provider configuration, and SDK presentation when required. |
-| [Mercado Pago](/en/api/mercado-pago) | 2.0.1 | Workflow | UI and states for completing a Mercado Pago payment. | Backend, provider configuration, and secure capture of the data required by the SDK. |
+| [Catalog](/en/api/catalog) | 2.0.1 | Workflow | Configurable catalog, search, detail, and actions. | `CatalogGateway`, data, external navigation, and business actions. |
+| [Email](https://github.com/OPSIDE-LEAF/leaf_email) | 1.1.2 | Action | Autonomous email delivery on Android and iOS. | SMTP configuration, sender, and recipients. |
+| [Stripe](/en/api/stripe) | 2.0.2 | Workflow | UI and states for completing a Stripe payment. | Backend, provider configuration, and SDK presentation when required. |
+| [Mercado Pago](/en/api/mercado-pago) | 2.0.2 | Workflow | UI and states for completing a Mercado Pago payment. | Backend, provider configuration, and secure capture of the data required by the SDK. |
 
 ## Verified source releases
 
@@ -37,13 +37,13 @@ Each entry should represent a reusable capability with its own contract, version
 | [Core](/en/api/core) | [`v3.1.0`](https://github.com/OPSIDE-LEAF/leaf-core/tree/v3.1.0) | [`97c683d`](https://github.com/OPSIDE-LEAF/leaf-core/commit/97c683d) |
 | [Compose](/en/api/compose) | [`v3.1.0`](https://github.com/OPSIDE-LEAF/leaf-compose/tree/v3.1.0) | [`b69b479`](https://github.com/OPSIDE-LEAF/leaf-compose/commit/b69b479) |
 | [Visuals](/en/api/visuals) | [`v1.4.0`](https://github.com/OPSIDE-LEAF/leaf-visuals/tree/v1.4.0) | [`8031846`](https://github.com/OPSIDE-LEAF/leaf-visuals/commit/8031846) |
-| [Login](/en/api/login) | [`v3.1.0`](https://github.com/OPSIDE-LEAF/leaf-login/tree/v3.1.0) | [`edd0bf0`](https://github.com/OPSIDE-LEAF/leaf-login/commit/edd0bf0) |
+| [Login](/en/api/login) | [`v4.0.1`](https://github.com/OPSIDE-LEAF/leaf-login/tree/v4.0.1) | [`6b59110`](https://github.com/OPSIDE-LEAF/leaf-login/commit/6b59110) |
 | [Authentication](/en/api/authentication) | [`v1.0.0`](https://github.com/OPSIDE-LEAF/leaf_authentication/tree/v1.0.0) | [`8d9b09c`](https://github.com/OPSIDE-LEAF/leaf_authentication/commit/8d9b09c) |
 | [Payment Contracts](/en/api/payment-contracts) | [`v0.1.0`](https://github.com/OPSIDE-LEAF/leaf-payment-contracts/tree/v0.1.0) | [`b1147d0`](https://github.com/OPSIDE-LEAF/leaf-payment-contracts/commit/b1147d0) |
-| [Catalog](https://github.com/OPSIDE-LEAF/leaf_catalog) | [`v1.1.1`](https://github.com/OPSIDE-LEAF/leaf_catalog/tree/v1.1.1) | [`414ef99`](https://github.com/OPSIDE-LEAF/leaf_catalog/commit/414ef99) |
-| [Email](https://github.com/OPSIDE-LEAF/leaf_email) | [`v1.1.1`](https://github.com/OPSIDE-LEAF/leaf_email/tree/v1.1.1) | [`232e521`](https://github.com/OPSIDE-LEAF/leaf_email/commit/232e521) |
-| [Stripe](/en/api/payments) | [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v2.0.1) | [`10a1af7`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/10a1af7) |
-| [Mercado Pago](/en/api/payments) | [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.1) | [`88760f0`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/88760f0) |
+| [Catalog](/en/api/catalog) | [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_catalog/tree/v2.0.1) | [`30ccd16`](https://github.com/OPSIDE-LEAF/leaf_catalog/commit/30ccd16) |
+| [Email](https://github.com/OPSIDE-LEAF/leaf_email) | [`v1.1.2`](https://github.com/OPSIDE-LEAF/leaf_email/tree/v1.1.2) | [`15f9d8e`](https://github.com/OPSIDE-LEAF/leaf_email/commit/15f9d8e) |
+| [Stripe](/en/api/payments) | [`v2.0.2`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v2.0.2) | [`d0f4c24`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/d0f4c24) |
+| [Mercado Pago](/en/api/payments) | [`v2.0.2`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.2) | [`d882569`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/d882569) |
 
 A source tag fixes the code for a release. It does not by itself prove that the artifact is available from every Maven repository; check the repository configured by your organization before consuming it.
 

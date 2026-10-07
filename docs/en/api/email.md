@@ -1,10 +1,10 @@
 # Email
 
-Email 1.1.1 is a Kotlin Multiplatform module that sends emails via SMTP on Android and iOS. It exposes a single Action with no UI; the host only provides the SMTP configuration.
+Email 1.1.2 is a Kotlin Multiplatform module that sends emails via SMTP on Android and iOS. It exposes a single Action with no UI; the host only provides the SMTP configuration.
 
 ## Release and compatibility
 
-The artifact is `com.opside-leaf:leaf-email:1.1.1`. Its source code corresponds to tag [`v1.1.1`](https://github.com/OPSIDE-LEAF/leaf_email/tree/v1.1.1), revision [`232e521`](https://github.com/OPSIDE-LEAF/leaf_email/commit/232e521).
+The artifact is `com.opside-leaf:leaf-email:1.1.2`. Its source code corresponds to tag [`v1.1.2`](https://github.com/OPSIDE-LEAF/leaf_email/tree/v1.1.2), revision [`15f9d8e`](https://github.com/OPSIDE-LEAF/leaf_email/commit/15f9d8e).
 
 Declared compatibility is LEAF Contracts/Core 3.1.0.
 
@@ -12,7 +12,7 @@ Declared compatibility is LEAF Contracts/Core 3.1.0.
 
 ```kotlin
 dependencies {
-    implementation("com.opside-leaf:leaf-email:1.1.1")
+    implementation("com.opside-leaf:leaf-email:1.1.2")
 }
 ```
 

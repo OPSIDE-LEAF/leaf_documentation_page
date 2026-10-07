@@ -18,8 +18,8 @@
 
 | Término | Significado |
 | --- | --- |
-| `Leaf` | punto de entrada del runtime; `Leaf.run()` ejecuta un Action, `Leaf.open()` abre un Workflow o Feature |
-| Session | la instancia en ejecución que Core administra: `WorkflowSession` expone `states`, `send()` y `awaitOutcome()`; `FeatureSession` expone `state`, `send()` y `result` |
+| `Leaf` | punto de entrada del runtime; `Leaf.run()` ejecuta un Action, `Leaf.open()` abre un Workflow (o un Feature heredado, en depreciación) |
+| Session | la instancia en ejecución que Core administra: `WorkflowSession` expone `states`, `send()` y `awaitOutcome()`; `FeatureSession` (heredada, en depreciación) expone `state`, `send()` y `result` |
 | `LeafException` | error técnico redactado que reporta módulo y operación sin exponer payloads de dominio |
 | `LeafTelemetry` | interfaz funcional para observar datos técnicos de ejecución (módulo, fase, duración, resultado); las callbacks son best-effort y no afectan la ejecución |
 
@@ -27,9 +27,9 @@
 
 | Término | Significado |
 | --- | --- |
-| `rememberLeaf()` | función composable que abre y observa un Feature para el ciclo de vida de la composición |
+| `rememberLeaf()` | función composable heredada, en depreciación, que abre y observa un Feature; para Workflow se usa `rememberLeafWorkflowHolder()` |
 | `rememberLeafWorkflowHolder()` | función composable que abre y observa un Workflow para el ciclo de vida de la composición |
-| `LeafComposeState` | vista Compose observable (`@Stable`) de una sesión Feature; expone `state`, `result` y `send()` |
+| `LeafComposeState` | vista Compose observable (`@Stable`) de una sesión Feature heredada, en depreciación; expone `state`, `result` y `send()` |
 | Holder | vista Compose estable (`@Stable`) de una sesión Workflow (`LeafWorkflowHolder`); expone `snapshot`, `outcome` y `send()` |
 | `WorkflowSnapshot` | estado Compose de un Workflow: `Initializing` antes del primer estado, `Active(state)` después |
 

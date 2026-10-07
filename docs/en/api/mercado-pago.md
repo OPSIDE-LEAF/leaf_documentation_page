@@ -1,16 +1,17 @@
 # Mercado Pago
 
-Mercado Pago 2.0.1 is a Kotlin Multiplatform module that implements a Mercado Pago payment checkout. It exposes Actions for obtaining the configuration, submitting a payment with a tokenized card, and observing its status. The app provides the backend as well as card capture and tokenization. The module does not depend on any authentication module.
+Mercado Pago 2.0.2 is a Kotlin Multiplatform module that implements a Mercado Pago payment checkout. It exposes Actions for obtaining the configuration, submitting a payment with a tokenized card, and observing its status. The app provides the backend as well as card capture and tokenization. The module does not depend on any authentication module.
 
 ## Release and compatibility
 
-The artifact is `com.opside-leaf:leaf-mp-payment:2.0.1`. Its source code corresponds to tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.1), revision [`88760f0`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/88760f0).
+The artifact is `com.opside-leaf:leaf-mp-payment:2.0.2`. Its source code corresponds to tag [`v2.0.2`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/tree/v2.0.2), revision [`d882569`](https://github.com/OPSIDE-LEAF/leaf_mp_payment/commit/d882569).
 
 Mercado Pago is versioned independently of the LEAF base train. Declared compatibility is LEAF Contracts 3.1.0. It uses `leaf-payment-contracts` 0.1.0 for shared payment types. The leaf-visuals 1.4.0 integration is optional: it comes with `leaf-mp-payment-checkout-ui` and `leaf-mp-payment-android-ui`, and the base module does not use it.
 
 ::: info Changes in 2.0
 - **2.0.0:** the module no longer depends on `leaf-authentication`. The sandbox factories receive the token through `MercadoPagoAccessTokenProvider`, a Port owned by the module. If your app used 1.0.0 with Authentication, wrap Authentication's `ValidAccessTokenProvider` as shown in [Implement the token Port](#implement-the-token-port).
 - **2.0.1:** `leaf-mp-payment-checkout-ui` and `leaf-mp-payment-android-ui` are also published to GitHub Packages. On iOS, `MercadoPagoPaymentView(backendURL:accessTokens:…)` receives the token Port.
+- **2.0.2:** no API change. The root Android variant is published as `leaf-mp-payment-android` (previously `leaf_mp_payment-android`) and every `ModuleInfo` reports the real artifact version.
 :::
 
 ## Dependency
@@ -21,9 +22,9 @@ Mercado Pago is Kotlin Multiplatform: the `leaf-mp-payment` coordinate works for
 
 ```kotlin [Android]
 dependencies {
-    implementation("com.opside-leaf:leaf-mp-payment:2.0.1")
+    implementation("com.opside-leaf:leaf-mp-payment:2.0.2")
     // Optional: ready-made payment sheet
-    implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.1")
+    implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.2")
 }
 ```
 
@@ -31,11 +32,11 @@ dependencies {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.opside-leaf:leaf-mp-payment:2.0.1")
+            implementation("com.opside-leaf:leaf-mp-payment:2.0.2")
         }
         androidMain.dependencies {
             // Optional: ready-made Android payment sheet
-            implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.1")
+            implementation("com.opside-leaf:leaf-mp-payment-android-ui:2.0.2")
         }
     }
 }
@@ -61,7 +62,7 @@ Mercado Pago declares `leaf-contracts` and `leaf-payment-contracts` as transitiv
 The payment sheet exists on both Android and iOS:
 
 - **Android:** `leaf-mp-payment-android-ui` is optional, includes `leaf-mp-payment-checkout-ui`, and uses Mercado Pago's Core Methods SDK. If you use it, also declare Mercado Pago's Maven repository, `https://artifacts.mercadolibre.com/repository/android-releases`.
-- **iOS:** the `apple-ui` Swift package uses Mercado Pago's Core Methods SDK for iOS (`sdk-ios` 1.0.0). It is not distributed through Maven: clone the repository at tag `v2.0.1` and generate its XCFramework with `./gradlew :checkout-ui:stageForSwiftPackage` before adding the package.
+- **iOS:** the `apple-ui` Swift package uses Mercado Pago's Core Methods SDK for iOS (`sdk-ios` 1.0.0). It is not distributed through Maven: clone the repository at tag `v2.0.2` and generate its XCFramework with `./gradlew :checkout-ui:stageForSwiftPackage` before adding the package.
 
 ## Public surface
 
@@ -165,7 +166,7 @@ fun sandboxCheckout(auth: AuthenticationModule): MercadoPagoCheckoutModule =
 
 `baseUrl` defaults to `http://127.0.0.1:8080`. It must be an HTTPS origin, or HTTP only with the local hosts `127.0.0.1`, `localhost`, or `10.0.2.2`, with no path, query, fragment, or credentials.
 
-On iOS, `MercadoPagoPaymentView(backendURL:accessTokens:…)` receives a provider that implements the protocol exported by `LeafMpPaymentUI`. To Swift, a provider created in another Kotlin framework is a different type. Also, the framework does not export `CharArray`, so in 2.0.1 Swift cannot lend a token: it can only return `NoSession`, `Expired`, or `Unavailable`. The iOS test app uses this provider:
+On iOS, `MercadoPagoPaymentView(backendURL:accessTokens:…)` receives a provider that implements the protocol exported by `LeafMpPaymentUI`. To Swift, a provider created in another Kotlin framework is a different type. Also, the framework does not export `CharArray`, so in 2.0.x Swift cannot lend a token: it can only return `NoSession`, `Expired`, or `Unavailable`. The iOS test app uses this provider:
 
 ```swift
 import LeafMercadoPagoPaymentUI
@@ -282,5 +283,5 @@ If the token Port returns `NoSession` or `Expired`, the test factory does not se
 The test factory uses Ktor's OkHttp engine on Android and the Darwin engine on iOS. The factory with a host-owned backend creates no HTTP client.
 
 ::: warning Test environments only
-The 2.0.1 artifacts are meant for sandbox use: the public key is created with `MercadoPagoPublicKey.test()`, the Android sheet uses sandbox card fields, and the test factories target the LEAF sandbox backend. Test the full flow with Mercado Pago's sandbox environment: card capture, tokenization, backend, callbacks, authentication, and handling of failed or cancelled results.
+The 2.0.x artifacts are meant for sandbox use: the public key is created with `MercadoPagoPublicKey.test()`, the Android sheet uses sandbox card fields, and the test factories target the LEAF sandbox backend. Test the full flow with Mercado Pago's sandbox environment: card capture, tokenization, backend, callbacks, authentication, and handling of failed or cancelled results.
 :::

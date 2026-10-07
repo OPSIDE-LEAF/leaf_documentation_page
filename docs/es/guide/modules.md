@@ -96,9 +96,9 @@ Estos son los módulos publicados en el ecosistema LEAF:
 | Módulo | Tipo | Descripción |
 | --- | --- | --- |
 | `AuthenticationModule` | Action | Sign-in, restauración de sesión, sign-out y préstamo de access token |
-| `LoginModule` | Feature + Workflow | Flujo de login con validación de formulario |
+| `LoginModule` | Workflow | Flujos de login y registro con validación de formulario |
 | `EmailModule` | Action | Envío de email por SMTP en Android e iOS |
-| `CatalogModule` | Feature | Catálogo paginado con búsqueda, filtros, detalle y acciones del host |
+| `CatalogModule` | Workflow | Catálogo paginado con búsqueda, filtros, detalle y acciones del host |
 | `MercadoPagoPaymentModule` | Action | Creación y observación de pagos con MercadoPago |
 | `MercadoPagoCheckoutModule` | Workflow | Checkout con tarjeta, tokenización y flujo visual |
 | `StripePaymentModule` | Action | Creación y observación de pagos con Stripe |

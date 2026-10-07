@@ -14,11 +14,11 @@ LEAF %LEAF_VERSION% separates public contracts, execution, and Compose integrati
 
 | Module | Documented version | Responsibility |
 | --- | --- | --- |
-| [Login](/en/api/login) | 3.1.0 | provides a login Workflow and a compatible Feature path |
+| [Login](/en/api/login) | 4.0.1 | provides the login and registration Workflows with Compose UI |
 | [Authentication](/en/api/authentication) | 1.0.0 | provides Actions for authentication, sessions, and tokens |
-| [Catalog](/en/api/catalog) | 1.1.1 | provides reusable catalog, search, and detail as a Feature |
-| [Email](/en/api/email) | 1.1.1 | provides an autonomous SMTP sending Action |
-| [Stripe](/en/api/stripe) | 2.0.1 | implements a Stripe payment checkout |
-| [Mercado Pago](/en/api/mercado-pago) | 2.0.1 | implements a Mercado Pago payment checkout |
+| [Catalog](/en/api/catalog) | 2.0.1 | provides reusable catalog, search, and detail as a Workflow |
+| [Email](/en/api/email) | 1.1.2 | provides an autonomous SMTP sending Action |
+| [Stripe](/en/api/stripe) | 2.0.2 | implements a Stripe payment checkout |
+| [Mercado Pago](/en/api/mercado-pago) | 2.0.2 | implements a Mercado Pago payment checkout |
 
 These versions and their integration requirements are independent of the base LEAF release train. Review each reference before selecting dependencies for your application.

@@ -1,16 +1,17 @@
 # Stripe
 
-Stripe 2.0.1 es un módulo Kotlin Multiplatform que implementa un checkout de pagos con Stripe. Expone Actions para preparar un checkout y observar su estado. La app proporciona el backend y la presentación de `PaymentSheet`. El módulo no depende de ningún módulo de autenticación.
+Stripe 2.0.2 es un módulo Kotlin Multiplatform que implementa un checkout de pagos con Stripe. Expone Actions para preparar un checkout y observar su estado. La app proporciona el backend y la presentación de `PaymentSheet`. El módulo no depende de ningún módulo de autenticación.
 
 ## Entrega y compatibilidad
 
-El artefacto es `com.opside-leaf:leaf-stripe-payment:2.0.1`. Su código fuente corresponde al tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v2.0.1), revisión [`10a1af7`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/10a1af7).
+El artefacto es `com.opside-leaf:leaf-stripe-payment:2.0.2`. Su código fuente corresponde al tag [`v2.0.2`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/tree/v2.0.2), revisión [`d0f4c24`](https://github.com/OPSIDE-LEAF/leaf_stripe_payment/commit/d0f4c24).
 
 Stripe mantiene una versión independiente del tren base de LEAF. La compatibilidad declarada es LEAF Contracts 3.1.0. Usa `leaf-payment-contracts` 0.1.0 para los tipos compartidos de pago. La integración con leaf-visuals 1.4.0 es opcional: llega con `leaf-stripe-payment-checkout-ui` y `leaf-stripe-payment-android-ui`, y el módulo base no la usa.
 
 ::: info Cambios en 2.0
 - **2.0.0:** el módulo ya no depende de `leaf-authentication`. Las factories de sandbox reciben el token mediante `StripeAccessTokenProvider`, un Port propio del módulo. Si tu app usaba la 1.0.0 con Authentication, envuelve el `ValidAccessTokenProvider` de Authentication como se muestra en [Implementar el Port del token](#implementar-el-port-del-token).
 - **2.0.1:** en iOS, `StripePaymentView(backendURL:accessTokens:…)` recibe el Port del token. Los artefactos Kotlin no cambian respecto a 2.0.0.
+- **2.0.2:** no cambia la API. Los `ModuleInfo` reportan la versión real del artefacto (antes 0.1.0 y 0.4.0).
 :::
 
 ## Dependencia
@@ -21,9 +22,9 @@ Stripe es Kotlin Multiplatform: la coordenada `leaf-stripe-payment` sirve para A
 
 ```kotlin [Android]
 dependencies {
-    implementation("com.opside-leaf:leaf-stripe-payment:2.0.1")
+    implementation("com.opside-leaf:leaf-stripe-payment:2.0.2")
     // Opcional: UI de pago lista (PaymentSheet de Stripe)
-    implementation("com.opside-leaf:leaf-stripe-payment-android-ui:2.0.1")
+    implementation("com.opside-leaf:leaf-stripe-payment-android-ui:2.0.2")
 }
 ```
 
@@ -31,11 +32,11 @@ dependencies {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.opside-leaf:leaf-stripe-payment:2.0.1")
+            implementation("com.opside-leaf:leaf-stripe-payment:2.0.2")
         }
         androidMain.dependencies {
             // Opcional: UI de pago lista para Android (PaymentSheet de Stripe)
-            implementation("com.opside-leaf:leaf-stripe-payment-android-ui:2.0.1")
+            implementation("com.opside-leaf:leaf-stripe-payment-android-ui:2.0.2")
         }
     }
 }
@@ -61,7 +62,7 @@ Stripe declara `leaf-contracts` y `leaf-payment-contracts` como dependencias tra
 `PaymentSheet` es el formulario de pago oficial de Stripe: recoge los datos de la tarjeta, resuelve la autenticación 3D Secure y confirma el pago con el `clientSecret`. Existe en Android y en iOS:
 
 - **Android:** `leaf-stripe-payment-android-ui` es opcional e incluye `leaf-stripe-payment-checkout-ui` y el SDK de Stripe para Android.
-- **iOS:** el paquete Swift `apple-ui` presenta la `PaymentSheet` del SDK de Stripe para iOS (`stripe-ios-spm` 26.4.1). No se distribuye por Maven: clona el repositorio en el tag `v2.0.1` y genera su XCFramework con `./gradlew :checkout-ui:stageForSwiftPackage` antes de agregar el paquete.
+- **iOS:** el paquete Swift `apple-ui` presenta la `PaymentSheet` del SDK de Stripe para iOS (`stripe-ios-spm` 26.4.1). No se distribuye por Maven: clona el repositorio en el tag `v2.0.2` y genera su XCFramework con `./gradlew :checkout-ui:stageForSwiftPackage` antes de agregar el paquete.
 
 ## Superficie pública
 
@@ -161,7 +162,7 @@ fun sandboxCheckout(auth: AuthenticationModule): StripeCheckoutModule =
 
 `baseUrl` es `http://127.0.0.1:8080` por defecto. Debe ser un origen HTTPS, o HTTP solo con los hosts locales `127.0.0.1`, `localhost` o `10.0.2.2`, sin path, query, fragmento ni credenciales.
 
-En iOS, `StripePaymentView(backendURL:accessTokens:…)` recibe un provider que implementa el protocolo que exporta `LeafStripeCheckoutUI`. Para Swift, un provider creado en otro framework Kotlin es un tipo distinto. Además, el framework no exporta `CharArray`, así que en 2.0.1 Swift no puede prestar un token: solo puede responder `NoSession`, `Expired` o `Unavailable`. La app iOS de prueba usa este provider:
+En iOS, `StripePaymentView(backendURL:accessTokens:…)` recibe un provider que implementa el protocolo que exporta `LeafStripeCheckoutUI`. Para Swift, un provider creado en otro framework Kotlin es un tipo distinto. Además, el framework no exporta `CharArray`, así que en 2.0.x Swift no puede prestar un token: solo puede responder `NoSession`, `Expired` o `Unavailable`. La app iOS de prueba usa este provider:
 
 ```swift
 import LeafStripeCheckoutUI
@@ -252,5 +253,5 @@ Si el Port del token devuelve `NoSession` o `Expired`, la factory de pruebas no 
 La factory de pruebas usa el motor OkHttp de Ktor en Android y el motor Darwin en iOS. La factory con backend propio no crea ningún cliente HTTP.
 
 ::: warning Solo entornos de prueba
-Los artefactos 2.0.1 están pensados para pruebas: `StripePublishableKey.test()` solo acepta claves `pk_test_` y las factories de pruebas apuntan al backend sandbox de LEAF. Prueba el flujo completo con el entorno sandbox de Stripe: la UI, el backend, los callbacks, la autenticación y el manejo de resultados fallidos o cancelados.
+Los artefactos 2.0.x están pensados para pruebas: `StripePublishableKey.test()` solo acepta claves `pk_test_` y las factories de pruebas apuntan al backend sandbox de LEAF. Prueba el flujo completo con el entorno sandbox de Stripe: la UI, el backend, los callbacks, la autenticación y el manejo de resultados fallidos o cancelados.
 :::

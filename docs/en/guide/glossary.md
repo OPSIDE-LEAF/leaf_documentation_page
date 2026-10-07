@@ -18,8 +18,8 @@
 
 | Term | Meaning |
 | --- | --- |
-| `Leaf` | runtime entry point; `Leaf.run()` executes an Action, `Leaf.open()` opens a Workflow or Feature |
-| Session | the running instance Core manages: `WorkflowSession` exposes `states`, `send()`, and `awaitOutcome()`; `FeatureSession` exposes `state`, `send()`, and `result` |
+| `Leaf` | runtime entry point; `Leaf.run()` executes an Action, `Leaf.open()` opens a Workflow (or a legacy Feature, being deprecated) |
+| Session | the running instance Core manages: `WorkflowSession` exposes `states`, `send()`, and `awaitOutcome()`; `FeatureSession` (legacy, being deprecated) exposes `state`, `send()`, and `result` |
 | `LeafException` | redacted technical error that reports module and operation without exposing domain payloads |
 | `LeafTelemetry` | functional interface for observing technical execution data (module, phase, duration, result); callbacks are best-effort and do not affect execution |
 
@@ -27,9 +27,9 @@
 
 | Term | Meaning |
 | --- | --- |
-| `rememberLeaf()` | composable function that opens and observes a Feature for the composition lifetime |
+| `rememberLeaf()` | legacy composable, being deprecated, that opens and observes a Feature; Workflows use `rememberLeafWorkflowHolder()` |
 | `rememberLeafWorkflowHolder()` | composable function that opens and observes a Workflow for the composition lifetime |
-| `LeafComposeState` | observable Compose view (`@Stable`) of a Feature session; exposes `state`, `result`, and `send()` |
+| `LeafComposeState` | observable Compose view (`@Stable`) of a legacy Feature session, being deprecated; exposes `state`, `result`, and `send()` |
 | Holder | stable Compose view (`@Stable`) of a Workflow session (`LeafWorkflowHolder`); exposes `snapshot`, `outcome`, and `send()` |
 | `WorkflowSnapshot` | Compose-facing Workflow state: `Initializing` before the first state, `Active(state)` after |
 

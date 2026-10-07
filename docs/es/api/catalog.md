@@ -1,18 +1,24 @@
 # Catalog
 
-Catalog 1.1.2 es un módulo Kotlin Multiplatform que proporciona un catálogo paginado con búsqueda, filtros, ordenamiento, detalle y acciones configurables. Expone un Feature que el host conecta a su fuente de datos mediante `CatalogGateway`.
+Catalog 2.0.1 es un módulo Kotlin Multiplatform que proporciona un catálogo paginado con búsqueda, filtros, ordenamiento, detalle y acciones configurables. Expone un Workflow (`browse`) que el host conecta a su fuente de datos mediante `CatalogGateway`.
 
 ## Entrega y compatibilidad
 
-El artefacto es `com.opside-leaf:leaf-catalog:1.1.2`. Su código fuente corresponde al tag [`v1.1.2`](https://github.com/OPSIDE-LEAF/leaf_catalog/tree/v1.1.2), revisión [`68b0636`](https://github.com/OPSIDE-LEAF/leaf_catalog/commit/68b0636).
+El artefacto es `com.opside-leaf:leaf-catalog:2.0.1`. Su código fuente corresponde al tag [`v2.0.1`](https://github.com/OPSIDE-LEAF/leaf_catalog/tree/v2.0.1), revisión [`30ccd16`](https://github.com/OPSIDE-LEAF/leaf_catalog/commit/30ccd16).
 
 La compatibilidad declarada es LEAF Contracts/Core/Compose 3.1.0; la integración con leaf-visuals 1.4.0 es opcional.
+
+::: info Cambios en 2.0
+`CatalogModule.browse` pasó de `Feature`, en depreciación en LEAF, a `Workflow<CatalogInput, CatalogState, CatalogEvent, CatalogEffect, CatalogResult>`. Es un cambio incompatible: cambia el tipo de `browse`, `CatalogEvent` suma eventos de resultado (rompe un `when` exhaustivo) y `CatalogState` suma campos (cambia su firma binaria). `CatalogRoute` conserva su firma. La sesión carga la primera página al abrirse, así que el host ya no envía `LoadInitial`.
+
+2.0.1 no cambia la API. Un timeout propio del gateway, o un `getDetail` sin implementar, ya no termina la sesión. Tras un error de primera página no se paginan páginas nuevas sobre la lista anterior.
+:::
 
 ## Dependencia
 
 ```kotlin
 dependencies {
-    implementation("com.opside-leaf:leaf-catalog:1.1.2")
+    implementation("com.opside-leaf:leaf-catalog:2.0.1")
 }
 ```
 
@@ -22,10 +28,10 @@ Catalog declara `leaf-contracts` y `leaf-visuals` como dependencias transitivas 
 
 | API | Responsabilidad |
 | --- | --- |
-| `CatalogModule` | Módulo con factory `create(gateway, builder)` que expone el Feature `browse` |
+| `CatalogModule` | Módulo con factory `create(gateway, builder)` que expone el Workflow `browse` |
 | `CatalogGateway` | Port que el host implementa para entregar datos paginados, detalle, filtros y opciones de orden |
 | `CatalogDsl` | DSL para configurar layout, búsqueda, filtros, paginación, orden, detalle y acciones |
-| `CatalogRoute` | Conecta el Feature con Compose; gestiona lista y detalle |
+| `CatalogRoute` | Conecta el Workflow con Compose; gestiona lista y detalle |
 
 ## Responsabilidades del host
 
@@ -110,7 +116,7 @@ sealed interface MovieAction : CatalogOutputEvent {
 }
 ```
 
-Cuando el usuario ejecuta una acción, el Feature termina con `CatalogResult.ActionPerformed(event)` donde `event` es la instancia del tipo que definiste. El módulo nunca inspecciona el tipo concreto; solo lo transporta.
+Cuando el usuario ejecuta una acción, el Workflow termina con `CatalogResult.ActionPerformed(event)` donde `event` es la instancia del tipo que definiste. El módulo nunca inspecciona el tipo concreto; solo lo transporta.
 
 ## Uso
 
@@ -235,15 +241,15 @@ El host proporciona `imageLoader` para renderizar imágenes remotas (Coil, Kamel
 
 `CatalogRoute` también acepta `visuals` (tema visual, por defecto el de LEAF), `darkTheme`, `strings` (localización) y `telemetry` (observabilidad).
 
-## Feature
+## Workflow
 
-El Feature usa `CatalogInput`, `CatalogState`, `CatalogEvent` y `CatalogResult`.
+El Workflow usa `CatalogInput`, `CatalogState`, `CatalogEvent`, `CatalogEffect` y `CatalogResult`. Su reductor es síncrono: cada carga corre como un `CatalogEffect` que Core ejecuta y cuyo resultado vuelve al reductor como evento. `LoadPage` pide la página y, al abrir, con `LoadInitial`/`Retry` o si todavía faltan, las definiciones de filtros y orden; `LoadDetail` pide el detalle. Esos eventos de resultado (`PageLoaded`, `DetailLoaded`, `LoadFailed`) y los efectos solo los crea el módulo.
 
 **Eventos principales:**
 
 | Evento | Efecto |
 | --- | --- |
-| `LoadInitial` | Carga la primera página con filtros y orden |
+| `LoadInitial` | Recarga la primera página con filtros y orden; la sesión ya lo hace al abrirse |
 | `SearchChanged(query)` | Reinicia a página 0 con la nueva búsqueda |
 | `LoadMore` | Solicita la siguiente página y la agrega |
 | `FilterChanged(id, value)` | Activa o limpia un filtro, recarga desde página 0 |
@@ -251,5 +257,7 @@ El Feature usa `CatalogInput`, `CatalogState`, `CatalogEvent` y `CatalogResult`.
 | `ClearFilters` | Limpia todos los filtros activos y recarga desde página 0 |
 | `ItemSelected(itemId)` | Navega al detalle del item |
 | `BackToList` | Regresa a la lista desde el detalle |
-| `Retry` | Reintenta la carga actual tras un error, conservando query/filtros/orden |
+| `Retry` | Recarga la página 0 y las definiciones de filtros y orden, conservando query/filtros/orden |
 | `ItemAction(label, item)` | Invoca una acción del host sobre un item |
+
+Core ejecuta un solo efecto a la vez. `CatalogState` lo refleja con `isLoading` (primera página), `isLoadingMore` (siguiente página) e `isLoadingDetail` (detalle). Una búsqueda, filtro u orden que llega con una carga en curso actualiza el estado y espera en `reloadPending`; la recarga empieza en cuanto termina esa carga y su resultado viejo se descarta. Un item seleccionado durante una carga abre su detalle al terminar. Un error del gateway, incluido su propio timeout, queda en `CatalogState.error` y la sesión sigue abierta para reintentar; tras un error de primera página no se cargan más páginas hasta que una primera página cargue de nuevo.

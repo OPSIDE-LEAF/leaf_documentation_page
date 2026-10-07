@@ -96,9 +96,9 @@ These are the modules published in the LEAF ecosystem:
 | Module | Type | Description |
 | --- | --- | --- |
 | `AuthenticationModule` | Action | Sign-in, session restore, sign-out, and access-token lending |
-| `LoginModule` | Feature + Workflow | Login flow with form validation |
+| `LoginModule` | Workflow | Login and registration flows with form validation |
 | `EmailModule` | Action | Email delivery via SMTP on Android and iOS |
-| `CatalogModule` | Feature | Paginated catalog with search, filters, detail, and host actions |
+| `CatalogModule` | Workflow | Paginated catalog with search, filters, detail, and host actions |
 | `MercadoPagoPaymentModule` | Action | Payment creation and observation with MercadoPago |
 | `MercadoPagoCheckoutModule` | Workflow | Card checkout with tokenization and visual flow |
 | `StripePaymentModule` | Action | Payment creation and observation with Stripe |
